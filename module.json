@@ -1,0 +1,21 @@
+{
+    "name": "Core",
+    "alias": "core",
+    "description": "",
+    "keywords": [],
+    "priority": 1,
+    "order": 1,
+    "providers": [
+        "Goodcatch\\Modules\\Core\\Providers\\EventServiceProvider",
+        "Goodcatch\\Modules\\Core\\Providers\\CoreServiceProvider"
+    ],
+    "aliases": {
+
+    },
+    "files": [
+        "src/helpers.php"
+    ],
+    "requires": [],
+    "version": "0.1.0",
+    "type": 1
+}
