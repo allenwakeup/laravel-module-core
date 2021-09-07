@@ -3,7 +3,7 @@
 
 namespace Goodcatch\Modules\Core\Observers;
 
-use Goodcatch\Modules\Qwshop\Traits\PermissionSeedsTrait;
+use Goodcatch\Modules\Base\Traits\PermissionSeedsTrait;
 use Goodcatch\Modules\Core\Model\Admin\DataMap;
 
 use Illuminate\Support\Arr;

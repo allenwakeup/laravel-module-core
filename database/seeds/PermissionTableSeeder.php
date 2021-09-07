@@ -2,7 +2,7 @@
 
 namespace Goodcatch\Modules\Core\Database\Seeders;
 
-use Goodcatch\Modules\Qwshop\Traits\PermissionSeedsTrait;
+use Goodcatch\Modules\Base\Traits\PermissionSeedsTrait;
 use Illuminate\Database\Seeder;
 
 class PermissionTableSeeder extends Seeder
