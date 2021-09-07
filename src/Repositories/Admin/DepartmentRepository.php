@@ -8,29 +8,17 @@ class DepartmentRepository extends BaseRepository
 {
     public static function list ($perPage, $condition = [], $keyword = null)
     {
-        $data = Department::query ()
-            ->with ('parent')
-            ->where (function ($query) use ($condition, $keyword) {
-                self::buildQuery ($query, $condition);
+        return Department::query()
+            ->with (['parent', 'refParent'])
+            ->where(function ($query) use ($condition) {
+                self::buildQuery($query, $condition);
                 if (! empty ($keyword))
                 {
                     self::buildSelect ($query, $condition, $keyword);
                 }
             })
-            ->orderBy ('id', 'desc')
-            ->paginate ($perPage);
-        $data->transform (function ($item) {
-            $item->editUrl = route ('admin::' . module_route_prefix ('.') . 'core.department.edit', ['id' => $item->id]);
-            $item->deleteUrl = route ('admin::' . module_route_prefix ('.') . 'core.department.delete', ['id' => $item->id]);
-            return $item;
-        });
-
-        return [
-            'code' => 0,
-            'msg' => '',
-            'count' => $data->total (),
-            'data' => $data->items (),
-        ];
+            ->orderBy('id', 'desc')
+            ->paginate($perPage);
     }
 
     public static function add ($data)

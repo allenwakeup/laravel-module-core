@@ -24,6 +24,10 @@ class PermissionTableSeeder extends Seeder
                                 'name' => '地区管理',
                                 'link' => $this->getSeedsModuleApiUri(self::MODULE_ALIAS,'areas'),
                             ],
+                            [
+                                'name' => '部门管理',
+                                'link' => $this->getSeedsModuleApiUri(self::MODULE_ALIAS,'departments'),
+                            ],
                         ]
                     ],
                     [
@@ -71,6 +75,10 @@ class PermissionTableSeeder extends Seeder
             // 地区管理
             $this->getSeedsModuleMenuGroupName(self::MODULE_ALIAS, '地区管理') => [
                 self::MODULE_ALIAS . '.areas'
+            ],
+            // 部门管理
+            $this->getSeedsModuleMenuGroupName(self::MODULE_ALIAS, '部门管理') => [
+                self::MODULE_ALIAS . '.departments'
             ],
             // 数据源管理
             // 数据库信息

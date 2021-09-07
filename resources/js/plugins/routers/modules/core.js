@@ -8,6 +8,10 @@ export default [
             {path:"/Admin/goodcatch/m/core/areas",name:"goodcatch_m_core_admin_areas",component:()=>import("@/views/goodcatch/modules/core/admin/areas/index")},
             {path:"/Admin/goodcatch/m/core/areas/form/:id?",name:"goodcatch_m_core_admin_areas_form",component:()=>import("@/views/goodcatch/modules/core/admin/areas/form")},
 
+            // 部门
+            {path:"/Admin/goodcatch/m/core/departments",name:"goodcatch_m_core_admin_departments",component:()=>import("@/views/goodcatch/modules/core/admin/departments/index")},
+            {path:"/Admin/goodcatch/m/core/departments/form/:id?",name:"goodcatch_m_core_admin_departments_form",component:()=>import("@/views/goodcatch/modules/core/admin/departments/form")},
+
             // 数据源
             {path:"/Admin/goodcatch/m/core/datasources",name:"goodcatch_m_core_admin_datasources",component:()=>import("@/views/goodcatch/modules/core/admin/datasources/index")},
             {path:"/Admin/goodcatch/m/core/datasources/form/:id?",name:"goodcatch_m_core_admin_datasources_form",component:()=>import("@/views/goodcatch/modules/core/admin/datasources/form")},

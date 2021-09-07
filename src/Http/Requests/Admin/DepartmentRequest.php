@@ -3,6 +3,7 @@
 namespace Goodcatch\Modules\Core\Http\Requests\Admin;
 
 use Goodcatch\Modules\Core\Http\Requests\BaseRequest as FormRequest;
+use Goodcatch\Modules\Core\Model\Admin\Department;
 
 class DepartmentRequest extends FormRequest
 {
@@ -14,16 +15,25 @@ class DepartmentRequest extends FormRequest
      */
     public function rules ()
     {
-        switch ($this->method ()) {
-            case 'POST':
-                return [
-                    'name' => 'required|max:50',
-                    'pid' => 'required|integer',
-                    'order' => 'integer'
-                ];
-                break;
-        }
-        return [];
+        /*
+         * 'pid', 'rid', 'code',
+        'name', 'alias', 'description',
+        'type', 'category', 'order', 'status'
+         */
+
+        return [
+            'pid' => 'required|integer|exclude_if:pid,0|exists:core_departments,id',
+            'code' => ['max:50', $this->uniqueOrExists (Department::class, 'code') . ':core_departments'],
+            'name' => ['required', 'max:50', $this->uniqueOrExists (Department::class, 'name') . ':core_departments'],
+            'alias' => 'max:50',
+            'description' => 'max:255',
+            'type' => 'integer',
+            'order' => 'integer',
+            'status' => [
+                'required',
+                Rule::in ([Department::STATUS_DISABLE, Department::STATUS_ENABLE])
+            ]
+        ];
     }
 
     /**

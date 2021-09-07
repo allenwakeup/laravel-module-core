@@ -5,6 +5,7 @@ namespace Goodcatch\Modules\Core\Http\Controllers\Admin;
 
 
 use Goodcatch\Modules\Core\Http\Requests\Admin\DepartmentRequest;
+use Goodcatch\Modules\Core\Http\Resources\Admin\DepartmentResource\DepartmentCollection;
 use Goodcatch\Modules\Core\Repositories\Admin\DepartmentRepository;
 use App\Http\Controllers\Controller;
 use Illuminate\Database\QueryException;
@@ -13,50 +14,22 @@ use Illuminate\View\View;
 
 class DepartmentController extends Controller
 {
-    protected $formNames = ['name', 'pid', 'order'];
-
-    public function __construct ()
-    {
-        parent::__construct ();
-
-        $this->breadcrumb [] = ['title' => '部门列表', 'url' => route ('admin::' . module_route_prefix ('.') . 'core.department.index')];
-    }
+    protected $formNames = [
+        'pid', 'rid', 'code', 'name',
+        'short', 'alias', 'description',
+        'type', 'category', 'order', 'status'
+    ];
 
     /**
-     * 主数据管理-部门列表
+     * Display a listing of the resource.
      *
+     * @param Request $request
+     * @return \Illuminate\Http\Response
      */
-    public function index (DepartmentRequest $request)
+    public function index(Request $request)
     {
-        $pid = (int) $request->get('pid', 0);
-
-        if ($pid > 0)
-        {
-            $dep = DepartmentRepository::find($pid);
-            if ($dep)
-            {
-                $deps = [];
-                while ($dep)
-                {
-                    $deps [] = ['title' => $dep->name, 'url' => route('admin::' . module_route_prefix ('.') . 'core.department.index') . ($dep->pid > 0 ? ('?pid='. $dep->pid) : '') ];
-                    $dep = $dep->parent;
-                }
-                $this->breadcrumb = array_merge ($this->breadcrumb, array_reverse ($deps));
-            }
-        }
-        return view ('core::admin.department.index', ['breadcrumb' => $this->breadcrumb]);
-    }
-
-    /**
-     * 主数据管理-部门列表数据接口
-     *
-     * @param DepartmentRequest $request
-     * @return array
-     */
-    public function list (DepartmentRequest $request)
-    {
-        $perPage = (int) $request->get ('limit', 50);
         $action = $request->get ('action');
+        $data_type = $request->get ('data_type');
         $condition = $request->only ($this->formNames);
 
         if (isset ($condition ['pid'])) {
@@ -67,7 +40,7 @@ class DepartmentController extends Controller
             }
         }
 
-        if ($request->type === 'tree')
+        if ($data_type === 'tree')
         {
             if (!empty ($request->keyword) && is_numeric ($request->keyword))
             {
@@ -75,128 +48,80 @@ class DepartmentController extends Controller
             } else {
                 $data = DepartmentRepository::tree2 (0);
             }
-            return [
-                'code' => 0,
-                'data' => $data->values ()->all (),
-                'msg' => '请求成功'
-            ];
-        } else if ($request->type === 'select') {
+        } else if ($data_type === 'select') {
             $data = DepartmentRepository::selectTree ($request->pid ?? 0);
         }
         else {
-            $data = DepartmentRepository::list ($perPage, $condition);
+            $data = DepartmentRepository::list(
+                $request->per_page??30,
+                $request->only($this->formNames),
+                $request->keyword
+            );
         }
-
-
-        return $data;
+        return $this->success(new DepartmentCollection($data, __('base.success')));
     }
 
     /**
-     * 主数据管理-部门树型列表数据接口
+     * Display the specified resource.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        return $this->success(DepartmentRepository::find($id), __('base.success'));
+    }
+
+    /**
+     * Store a newly created resource in storage.
      *
      * @param DepartmentRequest $request
-     * @return array
+     * @return \Illuminate\Http\Response
      */
-    public function tree (DepartmentRequest $request)
+    public function store(DepartmentRequest $request)
     {
-        return DepartmentRepository::tree ();
-    }
-
-    /**
-     * 主数据管理-新增部门
-     *
-     */
-    public function create ()
-    {
-        $this->breadcrumb[] = ['title' => '新增部门', 'url' => ''];
-        return view('core::admin.department.add', ['breadcrumb' => $this->breadcrumb]);
-    }
-
-    /**
-     * 主数据管理-保存部门
-     *
-     * @param DepartmentRequest $request
-     * @return array
-     */
-    public function save (DepartmentRequest $request)
-    {
-        try {
-            DepartmentRepository::add ($request->only ($this->formNames));
-            return [
-                'code' => 0,
-                'msg' => '新增成功',
-                'redirect' => true
-            ];
+        try{
+            return $this->success(DepartmentRepository::add($request->only($this->formNames)), __('base.success'));
         } catch (QueryException $e) {
-            return [
-                'code' => 1,
-                'msg' => '新增失败：' . (Str::contains($e->getMessage(), 'Duplicate entry') ? '当前部门已存在' : '其它错误'),
-                'redirect' => false
-            ];
+            return $this->error(__('base.error') . (Str::contains ($e->getMessage (), 'Duplicate entry') ? '当前数据已存在' : '其它错误'));
         }
     }
 
     /**
-     * 主数据管理-编辑部门
-     *
-     * @param int $id
-     * @return View
-     */
-    public function edit($id)
-    {
-        $this->breadcrumb[] = ['title' => '编辑部门', 'url' => ''];
-
-        $model = DepartmentRepository::find($id);
-        return view('core::admin.department.add', ['id' => $id, 'model' => $model, 'breadcrumb' => $this->breadcrumb]);
-    }
-
-    /**
-     * 主数据管理-更新部门
+     * Update the specified resource in storage.
      *
      * @param DepartmentRequest $request
      * @param int $id
-     * @return array
+     * @return \Illuminate\Http\Response
      */
     public function update (DepartmentRequest $request, $id)
     {
         $data = $request->only ($this->formNames);
+
         try {
-            DepartmentRepository::update ($id, $data);
-            return [
-                'code' => 0,
-                'msg' => '编辑成功',
-                'redirect' => true
-            ];
+            $res = DepartmentRepository::update ($id, $data);
+                        return $this->success($res, __('base.success'));
         } catch (QueryException $e) {
-            return [
-                'code' => 1,
-                'msg' => '编辑失败：' . (Str::contains($e->getMessage(), 'Duplicate entry') ? '当前部门已存在' : '其它错误'),
-                'redirect' => false
-            ];
+            return $this->error(__('base.error') . (Str::contains ($e->getMessage (), 'Duplicate entry') ? '当前数据已存在' : '其它错误'));
         }
     }
 
     /**
-     * 主数据管理-删除部门
+     * Remove the specified resource from storage.
      *
      * @param int $id
-     * @return array
+     * @return \Illuminate\Http\Response
      */
-    public function delete ($id)
+    public function destroy($id)
     {
-        try {
-            DepartmentRepository::delete ($id);
-            return [
-                'code' => 0,
-                'msg' => '删除成功',
-                'redirect' => route ('admin::' . module_route_prefix ('.') . 'core.department.index')
-            ];
-        } catch (\RuntimeException $e) {
-            return [
-                'code' => 1,
-                'msg' => '删除失败：' . $e->getMessage (),
-                'redirect' => false
-            ];
+        $idArray = array_filter(explode(',',$id),function($item){
+            return is_numeric($item);
+        });
+
+        try{
+            return $this->success(DepartmentRepository::delete($idArray), __('base.success'));
+        } catch (QueryException $e) {
+            return $this->error(__('base.error') . $e->getMessage());
         }
     }
 }

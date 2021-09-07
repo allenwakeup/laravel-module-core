@@ -1,0 +1,131 @@
+<template>
+    <div>
+        <div class="admin_table_page_title">
+            <a-button @click="$router.back()" class="float_right" icon="arrow-left">返回</a-button>
+            部门编辑
+        </div>
+        <div class="unline underm"></div>
+        <div class="admin_form">
+            <a-form-model :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
+                <a-form-model-item label="上级部门">
+                    <a-cascader v-model="cascader_department" :load-data="load_departments" :options="departments" placeholder="请选择上级部门" change-on-select @change="department_change" />
+                </a-form-model-item>
+                <a-form-model-item label="编码">
+                    <a-input v-model="form.code"></a-input>
+                </a-form-model-item>
+                <a-form-model-item label="名称">
+                    <a-input v-model="form.name"></a-input>
+                </a-form-model-item>
+                <a-form-model-item label="简称">
+                    <a-input v-model="form.short"></a-input>
+                </a-form-model-item>
+                <a-form-model-item label="别名">
+                    <a-input v-model="form.alias"></a-input>
+                </a-form-model-item>
+                <a-form-model-item label="描述">
+                    <a-textarea v-model="form.description" :auto-size="{ minRows: 3, maxRows: 5 }" />
+                </a-form-model-item>
+              <a-form-model-item label="排序" prop="order">
+                <a-input-number v-model="form.order" :min="0" @change="onChangeOrder" />
+              </a-form-model-item>
+              <a-form-model-item label="状态">
+                <a-switch checked-children="启用" un-checked-children="禁用" :checked="form.status === 1" @change="onChangeStatus"/>
+              </a-form-model-item>
+                <a-form-model-item :wrapper-col="{ span: 12, offset: 5 }">
+                    <a-button type="primary" @click="handleSubmit">提交</a-button>
+                </a-form-model-item>
+            </a-form-model>
+
+        </div>
+    </div>
+</template>
+
+<script>
+export default {
+    components: {},
+    props: {},
+    data() {
+      return {
+          cascader_department: [],
+          form:{
+              code: '',
+              name: '',
+              short: '',
+              alias: '',
+              description: '',
+              order: 1,
+              status: 1
+          },
+          departments:[],
+          id:0,
+      };
+    },
+    watch: {},
+    computed: {},
+    methods: {
+        handleSubmit(){
+
+            // 验证代码处
+            if(this.$isEmpty(this.form.code)){
+                return this.$message.error('行政地区不能为空');
+            }
+            if(this.$isEmpty(this.form.name)){
+                return this.$message.error('名称不能为空');
+            }
+
+            let api = this.$apiHandle(this.$api.moduleCoreAreas,this.id);
+            if(api.status){
+                this.$put(api.url,this.form).then(res=>{
+                    if(res.code === 200){
+                        this.$message.success(res.msg)
+                        return this.$router.back();
+                    }else{
+                        return this.$message.error(res.msg)
+                    }
+                })
+            }else{
+                this.$post(api.url,this.form).then(res=>{
+                    if(res.code === 200 || res.code === 201){
+                        this.$message.success(res.msg)
+                        return this.$router.back();
+                    }else{
+                        return this.$message.error(res.msg)
+                    }
+                })
+            }
+
+
+        },
+        get_form(){
+            this.$get(this.$api.moduleCoreDepartments+'/'+this.id).then(res=>{
+                this.form = res.data;
+            })
+        },
+        department_change(row,form){
+            this.form.code = row[2];
+        },
+        // 获取列表
+        onload(){
+            // 判断你是否是编辑
+            if(!this.$isEmpty(this.$route.params.id)){
+                this.id = this.$route.params.id;
+                this.get_form();
+            }
+
+            this.$get(this.$api.moduleCoreDepartments, {data_type: 'selector'}).then(res=>{
+
+                this.departments = res.data;
+            });
+        },
+
+
+    },
+    created() {
+        this.onload();
+    },
+    mounted() {}
+};
+</script>
+<style lang="scss" scoped>
+
+</style>

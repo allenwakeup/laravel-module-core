@@ -5,8 +5,10 @@ namespace Goodcatch\Modules\Core\Providers;
 use Goodcatch\Modules\Core\Console\Kernel;
 use Goodcatch\Modules\Core\Model\Admin\DataMap;
 use Goodcatch\Modules\Core\Model\Admin\DataRoute;
+use Goodcatch\Modules\Core\Model\Admin\Department;
 use Goodcatch\Modules\Core\Observers\DataMapObserver;
 use Goodcatch\Modules\Core\Observers\DataRouteObserver;
+use Goodcatch\Modules\Core\Observers\DepartmentObserver;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Factory;
 
@@ -37,6 +39,7 @@ class CoreServiceProvider extends ServiceProvider
 
         DataMap::observe (DataMapObserver::class);
         DataRoute::observe (DataRouteObserver::class);
+        Department::observe (DepartmentObserver::class);
     }
 
     /**
