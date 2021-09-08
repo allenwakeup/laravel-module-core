@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * @author  Allen <ali@goodcatch.cn>
+ */
 
 namespace Goodcatch\Modules\Core\Http\Controllers\Admin;
 
@@ -9,6 +11,8 @@ use Goodcatch\Modules\Core\Http\Resources\Admin\DepartmentResource\DepartmentCol
 use Goodcatch\Modules\Core\Repositories\Admin\DepartmentRepository;
 use App\Http\Controllers\Controller;
 use Illuminate\Database\QueryException;
+use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
@@ -57,6 +61,9 @@ class DepartmentController extends Controller
                 $request->only($this->formNames),
                 $request->keyword
             );
+        }
+        if($data instanceof Collection){
+            return $this->success($data);
         }
         return $this->success(new DepartmentCollection($data, __('base.success')));
     }

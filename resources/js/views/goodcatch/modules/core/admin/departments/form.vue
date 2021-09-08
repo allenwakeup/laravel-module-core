@@ -8,7 +8,12 @@
         <div class="admin_form">
             <a-form-model :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
                 <a-form-model-item label="上级部门">
-                    <a-cascader v-model="cascader_department" :load-data="load_departments" :options="departments" placeholder="请选择上级部门" change-on-select @change="department_change" />
+                    <a-cascader :load-data="load_departments"
+                                :options="departments"
+                                :fieldNames="{ label : 'name', value: 'id', children: 'children' }"
+                                placeholder="请选择上级部门"
+                                change-on-select
+                                @change="department_change" />
                 </a-form-model-item>
                 <a-form-model-item label="编码">
                     <a-input v-model="form.code"></a-input>
@@ -67,13 +72,13 @@ export default {
 
             // 验证代码处
             if(this.$isEmpty(this.form.code)){
-                return this.$message.error('行政地区不能为空');
+                return this.$message.error('编码不能为空');
             }
             if(this.$isEmpty(this.form.name)){
                 return this.$message.error('名称不能为空');
             }
 
-            let api = this.$apiHandle(this.$api.moduleCoreAreas,this.id);
+            let api = this.$apiHandle(this.$api.moduleCoreDepartments,this.id);
             if(api.status){
                 this.$put(api.url,this.form).then(res=>{
                     if(res.code === 200){
@@ -101,8 +106,33 @@ export default {
                 this.form = res.data;
             })
         },
+        onChangeOrder(value){
+            this.form.order = value;
+        },
+        onChangeStatus(checked){
+            this.form.status = checked ? 1 : 0;
+        },
         department_change(row,form){
-            this.form.code = row[2];
+            console.log(row,form)
+            this.form.pid = row[row.length - 1];
+        },
+        load_departments(selectedOptions){
+            const targetOption = selectedOptions[selectedOptions.length - 1];
+
+            targetOption.loading = true;
+
+            const params = {
+                pid: targetOption.id,
+                data_type: 'select'
+            }
+
+            console.log (targetOption);
+
+            this.$get(this.$api.moduleCoreDepartments, params).then(res=>{
+                targetOption.loading = false;
+                targetOption.children = res.data;
+                this.departments = [...this.departments];
+            });
         },
         // 获取列表
         onload(){
@@ -112,9 +142,12 @@ export default {
                 this.get_form();
             }
 
-            this.$get(this.$api.moduleCoreDepartments, {data_type: 'selector'}).then(res=>{
+            this.$get(this.$api.moduleCoreDepartments, { data_type: 'select' }).then(res=>{
 
-                this.departments = res.data;
+                if(res.code === 200){
+                    this.departments = res.data;
+                }
+
             });
         },
 

@@ -4,6 +4,7 @@ namespace Goodcatch\Modules\Core\Http\Requests\Admin;
 
 use Goodcatch\Modules\Core\Http\Requests\BaseRequest as FormRequest;
 use Goodcatch\Modules\Core\Model\Admin\Department;
+use Illuminate\Validation\Rule;
 
 class DepartmentRequest extends FormRequest
 {
@@ -22,7 +23,7 @@ class DepartmentRequest extends FormRequest
          */
 
         return [
-            'pid' => 'required|integer|exclude_if:pid,0|exists:core_departments,id',
+            'pid' => 'integer|exclude_if:pid,0|exists:core_departments,id',
             'code' => ['max:50', $this->uniqueOrExists (Department::class, 'code') . ':core_departments'],
             'name' => ['required', 'max:50', $this->uniqueOrExists (Department::class, 'name') . ':core_departments'],
             'alias' => 'max:50',

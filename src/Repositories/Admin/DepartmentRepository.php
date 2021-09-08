@@ -43,7 +43,7 @@ class DepartmentRepository extends BaseRepository
 
     public static function selectTree ($pid = 0)
     {
-        $data = Department::select('id', 'pid', 'name', 'order')
+        return Department::select('id', 'pid', 'name', 'order')
             ->with ('children')
             ->where('pid', $pid)
             ->get ()
@@ -51,17 +51,13 @@ class DepartmentRepository extends BaseRepository
                 $data = $model->toArray ();
                 if ($model->children->count () > 0){
                     $data ['children'] = [];
+                    $data ['isLeaf'] = false;
                 } else {
                     unset ($data ['children']);
                 }
                 return $data;
             })->sortBy('order');
-        return [
-            'code' => 0,
-            'msg' => '',
-            'count' => $data->count (),
-            'data' => $data->all (),
-        ];
+
     }
 
     public static function tree($pid = 0, $all = null, $level = 0, $path = [])

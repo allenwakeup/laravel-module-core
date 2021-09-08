@@ -9,8 +9,14 @@
         </div>
         <div class="admin_table_list">
             <a-table :columns="columns" :data-source="list" :pagination="false" :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" row-key="id">
-                <span slot="code" slot-scope="record">
-                    {{ record.parent.name }}
+                <span slot="pid" slot-scope="record">
+                    {{ record.parent ? record.parent.name : '--' }}
+                </span>
+                <span slot="type" slot-scope="record">
+                    {{ record.type === 0 ? '默认' : '其他' }}
+                </span>
+                <span slot="status" slot-scope="record">
+                    {{ record.status === 1 ? '启用' : '禁用' }}
                 </span>
                 <span slot="action" slot-scope="rows">
                     <a-button icon="edit" @click="$router.push('/Admin/goodcatch/m/core/departments/form/'+rows.id)">编辑</a-button>
@@ -37,12 +43,16 @@ export default {
           selectedRowKeys:[], // 被选择的行
           columns:[
               {title:'#',dataIndex:'id',fixed:'left'},
-              {title:'行政地区', scopedSlots:{ customRender: 'code' }},
+              {title:'上级部门', scopedSlots:{ customRender: 'pid' }},
+              {title:'编码',dataIndex:'code'},
               {title:'名称',dataIndex:'name'},
               {title:'简称',dataIndex:'short'},
               {title:'别名',dataIndex:'alias'},
-              {title:'显示名称',dataIndex:'display'},
               {title:'描述',dataIndex:'description'},
+              {title:'排序',dataIndex:'order'},
+              {title:'类型', scopedSlots:{ customRender: 'type' }},
+              {title:'类别', dataIndex:'category'},
+              {title:'状态', scopedSlots:{ customRender: 'status' }},
               {title:'创建时间',dataIndex:'created_at'},
               {title:'更新时间',dataIndex:'updated_at'},
               {title:'操作',fixed:'right',scopedSlots: { customRender: 'action' }},
@@ -63,7 +73,7 @@ export default {
         },
         // 删除
         del(){
-            if(this.selectedRowKeys.length==0){
+            if(this.selectedRowKeys.length===0){
                 return this.$message.error('未选择数据.');
             }
             this.$confirm({
@@ -75,7 +85,7 @@ export default {
                 onOk:()=> {
                     let ids = this.selectedRowKeys.join(',');
                     this.$delete(this.$api.moduleCoreAreas+'/'+ids).then(res=>{
-                        if(res.code == 200){
+                        if(res.code === 200){
                             this.onload();
                             this.$message.success('删除成功');
                         }else{
@@ -88,7 +98,7 @@ export default {
         },
 
         onload(){
-            this.$get(this.$api.moduleCoreAreas,this.params).then(res=>{
+            this.$get(this.$api.moduleCoreDepartments,this.params).then(res=>{
                 this.total = res.data.total;
                 this.list = res.data.data;
             });
