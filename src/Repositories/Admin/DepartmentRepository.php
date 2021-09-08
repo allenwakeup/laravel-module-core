@@ -49,68 +49,64 @@ class DepartmentRepository extends BaseRepository
             ->get ()
             ->map(function (Department $model){
                 $data = $model->toArray ();
-                if ($model->children->count () > 0){
-                    $data ['children'] = [];
-                    $data ['isLeaf'] = false;
-                } else {
-                    unset ($data ['children']);
-                }
+                $data ['isLeaf'] = ($model->children->count () === 0);
+                unset($data['children']);
                 return $data;
             })->sortBy('order');
 
     }
-
-    public static function tree($pid = 0, $all = null, $level = 0, $path = [])
-    {
-        if (is_null($all)) {
-            $all = Department::select('id', 'pid', 'name', 'order')->get();
-        }
-        return $all->where('pid', $pid)
-            ->map(function (Department $model) use ($all, $level, $path) {
-                $data = [
-                    'id' => $model->id,
-                    'name' => $model->name,
-                    'level' => $level,
-                    'pid' => $model->pid,
-                    'path' => $path,
-                    'order' => $model->order,
-                ];
-
-                $child = $all->where('pid', $model->id);
-                if ($child->isEmpty()) {
-                    return $data;
-                }
-
-                array_push($path, $model->id);
-                $data['children'] = self::tree($model->id, $all, $level + 1, $path);
-                return $data;
-            })->sortBy('order');
-    }
-
-    public static function tree2($pid = 0, $all = null, $level = 0, $path = [])
-    {
-        if (is_null($all)) {
-            $all = Department::select('id', 'pid', 'name', 'order')->get();
-        }
-        return $all->where('pid', $pid)
-            ->map(function (Department $model) use ($all, $level, $path) {
-                $data = [
-                    'id' => $model->id,
-                    'name' => $model->name,
-                    'level' => $level,
-                    'pid' => $model->pid,
-                    'path' => $path,
-                    'order' => $model->order,
-                ];
-
-                $child = $all->where('pid', $model->id);
-                if ($child->isEmpty()) {
-                    return $data;
-                }
-
-                array_push($path, $model->id);
-                $data['children'] = self::tree($model->id, $all, $level + 1, $path)->values()->all();
-                return $data;
-            })->sortBy('order');
-    }
+//
+//    public static function tree($pid = 0, $all = null, $level = 0, $path = [])
+//    {
+//        if (is_null($all)) {
+//            $all = Department::select('id', 'pid', 'name', 'order')->get();
+//        }
+//        return $all->where('pid', $pid)
+//            ->map(function (Department $model) use ($all, $level, $path) {
+//                $data = [
+//                    'id' => $model->id,
+//                    'name' => $model->name,
+//                    'level' => $level,
+//                    'pid' => $model->pid,
+//                    'path' => $path,
+//                    'order' => $model->order,
+//                ];
+//
+//                $child = $all->where('pid', $model->id);
+//                if ($child->isEmpty()) {
+//                    return $data;
+//                }
+//
+//                array_push($path, $model->id);
+//                $data['children'] = self::tree($model->id, $all, $level + 1, $path);
+//                return $data;
+//            })->sortBy('order');
+//    }
+//
+//    public static function tree2($pid = 0, $all = null, $level = 0, $path = [])
+//    {
+//        if (is_null($all)) {
+//            $all = Department::select('id', 'pid', 'name', 'order')->get();
+//        }
+//        return $all->where('pid', $pid)
+//            ->map(function (Department $model) use ($all, $level, $path) {
+//                $data = [
+//                    'id' => $model->id,
+//                    'name' => $model->name,
+//                    'level' => $level,
+//                    'pid' => $model->pid,
+//                    'path' => $path,
+//                    'order' => $model->order,
+//                ];
+//
+//                $child = $all->where('pid', $model->id);
+//                if ($child->isEmpty()) {
+//                    return $data;
+//                }
+//
+//                array_push($path, $model->id);
+//                $data['children'] = self::tree($model->id, $all, $level + 1, $path)->values()->all();
+//                return $data;
+//            })->sortBy('order');
+//    }
 }

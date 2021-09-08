@@ -16,14 +16,9 @@ class DepartmentRequest extends FormRequest
      */
     public function rules ()
     {
-        /*
-         * 'pid', 'rid', 'code',
-        'name', 'alias', 'description',
-        'type', 'category', 'order', 'status'
-         */
-
         return [
-            'pid' => 'integer|exclude_if:pid,0|exists:core_departments,id',
+            'pid' => 'integer|exclude_if:pid,0|exists:core_departments,id|different:id',
+            'rid' => 'integer|exclude_if:rid,0|exists:core_departments,id|different:id',
             'code' => ['max:50', $this->uniqueOrExists (Department::class, 'code') . ':core_departments'],
             'name' => ['required', 'max:50', $this->uniqueOrExists (Department::class, 'name') . ':core_departments'],
             'alias' => 'max:50',
@@ -45,8 +40,10 @@ class DepartmentRequest extends FormRequest
     public function messages ()
     {
         return [
+            'pid.different'=>'上级部门不能是自己',
             'name.required' => '名称不能为空',
             'name.max' => '名称长度不能大于50',
+
         ];
     }
 }

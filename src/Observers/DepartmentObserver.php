@@ -6,6 +6,7 @@ namespace Goodcatch\Modules\Core\Observers;
 
 use Goodcatch\Modules\Core\Model\Admin\Department;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 
 
 /**
@@ -39,15 +40,17 @@ class DepartmentObserver
      */
     private function updatePathAndLevel($item){
         if($item->pid > 0){
+            $table = $item->getTable();
+            $id = $item->id;
             $path = $item->id;
             $level = 1;
             $item = $item->parent;
-            while(! is_null($item) && $item->pid > 0){
+            while(! is_null($item)){
                 $path = $item->id . ',' . $path;
                 $level ++;
                 $item = $item->parent;
             }
-            Department::query()->where('id', $item->id)->update([
+            DB::table($table)->where('id', $id)->update([
                 'path'=>$path,
                 'level'=>$level
             ]);

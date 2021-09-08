@@ -11,7 +11,7 @@
                     <a-cascader :load-data="load_departments"
                                 :options="departments"
                                 :fieldNames="{ label : 'name', value: 'id', children: 'children' }"
-                                placeholder="请选择上级部门"
+                                :placeholder="form.pid > 0 ? form.pid_text : '请选择上级部门'"
                                 change-on-select
                                 @change="department_change" />
                 </a-form-model-item>
@@ -125,8 +125,6 @@ export default {
                 pid: targetOption.id,
                 data_type: 'select'
             }
-
-            console.log (targetOption);
 
             this.$get(this.$api.moduleCoreDepartments, params).then(res=>{
                 targetOption.loading = false;

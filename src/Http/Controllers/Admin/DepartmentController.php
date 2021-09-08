@@ -9,11 +9,13 @@ namespace Goodcatch\Modules\Core\Http\Controllers\Admin;
 use Goodcatch\Modules\Core\Http\Requests\Admin\DepartmentRequest;
 use Goodcatch\Modules\Core\Http\Resources\Admin\DepartmentResource\DepartmentCollection;
 use Goodcatch\Modules\Core\Repositories\Admin\DepartmentRepository;
+use Goodcatch\Modules\Core\Model\Admin\Department;
 use App\Http\Controllers\Controller;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Illuminate\Support\Arr;
 use Illuminate\View\View;
 
 class DepartmentController extends Controller
@@ -76,7 +78,20 @@ class DepartmentController extends Controller
      */
     public function show($id)
     {
-        return $this->success(DepartmentRepository::find($id), __('base.success'));
+        $department = DepartmentRepository::find($id);
+        if(isset($department)){
+            $path = $department->path;
+            $department = $department->toArray();
+            $department['pid_text'] = empty($path) ? $department['name'] : Department::query ()
+                ->whereIn('id', $path)
+                ->where('id', '<>', $id)
+                ->get()
+                ->reduce(function($str, $item){
+                    return $str . ' / ' . $item->name;
+                }, '');
+        }
+
+        return $this->success($department, __('base.success'));
     }
 
     /**

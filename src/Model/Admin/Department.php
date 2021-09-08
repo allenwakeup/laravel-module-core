@@ -11,6 +11,9 @@ class Department extends Model
 
     protected $guarded = [];
 
+    public function getPathAttribute($val){
+        return empty($val) ? [] : explode(',', $val);
+    }
 
     public function parent()
     {
