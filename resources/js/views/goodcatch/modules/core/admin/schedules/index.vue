@@ -176,14 +176,16 @@ export default {
             });
         },
         onStatusChange(record){
+            const reverse_status = [1, 0][record.status];
             this.loading_status ['_' + record.id] = true;
             this.$put(this.$api.moduleCoreSchedules + '/' + record.id, Object.assign({}, record, {
-                status: 1,
+                status: reverse_status,
                 logs: '',
                 payload: record.payload ? JSON.stringify(record.payload) : ''
             })).then(res=>{
                 this.loading_status ['_' + record.id] = false;
-                if(res.code == 200){
+                if(res.code === 200){
+                    record.status = reverse_status;
                     this.$message.success(res.msg);
                 }else{
                     return this.$message.error(res.msg);

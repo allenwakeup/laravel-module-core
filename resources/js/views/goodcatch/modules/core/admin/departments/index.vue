@@ -15,9 +15,14 @@
                 <span slot="type" slot-scope="record">
                     {{ record.type === 0 ? '默认' : '其他' }}
                 </span>
-                <span slot="status" slot-scope="record">
-                    {{ record.status === 1 ? '启用' : '禁用' }}
-                </span>
+                <a-switch
+                    slot="status"
+                    :loading="loading_status['_' + record.id]"
+                    @change="onStatusChange(record)"
+                    slot-scope="record"
+                    :checked-children="dictionary.status.enabled"
+                    :un-checked-children="dictionary.status.disabled"
+                    :default-checked="record.status === 1" />
                 <span slot="action" slot-scope="rows">
                     <a-button icon="edit" @click="$router.push('/Admin/goodcatch/m/core/departments/form/'+rows.id)">编辑</a-button>
                 </span>
@@ -58,6 +63,14 @@ export default {
               {title:'操作',fixed:'right',scopedSlots: { customRender: 'action' }},
           ],
           list:[],
+          dictionary: {
+            status: {
+              enabled: '启用',
+              disabled: '禁用'
+            }
+          },
+          loading_status: {}
+
       };
     },
     watch: {},
@@ -97,6 +110,21 @@ export default {
             });
         },
 
+        onStatusChange(record) {
+          const reverse_status = [1, 0][record.status];
+          this.loading_status ['_' + record.id] = true;
+          this.$put(this.$api.moduleCoreDepartments + '/' + record.id, Object.assign({}, record, {
+            status: reverse_status,
+          })).then(res => {
+            this.loading_status ['_' + record.id] = false;
+            if (res.code === 200) {
+              record.status = reverse_status;
+              this.$message.success(res.msg);
+            } else {
+              return this.$message.error(res.msg);
+            }
+          }).catch(() => this.loading_status ['_' + record.id] = false);
+        },
         onload(){
             this.$get(this.$api.moduleCoreDepartments,this.params).then(res=>{
                 this.total = res.data.total;
