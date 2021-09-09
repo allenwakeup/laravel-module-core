@@ -179,9 +179,9 @@ export default {
             }
         },
         department_change(row,form){
-            this.form.pid = row[row.length - 1];
+            this.form.department_id = row[row.length - 1];
             if(row.length === 0){
-                this.form.pid = 0;
+                this.form.department_id = 0;
             }
         },
         load_departments(selectedOptions){
