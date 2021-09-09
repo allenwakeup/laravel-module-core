@@ -12,24 +12,12 @@ class AttachmentRepository extends BaseRepository
 
     public static function list($perPage, $condition = [])
     {
-        $data = Attachment::query()
+        return Attachment::query()
             ->where(function ($query) use ($condition) {
                 self::buildQuery($query, $condition);
             })
             ->orderBy('id', 'desc')
             ->paginate($perPage);
-        $data->transform(function ($item) {
-            $item->editUrl = route('admin::attachment.edit', ['id' => $item->id]);
-            $item->deleteUrl = route('admin::attachment.delete', ['id' => $item->id]);
-            return $item;
-        });
-
-        return [
-            'code' => 0,
-            'msg' => '',
-            'count' => $data->total(),
-            'data' => $data->items(),
-        ];
     }
 
     public static function add($data)

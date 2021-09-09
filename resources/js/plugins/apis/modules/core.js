@@ -9,6 +9,7 @@ export default {
 
     "moduleCoreAreas": baseUrl + "Admin/goodcatch/m/core/areas", // 地区
     "moduleCoreDepartments": baseUrl + "Admin/goodcatch/m/core/departments", // 部门
+    "moduleCoreStaff": baseUrl + "Admin/goodcatch/m/core/staff", // 员工
     "moduleCoreDatasources": baseUrl + "Admin/goodcatch/m/core/datasources", // 数据源
     "moduleCoreDatabases": baseUrl + "Admin/goodcatch/m/core/databases", // 数据库信息
     "moduleCoreConnections": baseUrl + "Admin/goodcatch/m/core/connections", // 连接

@@ -15,6 +15,14 @@ class Department extends Model
         return empty($val) ? [] : explode(',', $val);
     }
 
+    public function getPathTextAttribute($val){
+        return empty($this->attributes['path_text']) ? [] : explode(',', $val);
+    }
+
+    public function getDepartmentsAttribute($val){
+        return empty($this->attributes['departments']) ? [] : explode(',', $val);
+    }
+
     public function parent()
     {
         return $this->belongsTo('Goodcatch\Modules\Core\Model\Admin\Department', 'pid');

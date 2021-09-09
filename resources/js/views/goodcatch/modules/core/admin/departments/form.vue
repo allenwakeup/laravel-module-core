@@ -11,7 +11,7 @@
                     <a-cascader :load-data="load_departments"
                                 :options="departments"
                                 :fieldNames="{ label : 'name', value: 'id', children: 'children' }"
-                                :placeholder="form.pid > 0 ? form.pid_text : '请选择上级部门'"
+                                :placeholder="(form.pid > 0 && form.path_text) ? form.path_text.join(' / ') : '请选择上级部门'"
                                 change-on-select
                                 @change="department_change" />
                 </a-form-model-item>
@@ -113,8 +113,10 @@ export default {
             this.form.status = checked ? 1 : 0;
         },
         department_change(row,form){
-            console.log(row,form)
             this.form.pid = row[row.length - 1];
+            if(row.length === 0){
+                this.form.pid = 0;
+            }
         },
         load_departments(selectedOptions){
             const targetOption = selectedOptions[selectedOptions.length - 1];

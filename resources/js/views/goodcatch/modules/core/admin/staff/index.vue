@@ -1,26 +1,10 @@
 <template>
     <div>
-        <div class="admin_table_page_title">
-
-            <a-breadcrumb>
-                <a-breadcrumb-item>
-                    <a-button v-if="breadcrumb.length > 0" type="link" @click="getList()"><a-icon type="home" />部门列表</a-button>
-                    <span v-else>部门列表</span>
-                </a-breadcrumb-item>
-
-                <a-breadcrumb-item v-for="b in breadcrumb" :key="b.id">
-                    <a-button type="link" @click="onClickName(b)">
-                        {{ b.name }}
-                    </a-button>
-                </a-breadcrumb-item>
-            </a-breadcrumb>
-        </div>
+        <div class="admin_table_page_title">地区列表</div>
         <div class="unline underm"></div>
 
-
-
         <div class="admin_table_handle_btn">
-            <a-button @click="$router.push('/Admin/goodcatch/m/core/departments/form')" type="primary" icon="plus">添加</a-button>
+            <a-button @click="$router.push('/Admin/goodcatch/m/core/staff/form')" type="primary" icon="plus">添加</a-button>
             <a-button class="admin_delete_btn" type="danger" icon="delete" @click="del">批量删除</a-button>
         </div>
         <div class="admin_table_list">
@@ -28,11 +12,11 @@
                 <span slot="pid" slot-scope="record">
                     {{ record.parent ? record.parent.name : '--' }}
                 </span>
-                <a-button type="link" slot="name" slot-scope="record" @click="onClickName(record)">
-                    {{ record.name }}
-                </a-button>
                 <span slot="type" slot-scope="record">
                     {{ record.type === 0 ? '默认' : '其他' }}
+                </span>
+                <span slot="gender" slot-scope="record">
+                    {{ dictionary.gender[record.gender] }}
                 </span>
                 <a-switch
                     slot="status"
@@ -43,7 +27,7 @@
                     :un-checked-children="dictionary.status.disabled"
                     :default-checked="record.status === 1" />
                 <span slot="action" slot-scope="rows">
-                    <a-button icon="edit" @click="$router.push('/Admin/goodcatch/m/core/departments/form/'+rows.id)">编辑</a-button>
+                    <a-button icon="edit" @click="$router.push('/Admin/goodcatch/m/core/staff/form/'+rows.id)">编辑</a-button>
                 </span>
             </a-table>
             <div class="admin_pagination" v-if="total>0">
@@ -67,12 +51,18 @@ export default {
           selectedRowKeys:[], // 被选择的行
           columns:[
               {title:'#',dataIndex:'id',fixed:'left'},
-              {title:'上级部门', scopedSlots:{ customRender: 'pid' }},
-              {title:'编码',dataIndex:'code'},
-              {title:'名称',scopedSlots:{ customRender: 'name' }},
-              {title:'简称',dataIndex:'short'},
-              {title:'别名',dataIndex:'alias'},
-              {title:'描述',dataIndex:'description'},
+              {title:'直接部门', scopedSlots:{ customRender: 'pid' }},
+              {title:'所属部门', dataIndex:'departments'},
+              {title:'员工编码',dataIndex:'code'},
+              {title:'姓名',dataIndex:'name'},
+              {title:'性别',scopedSlots:{ customRender: 'gender' }},
+              {title:'岗位',dataIndex:'title'},
+              {title:'级别',dataIndex:'rank'},
+              {title:'入职日期',dataIndex:'hireday'},
+              {title:'出生日期',dataIndex:'birthday'},
+              {title:'工作日期',dataIndex:'workday'},
+              {title:'电话',dataIndex:'phone'},
+              {title:'邮箱',dataIndex:'email'},
               {title:'排序',dataIndex:'order'},
               {title:'类型', scopedSlots:{ customRender: 'type' }},
               {title:'类别', dataIndex:'category'},
@@ -86,10 +76,15 @@ export default {
             status: {
               enabled: '启用',
               disabled: '禁用'
-            }
+            },
+            gender: [
+                '默认',
+                '男',
+                '女',
+                '其他'
+            ]
           },
-          loading_status: {},
-          breadcrumb: []
+          loading_status: {}
 
       };
     },
@@ -117,7 +112,7 @@ export default {
                 cancelText: '取消',
                 onOk:()=> {
                     let ids = this.selectedRowKeys.join(',');
-                    this.$delete(this.$api.moduleCoreDepartments+'/'+ids).then(res=>{
+                    this.$delete(this.$api.moduleCoreStaff+'/'+ids).then(res=>{
                         if(res.code === 200){
                             this.onload();
                             this.$message.success('删除成功');
@@ -133,7 +128,7 @@ export default {
         onStatusChange(record) {
           const reverse_status = [1, 0][record.status];
           this.loading_status ['_' + record.id] = true;
-          this.$put(this.$api.moduleCoreDepartments + '/' + record.id, Object.assign({}, record, {
+          this.$put(this.$api.moduleCoreStaff + '/' + record.id, Object.assign({}, record, {
             status: reverse_status,
           })).then(res => {
             this.loading_status ['_' + record.id] = false;
@@ -145,46 +140,13 @@ export default {
             }
           }).catch(() => this.loading_status ['_' + record.id] = false);
         },
-        onClickName(record){
-            if(record.path) {
-                if(record.path.length > 0){
-                    this.breadcrumb = record.path.reduce((breadcrumb, item) => {
-                        breadcrumb.push({
-                            id: record.path[breadcrumb.length],
-                            name: record.path_text[breadcrumb.length],
-                            order: breadcrumb.length
-                        })
-                        return breadcrumb;
-                    }, []);
-                }else{
-                    if(this.breadcrumb.filter(item=>item.id === record.id).length === 0){
+        onload(){
+            this.$get(this.$api.moduleCoreStaff,this.params).then(res=>{
 
-                        this.breadcrumb.push(record)
-                    }
-                }
-                this.params = {
-                    page:1,
-                    per_page:30,
-                }
-            }else{
-                this.breadcrumb = this.breadcrumb.filter(item=>item.order <= record.order);
-            }
-            this.getList(record.id);
-        },
-        getList(pid){
-            if(!pid){
-                this.breadcrumb = [];
-            }
-            const params = pid ? Object.assign({}, this.params, { pid: pid }) : this.params;
-            this.$get(this.$api.moduleCoreDepartments, params).then(res=>{
                 this.total = res.data.total;
                 this.list = res.data.data;
             });
         },
-        onload(){
-            this.getList();
-        },
-
     },
     created() {
         this.onload();

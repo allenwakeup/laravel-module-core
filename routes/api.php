@@ -28,6 +28,7 @@ Route::prefix('Admin')->group(function(){
                     Route::apiResources([
                         'areas'=>'AreaController', // 区域
                         'departments'=>'DepartmentController', // 部门
+                        'staff'=>'StaffController', // 员工
                         'datasources'=>'DatasourceController', // 数据源
                         'connections'=>'ConnectionController', // 连接
                         'schedules'=>'ScheduleController', // 计划与任务

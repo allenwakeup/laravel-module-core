@@ -6,9 +6,9 @@
 namespace Goodcatch\Modules\Core\Http\Controllers\Admin;
 
 
-use Goodcatch\Modules\Core\Http\Requests\Admin\DepartmentRequest;
-use Goodcatch\Modules\Core\Http\Resources\Admin\DepartmentResource\DepartmentCollection;
-use Goodcatch\Modules\Core\Repositories\Admin\DepartmentRepository;
+use Goodcatch\Modules\Core\Http\Requests\Admin\StaffRequest;
+use Goodcatch\Modules\Core\Http\Resources\Admin\StaffResource\StaffCollection;
+use Goodcatch\Modules\Core\Repositories\Admin\StaffRepository;
 use App\Http\Controllers\Controller;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -17,15 +17,15 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
 use Illuminate\View\View;
 
-class DepartmentController extends Controller
+class StaffController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @param DepartmentRequest $request
+     * @param StaffRequest $request
      * @return \Illuminate\Http\Response
      */
-    public function index(DepartmentRequest $request)
+    public function index(StaffRequest $request)
     {
         $action = $request->get ('action');
         $data_type = $request->get ('data_type');
@@ -43,15 +43,15 @@ class DepartmentController extends Controller
         {
             if (!empty ($request->keyword) && is_numeric ($request->keyword))
             {
-                $data = DepartmentRepository::tree2 (intval ($request->keyword));
+                $data = StaffRepository::tree2 (intval ($request->keyword));
             } else {
-                $data = DepartmentRepository::tree2 (0);
+                $data = StaffRepository::tree2 (0);
             }
         } else if ($data_type === 'select') {
-            $data = DepartmentRepository::selectTree ($request->pid ?? 0);
+            $data = StaffRepository::selectTree ($request->pid ?? 0);
         }
         else {
-            $data = DepartmentRepository::list(
+            $data = StaffRepository::list(
                 $request->per_page??30,
                 $request->validated(),
                 $request->keyword
@@ -60,7 +60,7 @@ class DepartmentController extends Controller
         if($data instanceof Collection){
             return $this->success($data);
         }
-        return $this->success(new DepartmentCollection($data, __('base.success')));
+        return $this->success(new StaffCollection($data, __('base.success')));
     }
 
     /**
@@ -71,19 +71,19 @@ class DepartmentController extends Controller
      */
     public function show($id)
     {
-        return $this->success(DepartmentRepository::find($id), __('base.success'));
+        return $this->success(StaffRepository::find($id), __('base.success'));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param DepartmentRequest $request
+     * @param StaffRequest $request
      * @return \Illuminate\Http\Response
      */
-    public function store(DepartmentRequest $request)
+    public function store(StaffRequest $request)
     {
         try{
-            return $this->success(DepartmentRepository::add(array_merge(['pid' => 0], $request->validated())), __('base.success'));
+            return $this->success(StaffRepository::add(array_merge(['pid' => 0], $request->validated())), __('base.success'));
         } catch (QueryException $e) {
             return $this->error(__('base.error') . (Str::contains ($e->getMessage (), 'Duplicate entry') ? '当前数据已存在' : '其它错误'));
         }
@@ -92,18 +92,18 @@ class DepartmentController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param DepartmentRequest $request
+     * @param StaffRequest $request
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function update (DepartmentRequest $request, $id)
+    public function update (StaffRequest $request, $id)
     {
         $data = $request->validated();
 
 
 
         try {
-            $res = DepartmentRepository::update ($id, array_merge(['pid' => 0], $data));
+            $res = StaffRepository::update ($id, array_merge(['pid' => 0], $data));
                         return $this->success($res, __('base.success'));
         } catch (QueryException $e) {
             return $this->error(__('base.error') . (Str::contains ($e->getMessage (), 'Duplicate entry') ? '当前数据已存在' : '其它错误'));
@@ -123,7 +123,7 @@ class DepartmentController extends Controller
         });
 
         try{
-            return $this->success(DepartmentRepository::delete($idArray), __('base.success'));
+            return $this->success(StaffRepository::delete($idArray), __('base.success'));
         } catch (QueryException $e) {
             return $this->error(__('base.error') . $e->getMessage());
         }

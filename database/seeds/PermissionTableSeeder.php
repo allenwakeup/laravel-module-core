@@ -28,6 +28,10 @@ class PermissionTableSeeder extends Seeder
                                 'name' => '部门管理',
                                 'link' => $this->getSeedsModuleApiUri(self::MODULE_ALIAS,'departments'),
                             ],
+                            [
+                                'name' => '员工管理',
+                                'link' => $this->getSeedsModuleApiUri(self::MODULE_ALIAS,'staff'),
+                            ],
                         ]
                     ],
                     [
@@ -79,6 +83,10 @@ class PermissionTableSeeder extends Seeder
             // 部门管理
             $this->getSeedsModuleMenuGroupName(self::MODULE_ALIAS, '部门管理') => [
                 self::MODULE_ALIAS . '.departments'
+            ],
+            // 员工管理
+            $this->getSeedsModuleMenuGroupName(self::MODULE_ALIAS, '员工管理') => [
+                self::MODULE_ALIAS . '.staff'
             ],
             // 数据源管理
             // 数据库信息

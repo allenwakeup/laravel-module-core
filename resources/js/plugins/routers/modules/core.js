@@ -12,6 +12,10 @@ export default [
             {path:"/Admin/goodcatch/m/core/departments",name:"goodcatch_m_core_admin_departments",component:()=>import("@/views/goodcatch/modules/core/admin/departments/index")},
             {path:"/Admin/goodcatch/m/core/departments/form/:id?",name:"goodcatch_m_core_admin_departments_form",component:()=>import("@/views/goodcatch/modules/core/admin/departments/form")},
 
+            // 员工
+            {path:"/Admin/goodcatch/m/core/staff",name:"goodcatch_m_core_admin_staff",component:()=>import("@/views/goodcatch/modules/core/admin/staff/index")},
+            {path:"/Admin/goodcatch/m/core/staff/form/:id?",name:"goodcatch_m_core_admin_staff_form",component:()=>import("@/views/goodcatch/modules/core/admin/staff/form")},
+
             // 数据源
             {path:"/Admin/goodcatch/m/core/datasources",name:"goodcatch_m_core_admin_datasources",component:()=>import("@/views/goodcatch/modules/core/admin/datasources/index")},
             {path:"/Admin/goodcatch/m/core/datasources/form/:id?",name:"goodcatch_m_core_admin_datasources_form",component:()=>import("@/views/goodcatch/modules/core/admin/datasources/form")},

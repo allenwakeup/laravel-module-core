@@ -23,6 +23,7 @@ class CreateCoreDepartmentsTable extends Migration
             $table->string('alias', 50)->default('')->comment('别名');
             $table->string('description', 255)->nullable ()->comment ('描述');
             $table->string('path', 255)->default('')->comment('路径');
+            $table->string('path_text', 255)->default('')->comment('路径名称');
             $table->unsignedInteger('level')->default(0)->comment('分级');
             $table->unsignedInteger('type')->default(0)->comment('类型');
             $table->string('category', 50)->default('')->comment('类别');

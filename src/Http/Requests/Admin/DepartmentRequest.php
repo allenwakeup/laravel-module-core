@@ -16,12 +16,13 @@ class DepartmentRequest extends FormRequest
      */
     public function rules ()
     {
-        return [
+        $rules = [
             'pid' => 'integer|exclude_if:pid,0|exists:core_departments,id|different:id',
             'rid' => 'integer|exclude_if:rid,0|exists:core_departments,id|different:id',
             'code' => ['max:50', $this->uniqueOrExists (Department::class, 'code') . ':core_departments'],
             'name' => ['required', 'max:50', $this->uniqueOrExists (Department::class, 'name') . ':core_departments'],
-            'alias' => 'max:50',
+            'short' => 'max:20',
+            'alias' => 'max:20',
             'description' => 'max:255',
             'type' => 'integer',
             'order' => 'integer',
@@ -30,6 +31,15 @@ class DepartmentRequest extends FormRequest
                 Rule::in ([Department::STATUS_DISABLE, Department::STATUS_ENABLE])
             ]
         ];
+        switch ($this->method()) {
+            case 'GET':
+                $rules = [
+                    'pid' => 'integer|exclude_if:pid,0|exists:core_departments,id'
+                ];
+                break;
+        }
+        return $rules;
+
     }
 
     /**
