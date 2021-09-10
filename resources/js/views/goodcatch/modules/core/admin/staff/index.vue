@@ -8,7 +8,7 @@
             <a-button class="admin_delete_btn" type="danger" icon="delete" @click="del">批量删除</a-button>
         </div>
         <div class="admin_table_list">
-            <a-table :columns="columns" :data-source="list" :pagination="false" :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" row-key="id">
+            <a-table :columns="columns" :data-source="list" :pagination="false" :scroll="{ x: 2048 }" :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" row-key="id">
                 <span slot="pid" slot-scope="record">
                     {{ record.parent ? record.parent.name : '--' }}
                 </span>
@@ -17,6 +17,9 @@
                 </span>
                 <span slot="gender" slot-scope="record">
                     {{ dictionary.gender[record.gender] }}
+                </span>
+                <span slot="departments" slot-scope="record">
+                    {{ record.departments.length > 0 ? record.departments.join (' / ') : '--' }}
                 </span>
                 <a-switch
                     slot="status"
@@ -50,25 +53,25 @@ export default {
           total:0, //总页数
           selectedRowKeys:[], // 被选择的行
           columns:[
-              {title:'#',dataIndex:'id',fixed:'left'},
-              {title:'直接部门', scopedSlots:{ customRender: 'pid' }},
-              {title:'所属部门', dataIndex:'departments'},
-              {title:'员工编码',dataIndex:'code'},
-              {title:'姓名',dataIndex:'name'},
-              {title:'性别',scopedSlots:{ customRender: 'gender' }},
-              {title:'岗位',dataIndex:'title'},
-              {title:'级别',dataIndex:'rank'},
-              {title:'入职日期',dataIndex:'hireday'},
-              {title:'出生日期',dataIndex:'birthday'},
-              {title:'工作日期',dataIndex:'workday'},
-              {title:'电话',dataIndex:'phone'},
-              {title:'邮箱',dataIndex:'email'},
-              {title:'排序',dataIndex:'order'},
-              {title:'类型', scopedSlots:{ customRender: 'type' }},
-              {title:'类别', dataIndex:'category'},
-              {title:'状态', scopedSlots:{ customRender: 'status' }},
-              {title:'创建时间',dataIndex:'created_at'},
-              {title:'更新时间',dataIndex:'updated_at'},
+              {title:'#',dataIndex:'id',fixed:'left', width: 80},
+              {title:'直接上级', scopedSlots:{ customRender: 'pid' }, width: 120},
+              {title:'所属部门', scopedSlots:{ customRender: 'departments' }, width: 220},
+              {title:'员工编码',dataIndex:'code', width: 120},
+              {title:'姓名',dataIndex:'name', width: 120},
+              {title:'性别',scopedSlots:{ customRender: 'gender' }, width: 90},
+              {title:'岗位',dataIndex:'title', width: 150},
+              {title:'级别',dataIndex:'rank', width: 120},
+              {title:'入职日期',dataIndex:'hireday', width: 120},
+              {title:'出生日期',dataIndex:'birthday', width: 120},
+              {title:'工作日期',dataIndex:'workday', width: 120},
+              {title:'电话',dataIndex:'phone', width: 150},
+              {title:'邮箱',dataIndex:'email', width: 180},
+              {title:'排序',dataIndex:'order', width: 90},
+              {title:'类型', scopedSlots:{ customRender: 'type' }, width: 120},
+              {title:'类别', dataIndex:'category', width: 120},
+              {title:'状态', scopedSlots:{ customRender: 'status' }, width: 120},
+              {title:'创建时间',dataIndex:'created_at', width: 120},
+              {title:'更新时间',dataIndex:'updated_at', width: 120},
               {title:'操作',fixed:'right',scopedSlots: { customRender: 'action' }},
           ],
           list:[],

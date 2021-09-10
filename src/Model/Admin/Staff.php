@@ -18,6 +18,10 @@ class Staff extends Model
 
 
     public function getDepartmentsAttribute($val){
+        return empty($this->attributes['departments']) ? [] : explode(',', $val);
+    }
+
+    public function getPathTextAttribute($val){
         return empty($this->attributes['path_text']) ? [] : explode(',', $val);
     }
 
@@ -29,6 +33,11 @@ class Staff extends Model
     public function department()
     {
         return $this->belongsTo('Goodcatch\Modules\Core\Model\Admin\Department', 'department_id');
+    }
+
+    public function children()
+    {
+        return $this->hasMany('Goodcatch\Modules\Core\Model\Admin\Staff', 'pid');
     }
 
     /**

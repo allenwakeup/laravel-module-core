@@ -34,6 +34,11 @@ class StaffRequest extends FormRequest
                 'required',
                 Rule::in([Staff::GENDER_UNKNOWN, Staff::GENDER_MALE, Staff::GENDER_FEMALE, Staff::GENDER_EXT])
             ],
+            'hireday' => 'date',
+            'birthday' => 'date',
+            'workday' => 'date',
+            'title' => 'max:20',
+            'rank' => 'max:20',
             'type' => 'integer',
             'order' => 'integer|min:0',
             'status' => [
@@ -60,10 +65,9 @@ class StaffRequest extends FormRequest
     public function messages ()
     {
         return [
-            'pid.different'=>'上级部门不能是自己',
+            'pid.different'=>'直接上级不能是自己',
             'name.required' => '名称不能为空',
-            'name.max' => '名称长度不能大于50',
-
+            'name.max' => '名称长度不能大于50'
         ];
     }
 }

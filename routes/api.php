@@ -34,6 +34,14 @@ Route::prefix('Admin')->group(function(){
                         'schedules'=>'ScheduleController', // 计划与任务
                         'data_routes'=>'DataRouteController', // 数据路径
                         'data_maps'=>'DataMapController', // 数据映射
+                    ], [
+                        'parameters' => [
+                            'datasource' => 'id',
+                            'connection' => 'id',
+                            'data_route' => 'id',
+                            'department' => 'id',
+                            'staff' => 'id'
+                        ]
                     ]);
                     Route::get('/databases', 'DatabaseController@index')->name('databases.index'); // 数据库
                     Route::post('/connections/test', 'ConnectionController@test')->name('connections.test'); // 数据库

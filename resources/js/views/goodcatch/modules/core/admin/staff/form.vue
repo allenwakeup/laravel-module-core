@@ -6,85 +6,126 @@
         </div>
         <div class="unline underm"></div>
         <div class="admin_form">
-            <a-form-model :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
-                <a-form-model-item label="所属部门">
-                    <a-cascader :load-data="load_departments"
-                                :options="departments"
-                                :fieldNames="{ label : 'name', value: 'id', children: 'children' }"
-                                :placeholder="form.pid > 0 ? form.departments : '请选择上级部门'"
-                                change-on-select
-                                @change="department_change" />
-                </a-form-model-item>
-                <a-form-model-item label="直接上级">
-                    <a-cascader :load-data="load_staff"
-                                :options="staff"
-                                :fieldNames="{ label : 'name', value: 'id', children: 'children' }"
-                                :placeholder="(form.pid > 0 && form.path_text) ? form.path_text.join(' / ') : '请选择直接上级'"
-                                change-on-select
-                                @change="staff_change" />
-                </a-form-model-item>
+            <a-form-model :model="form" :rules="rules" :label-col="{ span: 6 }"  :wrapper-col="{ span: 16 }">
+                <a-row :gutter="1">
+                    <a-col :span="12">
+                        <a-form-model-item label="所属部门">
+                            <a-cascader :load-data="load_departments"
+                                        :options="departments"
+                                        :fieldNames="{ label : 'name', value: 'id', children: 'children' }"
+                                        :placeholder="(form.department_id > 0 && form.departments) ? form.departments : '请选择上级部门'"
+                                        change-on-select
+                                        @change="department_change" />
+                        </a-form-model-item>
+                    </a-col>
+                    <a-col :span="12">
+                        <a-form-model-item label="直接上级">
+                            <a-cascader :load-data="load_staff"
+                                        :options="staff"
+                                        :fieldNames="{ label : 'name', value: 'id', children: 'children' }"
+                                        :placeholder="(form.pid > 0 && form.path_text) ? form.path_text.join(' / ') : '请选择直接上级'"
+                                        change-on-select
+                                        @change="staff_change" />
+                        </a-form-model-item>
+                    </a-col>
+                </a-row>
+                <a-row :gutter="1">
+                    <a-col :span="12">
+                        <a-form-model-item label="姓名" prop="name">
+                            <a-input v-model="form.name"></a-input>
+                        </a-form-model-item>
+                    </a-col>
+                    <a-col :span="12">
+                        <a-form-model-item label="员工编码" prop="code">
+                            <a-input v-model="form.code"></a-input>
+                        </a-form-model-item>
+                    </a-col>
+                </a-row>
+                <a-row :gutter="1">
+                    <a-col :span="12">
+                        <a-form-model-item label="电话" prop="phone">
+                            <a-input v-model="form.phone"></a-input>
+                        </a-form-model-item>
+                    </a-col>
+                    <a-col :span="12">
+                        <a-form-model-item label="邮箱" prop="email">
+                            <a-input v-model="form.email"></a-input>
+                        </a-form-model-item>
+                    </a-col>
+                </a-row>
 
-                <a-form-model-item label="员工编码">
-                    <a-input v-model="form.code"></a-input>
-                </a-form-model-item>
-                <a-form-model-item label="姓名">
-                    <a-input v-model="form.name"></a-input>
-                </a-form-model-item>
-                <a-form-model-item label="性别">
-                    <a-radio-group v-model="form.gender" default-value="1" name="gender" button-style="solid">
-                        <a-radio-button value="0">
-                            默认
-                        </a-radio-button>
-                        <a-radio-button value="1">
-                            男
-                        </a-radio-button>
-                        <a-radio-button value="2">
-                            女
-                        </a-radio-button>
-                        <a-radio-button value="3">
-                            其他
-                        </a-radio-button>
-                    </a-radio-group>
-                </a-form-model-item>
-                <a-form-model-item label="电话">
-                    <a-input v-model="form.phone"></a-input>
-                </a-form-model-item>
-                <a-form-model-item label="邮箱">
-                    <a-input v-model="form.email"></a-input>
-                </a-form-model-item>
-                <a-form-model-item label="入职日期">
-                    <a-date-picker
-                            format="YYYY-MM-DD"
-                            placeholder="请选择入职日期"
-                            @change="onChangeHireday" />
-                </a-form-model-item>
-                <a-form-model-item label="出生日期">
-                    <a-date-picker
-                            format="YYYY-MM-DD"
-                            placeholder="请选择出生日期"
-                            @change="onChangeBirthday" />
-                </a-form-model-item>
-                <a-form-model-item label="工作日期">
-                    <a-date-picker
-                            format="YYYY-MM-DD"
-                            placeholder="请选择开始工作日期"
-                            @change="onChangeWorkday" />
-                </a-form-model-item>
+                <a-row :gutter="1">
+                    <a-col :span="12">
+                        <a-form-model-item label="性别">
+                            <a-radio-group v-model="form.gender" default-value="1" name="gender" button-style="solid">
+                                <a-radio-button value="0">
+                                    默认
+                                </a-radio-button>
+                                <a-radio-button value="1">
+                                    男
+                                </a-radio-button>
+                                <a-radio-button value="2">
+                                    女
+                                </a-radio-button>
+                                <a-radio-button value="3">
+                                    其他
+                                </a-radio-button>
+                            </a-radio-group>
+                        </a-form-model-item>
+                    </a-col>
+                    <a-col :span="12">
+                        <a-form-model-item label="入职日期" prop="hireday">
+                            <a-date-picker
+                                    format="YYYY-MM-DD"
+                                    :placeholder="form.hireday ? form.hireday : '请选择入职日期'"
+                                    @change="onChangeHireday" />
+                        </a-form-model-item>
+                    </a-col>
+                </a-row>
 
-                <a-form-model-item label="岗位">
-                    <a-input v-model="form.title"></a-input>
-                </a-form-model-item>
 
-                <a-form-model-item label="级别">
-                    <a-input v-model="form.rank"></a-input>
-                </a-form-model-item>
-
-                <a-form-model-item label="排序" prop="order">
-                    <a-input-number v-model="form.order" :min="0" @change="onChangeOrder" />
-                </a-form-model-item>
-                    <a-form-model-item label="状态">
-                <a-switch checked-children="启用" un-checked-children="禁用" :checked="form.status === 1" @change="onChangeStatus"/>
-                    </a-form-model-item>
+                <a-row :gutter="1">
+                    <a-col :span="12">
+                        <a-form-model-item label="出生日期" prop="birthday">
+                            <a-date-picker
+                                    format="YYYY-MM-DD"
+                                    :placeholder="form.birthday ? form.birthday : '请选择出生日期'"
+                                    @change="onChangeBirthday" />
+                        </a-form-model-item>
+                    </a-col>
+                    <a-col :span="12">
+                        <a-form-model-item label="工作日期" prop="workday">
+                            <a-date-picker
+                                    format="YYYY-MM-DD"
+                                    :placeholder="form.workday ? form.workday : '请选择开始工作日期'"
+                                    @change="onChangeWorkday" />
+                        </a-form-model-item>
+                    </a-col>
+                </a-row>
+                <a-row :gutter="1">
+                    <a-col :span="12">
+                        <a-form-model-item label="岗位">
+                            <a-input v-model="form.title"></a-input>
+                        </a-form-model-item>
+                    </a-col>
+                    <a-col :span="12">
+                        <a-form-model-item label="排序" prop="order">
+                            <a-input-number v-model="form.order" :min="0" @change="onChangeOrder" />
+                        </a-form-model-item>
+                    </a-col>
+                </a-row>
+                <a-row :gutter="1">
+                    <a-col :span="12">
+                        <a-form-model-item label="级别">
+                            <a-input v-model="form.rank"></a-input>
+                        </a-form-model-item>
+                    </a-col>
+                    <a-col :span="12">
+                        <a-form-model-item label="状态">
+                            <a-switch checked-children="启用" un-checked-children="禁用" :checked="form.status === 1" @change="onChangeStatus"/>
+                        </a-form-model-item>
+                    </a-col>
+                </a-row>
                 <a-form-model-item :wrapper-col="{ span: 12, offset: 5 }">
                     <a-button type="primary" @click="handleSubmit">提交</a-button>
                 </a-form-model-item>
@@ -101,15 +142,37 @@ export default {
       return {
           cascader_staff: [],
           form:{
+              department_id: 0,
+              pid: 0,
               code: '',
               name: '',
-              gender: 1,
+              gender: "1",
               email:'',
+              hireday: '',
+              birthday: '',
+              workday: '',
               phone: '',
               title: '',
               rank: '',
               order: 1,
               status: 1
+          },
+          rules: {
+
+              code: [
+                  {min: 1, max: 20, message: '1到20个字符', trigger: 'blur'},
+              ],
+              name: [
+                  {required: true, message: '请输入姓名', trigger: 'blur'},
+                  {min: 2, max: 10, message: '至少两个字', trigger: 'blur'},
+              ],
+              phone: [
+                  {required: true, message: '请输入电话', trigger: 'blur'},
+                  {pattern: /^(?:\+?86)?1(?:3\d{3}|5[^4\D]\d{2}|8\d{3}|7(?:[01356789]\d{2}|4(?:0\d|1[0-2]|9\d))|9[189]\d{2}|6[567]\d{2}|4(?:[14]0\d{3}|[68]\d{4}|[579]\d{2}))\d{6}$/
+                      , message: '至少两个字', trigger: 'blur'},
+              ]
+
+
           },
           departments:[],
           staff:[],

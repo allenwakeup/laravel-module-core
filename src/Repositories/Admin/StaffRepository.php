@@ -9,7 +9,7 @@ class StaffRepository extends BaseRepository
     public static function list ($perPage, $condition = [], $keyword = null)
     {
         return Staff::query()
-            ->with (['parent'])
+            ->with (['parent', 'department'])
             ->where(function ($query) use ($condition) {
                 self::buildQuery($query, $condition);
                 if (! empty ($keyword))
@@ -47,7 +47,7 @@ class StaffRepository extends BaseRepository
             ->with ('children')
             ->where('pid', $pid)
             ->get ()
-            ->map(function (Department $model){
+            ->map(function (Staff $model){
                 $data = $model->toArray ();
                 $data ['isLeaf'] = ($model->children->count () === 0);
                 unset($data['children']);
@@ -62,7 +62,7 @@ class StaffRepository extends BaseRepository
 //            $all = Staff::select('id', 'pid', 'name', 'order')->get();
 //        }
 //        return $all->where('pid', $pid)
-//            ->map(function (Department $model) use ($all, $level, $path) {
+//            ->map(function (Staff $model) use ($all, $level, $path) {
 //                $data = [
 //                    'id' => $model->id,
 //                    'name' => $model->name,
@@ -89,7 +89,7 @@ class StaffRepository extends BaseRepository
 //            $all = Staff::select('id', 'pid', 'name', 'order')->get();
 //        }
 //        return $all->where('pid', $pid)
-//            ->map(function (Department $model) use ($all, $level, $path) {
+//            ->map(function (Staff $model) use ($all, $level, $path) {
 //                $data = [
 //                    'id' => $model->id,
 //                    'name' => $model->name,

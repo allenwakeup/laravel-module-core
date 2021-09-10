@@ -39,10 +39,11 @@ class StaffObserver
      * @param $item
      */
     private function updatePathAndLevel(Staff $item){
+        $table = $item->getTable();
+        $department = $item->department;
+        $id = $item->id;
         if($item->pid > 0){
-            $table = $item->getTable();
-            $department = $item->department;
-            $id = $item->id;
+
             $path = $item->id;
             $path_text = $item->name;
             $level = 1;
@@ -55,19 +56,22 @@ class StaffObserver
                 $item = $item->parent;
             }
 
+            DB::table($table)->where('id', $id)->update([
+                'path_text'=>$path_text,
+                'path'=>$path,
+                'level'=>$level
+            ]);
+        }
+
+        if(isset($department) && $department->id > 0){
             $departments = $department->name;
             $department = $department->parent;
             while(! is_null($department)){
                 $departments = $department->name . ',' . $departments;
                 $department = $department->parent;
             }
-
-
             DB::table($table)->where('id', $id)->update([
-                'path_text'=>$path_text,
                 'departments'=>$departments,
-                'path'=>$path,
-                'level'=>$level
             ]);
         }
     }

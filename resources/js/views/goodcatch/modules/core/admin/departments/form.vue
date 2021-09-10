@@ -6,7 +6,7 @@
         </div>
         <div class="unline underm"></div>
         <div class="admin_form">
-            <a-form-model :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
+            <a-form-model :model="form" :rules="rules" :label-col="{ span: 6 }"  :wrapper-col="{ span: 16 }">
                 <a-form-model-item label="上级部门">
                     <a-cascader :load-data="load_departments"
                                 :options="departments"
@@ -18,7 +18,7 @@
                 <a-form-model-item label="编码">
                     <a-input v-model="form.code"></a-input>
                 </a-form-model-item>
-                <a-form-model-item label="名称">
+                <a-form-model-item label="名称" prop="name">
                     <a-input v-model="form.name"></a-input>
                 </a-form-model-item>
                 <a-form-model-item label="简称">
@@ -53,6 +53,7 @@ export default {
       return {
           cascader_department: [],
           form:{
+              pid: 0,
               code: '',
               name: '',
               short: '',
@@ -60,6 +61,18 @@ export default {
               description: '',
               order: 1,
               status: 1
+          },
+          rules: {
+
+              code: [
+                  {min: 1, max: 20, message: '1到20个字符', trigger: 'blur'},
+              ],
+              name: [
+                  {required: true, message: '请输入部门名称', trigger: 'blur'},
+                  {min: 2, max: 10, message: '至少两个字', trigger: 'blur'},
+              ]
+
+
           },
           departments:[],
           id:0,
