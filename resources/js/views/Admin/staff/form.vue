@@ -2,7 +2,7 @@
     <div>
         <div class="admin_table_page_title">
             <a-button @click="$router.back()" class="float_right" icon="arrow-left">返回</a-button>
-            部门编辑
+            员工编辑
         </div>
         <div class="unline underm"></div>
         <div class="admin_form">

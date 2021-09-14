@@ -36,6 +36,7 @@ class CoreServiceProvider extends ServiceProvider
     {
         $this->registerTranslations();
         $this->registerConfig();
+        $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->moduleName, 'database/migrations'));
 
 
@@ -83,6 +84,20 @@ class CoreServiceProvider extends ServiceProvider
             module_path($this->moduleName, 'config/config.php'), $this->moduleNameLower
         );
     }
+
+    /**
+     * Register views.
+     *
+     * @return void
+     */
+    public function registerViews()
+    {
+        $sourcePath = module_path($this->moduleName, 'resources/views');
+
+        $this->loadViewsFrom(array_merge($this->getPublishableViewPaths(), [$sourcePath]), $this->moduleNameLower);
+    }
+
+
 
     public function registerMailViews()
     {
