@@ -390,7 +390,7 @@
 </template>
 
 <script>
-    import ACron from "@/components/goodcatch/modules/core/admin/acron";
+    import ACron from "@/components/admin/acron";
 
     export default {
         components: { ACron },

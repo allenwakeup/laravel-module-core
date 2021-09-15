@@ -8,7 +8,7 @@
 
 <script>
 
-    import AAssignment from "@/components/goodcatch/modules/core/admin/aassignment";
+    import AAssignment from "@/components/admin/aassignment";
 
     export default {
         components: { AAssignment },
