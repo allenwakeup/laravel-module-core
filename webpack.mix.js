@@ -12,10 +12,10 @@ const mix = require('laravel-mix');
  */
 
 require('laravel-mix-polyfill');
-mix.js('resources/js/app.js', 'public/dist/js')
-    .sass('resources/js/plugins/css/style.scss', 'public/dist/css')
-    .setPublicPath('public/dist')
-    .setResourceRoot('/dist/')
+mix.js('resources/js/app.js', 'public/dist/module-core/js')
+    .sass('resources/js/plugins/css/style.scss', 'public/dist/module-core/css')
+    .setPublicPath('public/dist/module-core')
+    .setResourceRoot('/dist/module-core/')
     //    .browserSync('127.0.0.1:8000')
     .polyfill({
         enabled: true,
@@ -34,7 +34,7 @@ mix.js('resources/js/app.js', 'public/dist/js')
         //     // 'element-ui': 'ELEMENT',//这个比较坑　一开始我还以为是ElementUI结果就报错了XD
         // },
         output: {
-            publicPath: '/dist/',
+            publicPath: '/dist/module-core/',
             filename: '[name].js',
             chunkFilename : '[name].js?id=[chunkhash:20]'
         },

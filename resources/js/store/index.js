@@ -15,7 +15,7 @@ const modules = stores.keys()
         const folder = path.replace(/(.*\/)*([^\/]+).*/ig,"$2");
         s[folder + firstUpperCase(store)] = stores(key).default;
         return s;
-        }, {});
+    }, {});
 
 export default new Vuex.Store({
     modules,

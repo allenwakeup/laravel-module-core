@@ -65,8 +65,6 @@ class CoreServiceProvider extends ServiceProvider
             return new Kernel($app, ...$params);
         });
 
-        $this->registerMailViews();
-
     }
 
 
@@ -92,22 +90,12 @@ class CoreServiceProvider extends ServiceProvider
      */
     public function registerViews()
     {
-        $sourcePath = module_path($this->moduleName, 'resources/views');
-
-        $this->loadViewsFrom(array_merge($this->getPublishableViewPaths(), [$sourcePath]), $this->moduleNameLower);
+        $this->loadViewsFrom(
+            [module_path($this->moduleNameLower, 'resources/views')],
+            $this->moduleNameLower
+        );
     }
-
-
-
-    public function registerMailViews()
-    {
-        if ($this->app->runningInConsole()) {
-            $this->publishes([
-                module_path($this->moduleName, 'resources/views/emails') => $this->app->resourcePath('views/emails'),
-            ], 'core-email');
-        }
-    }
-
+    
     /**
      * Register translations.
      *

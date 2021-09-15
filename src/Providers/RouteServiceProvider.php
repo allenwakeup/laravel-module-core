@@ -25,7 +25,7 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    protected $namespace = 'Goodcatch\\Modules\\Core\\Http\\Controllers\\';
+    protected $namespace = 'Goodcatch\\Modules\\Core\\Http\\Controllers';
 
     protected $path;
 
@@ -76,7 +76,7 @@ class RouteServiceProvider extends ServiceProvider
     {
         Route::middleware('web')
             ->namespace($this->namespace)
-            ->group($this->getPath ('web'));
+            ->group($this->getPath ());
     }
 
     /**
