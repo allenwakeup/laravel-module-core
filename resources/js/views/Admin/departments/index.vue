@@ -21,7 +21,15 @@
 
         <div class="admin_table_handle_btn">
             <a-button @click="$router.push('/Admin/goodcatch/m/core/departments/form')" type="primary" icon="plus">添加</a-button>
+            <a-button @click="openImportDialog" icon="import">批量导入</a-button>
             <a-button class="admin_delete_btn" type="danger" icon="delete" @click="del">批量删除</a-button>
+            <a-import
+                :open="isOpenImportDialog"
+                @close="isOpenImportDialog = false"
+                @ok="handleImport"
+                top="20%"
+                width="50%"
+                height="400px"></a-import>
         </div>
         <div class="admin_table_list">
             <a-table :columns="columns" :data-source="list" :pagination="false" :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" row-key="id">
@@ -54,8 +62,9 @@
 </template>
 
 <script>
+import { AImport } from '@/components/goodcatch/modules/core/admin/aimport'
 export default {
-    components: {},
+    components: { AImport },
     props: {},
     data() {
       return {
@@ -89,7 +98,8 @@ export default {
             }
           },
           loading_status: {},
-          breadcrumb: []
+          breadcrumb: [],
+          isOpenImportDialog: false,
 
       };
     },
@@ -170,6 +180,14 @@ export default {
                 this.breadcrumb = this.breadcrumb.filter(item=>item.order <= record.order);
             }
             this.getList(record.id);
+        },
+        openImportDialog(){
+            this.isOpenImportDialog = true;
+        },
+        handleImport(data){
+            if(data){
+                console.log(data);
+            }
         },
         getList(pid){
             if(!pid){
