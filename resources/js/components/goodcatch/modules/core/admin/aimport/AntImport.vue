@@ -10,22 +10,56 @@
       :width="width"
       >
 
-    <a-layout-content>
-        <a-layout style="background: #fff">
-            <a-layout-content :style="{ padding: '0 24px', minHeight: '280px' }">
-                <a-import-xlsx
-                    @parsed="importFromFile"
-                    :columns="columns"
-                />
-            </a-layout-content>
-        </a-layout>
-    </a-layout-content>
+        <a-layout-content>
+            <a-layout style="background: #fff">
+                <a-layout-sider width="30%" style="background: #fff; border-right: 1px solid #cfcfcf;">
+                    <a-steps v-model="step" direction="vertical" @change="onChangeSteps">
+                        <a-step title="下载模版" description="请使用模版文件" />
+                        <a-step title="选择文件" description="请选择上传的Excel文件" />
+                        <a-step title="核对数据" description="上传前对数据进行确认" />
+                        <a-step title="完成" description="上传结果显示" />
+                    </a-steps>
+                </a-layout-sider>
+                <a-layout-content :style="{ padding: '0 24px', minHeight: '280px' }">
 
-    <template slot="footer">
-      <a-button key="submit" type="primary" @click="handleSubmit">
-        确定
-      </a-button>
-    </template>
+                    <a-button v-if="step === 0" type="link">点我下载</a-button>
+
+                    <a-import-xlsx
+                            v-if="step === 1"
+                        @parsed="importFromFile"
+                        :columns="columns"
+                    />
+
+                    <a-table
+                            v-if="step === 2"
+                            bordered
+                            size="small"
+                            :columns="columns"
+                            :pagination="false"
+                            :data-source="data"
+                    >
+                        <template slot="footer" slot-scope="currentPageData">
+                            总计：{{ data.length }}行
+                        </template>
+                    </a-table>
+
+
+                    <div>
+
+                        <a-button v-if="step === 3" @click="loading = true" type="primary" :disabled="loading" :loading="loading">
+                            开始
+                        </a-button>
+                    </div>
+
+
+                </a-layout-content>
+            </a-layout>
+        </a-layout-content>
+        <template slot="footer">
+            <a-button key="back" type="primary" @click="handleSubmit">
+                关闭
+            </a-button>
+        </template>
     </a-modal>
     </template>
 
@@ -42,31 +76,16 @@ export default {
         },
         columns: {
             type: Array,
-            default: () => [ // 用户数据列配置
+            default: () => [
                 {
-                    prop:'key',
-                    label:'序号',
+                    title: '编码',
+                    dataIndex: 'code',
+                    sorter: true
                 },
                 {
-                    prop:'name',
-                    label:'手机号码',
-                    format: val => '' + val // 数据导入导出设置
-                },
-                {
-                    prop:'col1',
-                    label:'姓名',
-                },
-                {
-                    prop:'col2',
-                    label:'所属部门',
-                },
-                {
-                    prop:'col3',
-                    label:'名称3',
-                },
-                {
-                    prop:'col4',
-                    label:'名称4',
+                    title: '名称',
+                    dataIndex: 'name',
+                    format: val => '' + val
                 }
             ]
         },
@@ -92,6 +111,8 @@ export default {
     data() {
         return {
             visible: false,
+            loading: false,
+            step: 0,
             data: []
         };
     },
@@ -102,8 +123,12 @@ export default {
         },
     },
     methods: {
+        onChangeSteps(step){
+            this.step = step;
+        },
         importFromFile(data){
             this.data = data;
+            this.step = 3;
         },
         handleSubmit() {
             this.$emit("ok", this.data);

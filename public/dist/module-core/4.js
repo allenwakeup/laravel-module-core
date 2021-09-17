@@ -41,6 +41,40 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "AntImport",
@@ -55,29 +89,16 @@ __webpack_require__.r(__webpack_exports__);
     columns: {
       type: Array,
       default: function _default() {
-        return [// 用户数据列配置
-        {
-          prop: 'key',
-          label: '序号'
+        return [{
+          title: '编码',
+          dataIndex: 'code',
+          sorter: true
         }, {
-          prop: 'name',
-          label: '手机号码',
+          title: '名称',
+          dataIndex: 'name',
           format: function format(val) {
             return '' + val;
-          } // 数据导入导出设置
-
-        }, {
-          prop: 'col1',
-          label: '姓名'
-        }, {
-          prop: 'col2',
-          label: '所属部门'
-        }, {
-          prop: 'col3',
-          label: '名称3'
-        }, {
-          prop: 'col4',
-          label: '名称4'
+          }
         }];
       }
     },
@@ -101,6 +122,8 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       visible: false,
+      loading: false,
+      step: 0,
       data: []
     };
   },
@@ -111,8 +134,12 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
+    onChangeSteps: function onChangeSteps(step) {
+      this.step = step;
+    },
     importFromFile: function importFromFile(data) {
       this.data = data;
+      this.step = 3;
     },
     handleSubmit: function handleSubmit() {
       this.$emit("ok", this.data);
@@ -181,7 +208,7 @@ __webpack_require__.r(__webpack_exports__);
       if (data && data.length > 0) {
         var list = data.reduce(function (arr, row) {
           arr.push(columns.reduce(function (mapped, col, index) {
-            mapped[col.prop] = col.format ? col.format(row[index]) : row[index];
+            mapped[col.dataIndex] = col.format ? col.format(row[index]) : row[index];
             return mapped;
           }, {}));
           return arr;
@@ -528,13 +555,136 @@ var render = function() {
             { staticStyle: { background: "#fff" } },
             [
               _c(
+                "a-layout-sider",
+                {
+                  staticStyle: {
+                    background: "#fff",
+                    "border-right": "1px solid #cfcfcf"
+                  },
+                  attrs: { width: "30%" }
+                },
+                [
+                  _c(
+                    "a-steps",
+                    {
+                      attrs: { direction: "vertical" },
+                      on: { change: _vm.onChangeSteps },
+                      model: {
+                        value: _vm.step,
+                        callback: function($$v) {
+                          _vm.step = $$v
+                        },
+                        expression: "step"
+                      }
+                    },
+                    [
+                      _c("a-step", {
+                        attrs: {
+                          title: "下载模版",
+                          description: "请使用模版文件"
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("a-step", {
+                        attrs: {
+                          title: "选择文件",
+                          description: "请选择上传的Excel文件"
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("a-step", {
+                        attrs: {
+                          title: "核对数据",
+                          description: "上传前对数据进行确认"
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("a-step", {
+                        attrs: { title: "完成", description: "上传结果显示" }
+                      })
+                    ],
+                    1
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
                 "a-layout-content",
                 { style: { padding: "0 24px", minHeight: "280px" } },
                 [
-                  _c("a-import-xlsx", {
-                    attrs: { columns: _vm.columns },
-                    on: { parsed: _vm.importFromFile }
-                  })
+                  _vm.step === 0
+                    ? _c("a-button", { attrs: { type: "link" } }, [
+                        _vm._v("点我下载")
+                      ])
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.step === 1
+                    ? _c("a-import-xlsx", {
+                        attrs: { columns: _vm.columns },
+                        on: { parsed: _vm.importFromFile }
+                      })
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.step === 2
+                    ? _c("a-table", {
+                        attrs: {
+                          bordered: "",
+                          size: "small",
+                          columns: _vm.columns,
+                          pagination: false,
+                          "data-source": _vm.data
+                        },
+                        scopedSlots: _vm._u(
+                          [
+                            {
+                              key: "footer",
+                              fn: function(currentPageData) {
+                                return [
+                                  _vm._v(
+                                    "\n                        总计：" +
+                                      _vm._s(_vm.data.length) +
+                                      "行\n                    "
+                                  )
+                                ]
+                              }
+                            }
+                          ],
+                          null,
+                          false,
+                          2762726685
+                        )
+                      })
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    [
+                      _vm.step === 3
+                        ? _c(
+                            "a-button",
+                            {
+                              attrs: {
+                                type: "primary",
+                                disabled: _vm.loading,
+                                loading: _vm.loading
+                              },
+                              on: {
+                                click: function($event) {
+                                  _vm.loading = true
+                                }
+                              }
+                            },
+                            [
+                              _vm._v(
+                                "\n                        开始\n                    "
+                              )
+                            ]
+                          )
+                        : _vm._e()
+                    ],
+                    1
+                  )
                 ],
                 1
               )
@@ -552,11 +702,11 @@ var render = function() {
           _c(
             "a-button",
             {
-              key: "submit",
+              key: "back",
               attrs: { type: "primary" },
               on: { click: _vm.handleSubmit }
             },
-            [_vm._v("\n    确定\n  ")]
+            [_vm._v("\n            关闭\n        ")]
           )
         ],
         1
@@ -594,7 +744,7 @@ var render = function() {
         attrs: { type: "file", accept: _vm.accept },
         on: { change: _vm.onChange }
       }),
-      _vm._v(" " + _vm._s(this.file) + "\n    "),
+      _vm._v(" "),
       _c(
         "xlsx-read",
         { attrs: { file: _vm.file } },

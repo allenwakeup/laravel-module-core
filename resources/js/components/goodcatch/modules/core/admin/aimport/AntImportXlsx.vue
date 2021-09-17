@@ -3,7 +3,7 @@
         <input
             type="file"
             :accept="accept"
-            @change="onChange"/> {{ this.file }}
+            @change="onChange"/>
         <xlsx-read :file="file">
             <xlsx-json @parsed="parsed" :options="{ header: 1 }"></xlsx-json>
         </xlsx-read>
@@ -41,7 +41,7 @@ export default {
                 const list = data.reduce((arr, row) => {
                     arr.push(
                         columns.reduce((mapped, col, index) => {
-                            mapped[col.prop] = col.format
+                            mapped[col.dataIndex] = col.format
                                 ? col.format(row[index])
                                 : row[index];
                             return mapped;
