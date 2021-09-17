@@ -6,6 +6,7 @@
       :visible="visible"
       :maskClosable="false"
       @cancel="close"
+      :closable="false"
       cancelText="关闭"
       :width="width"
       >
@@ -22,10 +23,20 @@
                 </a-layout-sider>
                 <a-layout-content :style="{ padding: '0 24px', minHeight: '280px' }">
 
-                    <a-button v-if="step === 0" type="link">点我下载</a-button>
+                    <div v-if="step === 0" >
+                        <vue-excel-xlsx
+                            :data="sampleData"
+                            :columns="sampleColumns"
+                            :filename="title"
+                        >
+                            点我下载模版
+                        </vue-excel-xlsx>
+                        <p>注：模版中第一行为表头，第二行为列的样例说明，数据行导入是从第二行开始</p>
+                    </div>
+
 
                     <a-import-xlsx
-                            v-if="step === 1"
+                        v-if="step === 1"
                         @parsed="importFromFile"
                         :columns="columns"
                     />
@@ -35,8 +46,10 @@
                             bordered
                             size="small"
                             :columns="columns"
-                            :pagination="false"
+                            :pagination="{ pageSize: 15 }"
                             :data-source="data"
+                            :scroll="{ y: 600 }"
+                            rowKey="__row_key"
                     >
                         <template slot="footer" slot-scope="currentPageData">
                             总计：{{ data.length }}行
@@ -56,7 +69,7 @@
             </a-layout>
         </a-layout-content>
         <template slot="footer">
-            <a-button key="back" type="primary" @click="handleSubmit">
+            <a-button key="back" @click="handleSubmit">
                 关闭
             </a-button>
         </template>
@@ -80,12 +93,14 @@ export default {
                 {
                     title: '编码',
                     dataIndex: 'code',
-                    sorter: true
+                    sorter: true,
+                    desc: '两个字符5位数字'
                 },
                 {
                     title: '名称',
                     dataIndex: 'name',
-                    format: val => '' + val
+                    format: val => '「' + val + '」',
+                    desc: '最少两个中文汉字'
                 }
             ]
         },
@@ -116,7 +131,22 @@ export default {
             data: []
         };
     },
-    computed: {},
+    computed: {
+        sampleColumns(){
+            return this.columns.map(col => Object.assign({}, {
+                label: col.title,
+                field: col.dataIndex,
+                dataFormat: col.format
+            }))
+        },
+        sampleData(){
+            return [this.columns.reduce((data, col) => {
+                data[col.dataIndex] = col.desc;
+                return data;
+            }, {})]
+        },
+
+    },
     watch: {
         open(val) {
             this.visible = val;
@@ -128,10 +158,14 @@ export default {
         },
         importFromFile(data){
             this.data = data;
-            this.step = 3;
+            this.step = 2;
         },
         handleSubmit() {
-            this.$emit("ok", this.data);
+            this.$emit("ok", this.data.map(data => {
+                const cp_data = Object.assign({}, data);
+                delete cp_data.__row_key;
+                return cp_data;
+            }));
             this.close();
         },
         close() {

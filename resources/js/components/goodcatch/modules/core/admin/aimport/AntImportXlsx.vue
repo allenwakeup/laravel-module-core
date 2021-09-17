@@ -33,17 +33,19 @@ export default {
     methods: {
         onChange(event){
             this.file = event.target.files ? event.target.files[0] : null;
+            this.$emit('change');
         },
         parsed(data){
             const { columns } = this;
             // 2D array uses the raw value
             if (data && data.length > 0){
-                const list = data.reduce((arr, row) => {
+                const list = data.reduce((arr, row, row_key) => {
                     arr.push(
                         columns.reduce((mapped, col, index) => {
                             mapped[col.dataIndex] = col.format
                                 ? col.format(row[index])
                                 : row[index];
+                            mapped.__row_key = row_key;
                             return mapped;
                         }, {})
                     );

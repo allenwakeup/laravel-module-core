@@ -8,6 +8,7 @@ import store from '@/store/index'
 import router from '@/plugins/router'
 import Antd from 'ant-design-vue'
 import {Icon} from 'ant-design-vue'
+import VueExcelXlsx from 'vue-excel-xlsx';
 import App from '@/views/App'
 import 'ant-design-vue/dist/antd.css';
 import {post,get,put,deletes,postfile,toJson,isEmpty,apiHandle} from '@/plugins/http.js' // 请求方式中间件
@@ -38,6 +39,7 @@ const AFont = Icon.createFromIconfontCN({
     scriptUrl: fontjs,
 });
 Vue.use(Antd);
+Vue.use(VueExcelXlsx);
 Vue.component('a-font', AFont);
 
 Vue.use(VueLazyload); // 懒加载图片

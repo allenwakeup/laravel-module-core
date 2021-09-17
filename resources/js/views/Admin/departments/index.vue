@@ -28,8 +28,8 @@
                 @close="isOpenImportDialog = false"
                 @ok="handleImport"
                 top="20%"
-                width="50%"
-                height="400px"></a-import>
+                width="60%"
+                height="780px"></a-import>
         </div>
         <div class="admin_table_list">
             <a-table :columns="columns" :data-source="list" :pagination="false" :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" row-key="id">
