@@ -46,9 +46,9 @@
                             bordered
                             size="small"
                             :columns="columns"
-                            :pagination="{ pageSize: 15 }"
+                            :pagination="{ pageSize: 10 }"
                             :data-source="data"
-                            :scroll="{ y: 600 }"
+                            :scroll="{ y: 420 }"
                             rowKey="__row_key"
                     >
                         <template slot="footer" slot-scope="currentPageData">
@@ -157,7 +157,7 @@ export default {
             this.step = step;
         },
         importFromFile(data){
-            this.data = data;
+            this.data = data.length > 1 ? data.slice(1) : data;
             this.step = 2;
         },
         handleSubmit() {

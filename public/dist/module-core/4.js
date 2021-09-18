@@ -1,1705 +1,1354 @@
 (window["webpackJsonp"] = window["webpackJsonp"] || []).push([[4],{
 
-/***/ "./node_modules/core-js/modules/es.array.map.js":
-/*!******************************************************!*\
-  !*** ./node_modules/core-js/modules/es.array.map.js ***!
-  \******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/goodcatch/modules/core/admin/aimport/AntImport.vue?vue&type=script&lang=js&":
+/*!*********************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/goodcatch/modules/core/admin/aimport/AntImport.vue?vue&type=script&lang=js& ***!
+  \*********************************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var core_js_modules_es_array_map_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.array.map.js */ "./node_modules/core-js/modules/es.array.map.js");
+/* harmony import */ var core_js_modules_es_array_map_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_map_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_es_object_assign_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es.object.assign.js */ "./node_modules/core-js/modules/es.object.assign.js");
+/* harmony import */ var core_js_modules_es_object_assign_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_object_assign_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var core_js_modules_es_array_slice_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es.array.slice.js */ "./node_modules/core-js/modules/es.array.slice.js");
+/* harmony import */ var core_js_modules_es_array_slice_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_slice_js__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _AntImportXlsx__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./AntImportXlsx */ "./resources/js/components/goodcatch/modules/core/admin/aimport/AntImportXlsx.vue");
 
-var $ = __webpack_require__(/*! ../internals/export */ "./node_modules/core-js/internals/export.js");
-var $map = __webpack_require__(/*! ../internals/array-iteration */ "./node_modules/core-js/internals/array-iteration.js").map;
-var arrayMethodHasSpeciesSupport = __webpack_require__(/*! ../internals/array-method-has-species-support */ "./node_modules/core-js/internals/array-method-has-species-support.js");
 
-var HAS_SPECIES_SUPPORT = arrayMethodHasSpeciesSupport('map');
 
-// `Array.prototype.map` method
-// https://tc39.es/ecma262/#sec-array.prototype.map
-// with adding support of @@species
-$({ target: 'Array', proto: true, forced: !HAS_SPECIES_SUPPORT }, {
-  map: function map(callbackfn /* , thisArg */) {
-    return $map(this, callbackfn, arguments.length > 1 ? arguments[1] : undefined);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: "AntImport",
+  components: {
+    AImportXlsx: _AntImportXlsx__WEBPACK_IMPORTED_MODULE_3__["default"]
+  },
+  props: {
+    open: {
+      type: Boolean,
+      default: false
+    },
+    columns: {
+      type: Array,
+      default: function _default() {
+        return [{
+          title: '编码',
+          dataIndex: 'code',
+          sorter: true,
+          desc: '两个字符5位数字'
+        }, {
+          title: '名称',
+          dataIndex: 'name',
+          format: function format(val) {
+            return '「' + val + '」';
+          },
+          desc: '最少两个中文汉字'
+        }];
+      }
+    },
+    title: {
+      type: String,
+      default: '数据导入'
+    },
+    top: {
+      type: String,
+      default: '20px'
+    },
+    width: {
+      type: String,
+      default: '90%'
+    },
+    height: {
+      type: String,
+      default: '600px'
+    }
+  },
+  data: function data() {
+    return {
+      visible: false,
+      loading: false,
+      step: 0,
+      data: []
+    };
+  },
+  computed: {
+    sampleColumns: function sampleColumns() {
+      return this.columns.map(function (col) {
+        return Object.assign({}, {
+          label: col.title,
+          field: col.dataIndex,
+          dataFormat: col.format
+        });
+      });
+    },
+    sampleData: function sampleData() {
+      return [this.columns.reduce(function (data, col) {
+        data[col.dataIndex] = col.desc;
+        return data;
+      }, {})];
+    }
+  },
+  watch: {
+    open: function open(val) {
+      this.visible = val;
+    }
+  },
+  methods: {
+    onChangeSteps: function onChangeSteps(step) {
+      this.step = step;
+    },
+    importFromFile: function importFromFile(data) {
+      this.data = data.length > 1 ? data.slice(1) : data;
+      this.step = 2;
+    },
+    handleSubmit: function handleSubmit() {
+      this.$emit("ok", this.data.map(function (data) {
+        var cp_data = Object.assign({}, data);
+        delete cp_data.__row_key;
+        return cp_data;
+      }));
+      this.close();
+    },
+    close: function close() {
+      this.$emit("close");
+      this.visible = false;
+    }
+  },
+  created: function created() {},
+  mounted: function mounted() {}
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/goodcatch/modules/core/admin/aimport/AntImportXlsx.vue?vue&type=script&lang=js&":
+/*!*************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/goodcatch/modules/core/admin/aimport/AntImportXlsx.vue?vue&type=script&lang=js& ***!
+  \*************************************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vue_xlsx_dist_vue_xlsx_es_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue-xlsx/dist/vue-xlsx.es.js */ "./node_modules/vue-xlsx/dist/vue-xlsx.es.js");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  components: {
+    XlsxRead: vue_xlsx_dist_vue_xlsx_es_js__WEBPACK_IMPORTED_MODULE_0__["XlsxRead"],
+    XlsxJson: vue_xlsx_dist_vue_xlsx_es_js__WEBPACK_IMPORTED_MODULE_0__["XlsxJson"]
+  },
+  name: 'AntImportXlsx',
+  props: {
+    columns: Array,
+    accept: {
+      type: String,
+      default: ".xlsx"
+    }
+  },
+  data: function data() {
+    return {
+      file: null
+    };
+  },
+  methods: {
+    onChange: function onChange(event) {
+      this.file = event.target.files ? event.target.files[0] : null;
+      this.$emit('change');
+    },
+    parsed: function parsed(data) {
+      var _this = this;
+
+      var columns = this.columns; // 2D array uses the raw value
+
+      if (data && data.length > 0) {
+        var list = data.reduce(function (arr, row, row_key) {
+          arr.push(columns.reduce(function (mapped, col, index) {
+            mapped[col.dataIndex] = col.format ? col.format(row[index]) : row[index];
+            mapped.__row_key = row_key;
+            return mapped;
+          }, {}));
+          return arr;
+        }, []);
+        this.$nextTick(function () {
+          _this.$emit('parsed', list);
+
+          _this.file = null;
+        });
+      }
+    }
   }
 });
 
-
 /***/ }),
 
-/***/ "./node_modules/vue-xlsx/dist/components/XlsxDownload.js":
-/*!***************************************************************!*\
-  !*** ./node_modules/vue-xlsx/dist/components/XlsxDownload.js ***!
-  \***************************************************************/
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/views/Admin/departments/index.vue?vue&type=script&lang=js&":
+/*!*****************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/views/Admin/departments/index.vue?vue&type=script&lang=js& ***!
+  \*****************************************************************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-var script = {
-  inject: ["getWorkbook"],
-  props: {
-    filename: {
-      type: String,
-      default: "my-workbook.xlsx"
-    },
-    options: {
-      type: Object,
-      default: () => ({})
-    },
-    disableWrapperClick: {
-      type: Boolean,
-      default: false
-    }
-  },
-  data() {
-    return {
-      loaded: false
-    };
-  },
-  mounted() {
-    this.load();
-  },
-  watch: {
-    loaded: {
-      immediate: true,
-      handler(loaded) {
-        if (loaded) {
-          this.getWorkbook(wb => {
-            this._workbook = wb;
-          });
-        }
-      }
-    }
-  },
-  methods: {
-    async load() {
-      const { writeFile } = await Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(1)]).then(__webpack_require__.t.bind(null, /*! xlsx */ "./node_modules/xlsx/xlsx.js", 7));
-      this._writeFile = writeFile;
-      this.loaded = true;
-    },
-    download() {
-      this._writeFile(this._workbook, this.filename, this.options);
-    }
-  },
-  render(h) {
-    if (this.$scopedSlots.default && this.loaded) {
-      return h(
-        "div",
-        {
-          on: {
-            click: this.disableWrapperClick ? () => {} : this.download
-          }
-        },
-        [
-          this.$scopedSlots.default({
-            download: this.download
-          })
-        ]
-      );
-    }
-    return null;
-  }
-};
+/* harmony import */ var core_js_modules_es_array_join_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.array.join.js */ "./node_modules/core-js/modules/es.array.join.js");
+/* harmony import */ var core_js_modules_es_array_join_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_join_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_es_object_assign_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es.object.assign.js */ "./node_modules/core-js/modules/es.object.assign.js");
+/* harmony import */ var core_js_modules_es_object_assign_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_object_assign_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var core_js_modules_es_array_filter_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es.array.filter.js */ "./node_modules/core-js/modules/es.array.filter.js");
+/* harmony import */ var core_js_modules_es_array_filter_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_filter_js__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _components_goodcatch_modules_core_admin_aimport__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/components/goodcatch/modules/core/admin/aimport */ "./resources/js/components/goodcatch/modules/core/admin/aimport/index.js");
 
-function normalizeComponent(template, style, script, scopeId, isFunctionalTemplate, moduleIdentifier
-/* server only */
-, shadowMode, createInjector, createInjectorSSR, createInjectorShadow) {
-  if (typeof shadowMode !== 'boolean') {
-    createInjectorSSR = createInjector;
-    createInjector = shadowMode;
-    shadowMode = false;
-  } // Vue.extend constructor export interop.
 
-
-  var options = typeof script === 'function' ? script.options : script; // render functions
-
-  if (template && template.render) {
-    options.render = template.render;
-    options.staticRenderFns = template.staticRenderFns;
-    options._compiled = true; // functional template
-
-    if (isFunctionalTemplate) {
-      options.functional = true;
-    }
-  } // scopedId
-
-
-  if (scopeId) {
-    options._scopeId = scopeId;
-  }
-
-  var hook;
-
-  if (moduleIdentifier) {
-    // server build
-    hook = function hook(context) {
-      // 2.3 injection
-      context = context || // cached call
-      this.$vnode && this.$vnode.ssrContext || // stateful
-      this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext; // functional
-      // 2.2 with runInNewContext: true
-
-      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
-        context = __VUE_SSR_CONTEXT__;
-      } // inject component styles
-
-
-      if (style) {
-        style.call(this, createInjectorSSR(context));
-      } // register component module identifier for async chunk inference
-
-
-      if (context && context._registeredComponents) {
-        context._registeredComponents.add(moduleIdentifier);
-      }
-    }; // used by ssr in case component is cached and beforeCreate
-    // never gets called
-
-
-    options._ssrRegister = hook;
-  } else if (style) {
-    hook = shadowMode ? function () {
-      style.call(this, createInjectorShadow(this.$root.$options.shadowRoot));
-    } : function (context) {
-      style.call(this, createInjector(context));
-    };
-  }
-
-  if (hook) {
-    if (options.functional) {
-      // register for functional component in vue file
-      var originalRender = options.render;
-
-      options.render = function renderWithStyleInjection(h, context) {
-        hook.call(context);
-        return originalRender(h, context);
-      };
-    } else {
-      // inject component registration as beforeCreate hook
-      var existing = options.beforeCreate;
-      options.beforeCreate = existing ? [].concat(existing, hook) : [hook];
-    }
-  }
-
-  return script;
-}
-
-var normalizeComponent_1 = normalizeComponent;
-
-/* script */
-const __vue_script__ = script;
-
-/* template */
-
-  /* style */
-  const __vue_inject_styles__ = undefined;
-  /* scoped */
-  const __vue_scope_id__ = undefined;
-  /* module identifier */
-  const __vue_module_identifier__ = undefined;
-  /* functional template */
-  const __vue_is_functional_template__ = undefined;
-  /* style inject */
-  
-  /* style inject SSR */
-  
-
-  
-  var XlsxDownload = normalizeComponent_1(
-    {},
-    __vue_inject_styles__,
-    __vue_script__,
-    __vue_scope_id__,
-    __vue_is_functional_template__,
-    __vue_module_identifier__,
-    undefined,
-    undefined
-  );
-
-/* harmony default export */ __webpack_exports__["default"] = (XlsxDownload);
-
-
-/***/ }),
-
-/***/ "./node_modules/vue-xlsx/dist/components/XlsxJson.js":
-/*!***********************************************************!*\
-  !*** ./node_modules/vue-xlsx/dist/components/XlsxJson.js ***!
-  \***********************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-var SheetTo = {
-  inject: ["getWorkbook"],
-  props: {
-    sheet: {
-      type: [String, Number],
-      default: 0
-    },
-    options: {
-      type: Object,
-      default: () => ({})
-    }
-  },
-  data() {
-    return {
-      loaded: false
-    };
-  },
-  computed: {
-    loadedAndSheet() {
-      return this.loaded ? this.sheet : null;
-    }
-  },
-  watch: {
-    loadedAndSheet: {
-      immediate: true,
-      handler(sheet) {
-        if (sheet !== null) {
-          this.getWorkbook(this._callBack);
-        }
-      }
-    }
-  },
-  mounted() {
-    this._callBack = () => {
-      console.warning("Missing data parsing callback");
-    };
-  },
-  methods: {
-    sheetNameFinder(workbook) {
-      return Number.isInteger(this.sheet)
-        ? workbook.SheetNames[this.sheet]
-        : this.sheet;
-    }
-  }
-};
-
-var script = {
-  mixins: [SheetTo],
-  data() {
-    return {
-      collection: null
-    };
-  },
-  mounted() {
-    this._callBack = this.updateJson;
-    this.load();
-  },
-  methods: {
-    async load() {
-      const {
-        utils: { sheet_to_json }
-      } = await Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(1)]).then(__webpack_require__.t.bind(null, /*! xlsx */ "./node_modules/xlsx/xlsx.js", 7));
-      this._sheet_to_json = sheet_to_json;
-      this.loaded = true;
-    },
-    updateJson(workbook) {
-      const ws = workbook.Sheets[this.sheetNameFinder(workbook)];
-      this.collection = this._sheet_to_json(ws, this.options);
-      this.$emit("parsed", this.collection);
-    }
-  },
-  render(h) {
-    if (this.$scopedSlots.default && this.loaded) {
-      return h("div", [
-        this.$scopedSlots.default({
-          collection: this.collection
-        })
-      ]);
-    }
-    return null;
-  }
-};
-
-function normalizeComponent(template, style, script, scopeId, isFunctionalTemplate, moduleIdentifier
-/* server only */
-, shadowMode, createInjector, createInjectorSSR, createInjectorShadow) {
-  if (typeof shadowMode !== 'boolean') {
-    createInjectorSSR = createInjector;
-    createInjector = shadowMode;
-    shadowMode = false;
-  } // Vue.extend constructor export interop.
-
-
-  var options = typeof script === 'function' ? script.options : script; // render functions
-
-  if (template && template.render) {
-    options.render = template.render;
-    options.staticRenderFns = template.staticRenderFns;
-    options._compiled = true; // functional template
-
-    if (isFunctionalTemplate) {
-      options.functional = true;
-    }
-  } // scopedId
-
-
-  if (scopeId) {
-    options._scopeId = scopeId;
-  }
-
-  var hook;
-
-  if (moduleIdentifier) {
-    // server build
-    hook = function hook(context) {
-      // 2.3 injection
-      context = context || // cached call
-      this.$vnode && this.$vnode.ssrContext || // stateful
-      this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext; // functional
-      // 2.2 with runInNewContext: true
-
-      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
-        context = __VUE_SSR_CONTEXT__;
-      } // inject component styles
-
-
-      if (style) {
-        style.call(this, createInjectorSSR(context));
-      } // register component module identifier for async chunk inference
-
-
-      if (context && context._registeredComponents) {
-        context._registeredComponents.add(moduleIdentifier);
-      }
-    }; // used by ssr in case component is cached and beforeCreate
-    // never gets called
-
-
-    options._ssrRegister = hook;
-  } else if (style) {
-    hook = shadowMode ? function () {
-      style.call(this, createInjectorShadow(this.$root.$options.shadowRoot));
-    } : function (context) {
-      style.call(this, createInjector(context));
-    };
-  }
-
-  if (hook) {
-    if (options.functional) {
-      // register for functional component in vue file
-      var originalRender = options.render;
-
-      options.render = function renderWithStyleInjection(h, context) {
-        hook.call(context);
-        return originalRender(h, context);
-      };
-    } else {
-      // inject component registration as beforeCreate hook
-      var existing = options.beforeCreate;
-      options.beforeCreate = existing ? [].concat(existing, hook) : [hook];
-    }
-  }
-
-  return script;
-}
-
-var normalizeComponent_1 = normalizeComponent;
-
-/* script */
-const __vue_script__ = script;
-
-/* template */
-
-  /* style */
-  const __vue_inject_styles__ = undefined;
-  /* scoped */
-  const __vue_scope_id__ = undefined;
-  /* module identifier */
-  const __vue_module_identifier__ = undefined;
-  /* functional template */
-  const __vue_is_functional_template__ = undefined;
-  /* style inject */
-  
-  /* style inject SSR */
-  
-
-  
-  var XlsxJson = normalizeComponent_1(
-    {},
-    __vue_inject_styles__,
-    __vue_script__,
-    __vue_scope_id__,
-    __vue_is_functional_template__,
-    __vue_module_identifier__,
-    undefined,
-    undefined
-  );
-
-/* harmony default export */ __webpack_exports__["default"] = (XlsxJson);
-
-
-/***/ }),
-
-/***/ "./node_modules/vue-xlsx/dist/components/XlsxRead.js":
-/*!***********************************************************!*\
-  !*** ./node_modules/vue-xlsx/dist/components/XlsxRead.js ***!
-  \***********************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-var WorkbookHandler = {
-  data() {
-    return {
-      libLoaded: false,
-      loading: false
-    };
-  },
-  provide() {
-    return {
-      getWorkbook: this.getWorkbook
-    };
-  },
-  methods: {
-    startLoading() {
-      this.loading = true;
-      this.$emit("loading", this.loading);
-    },
-    endLoading() {
-      this.loading = false;
-      this.$emit("loading", this.loading);
-    },
-    fireCallBacks() {
-      if (this._callbackQueue && Array.isArray(this._callbackQueue)) {
-        this._callbackQueue.forEach(cb => {
-          try {
-            cb(this._workbook);
-          } catch (e) {
-            console.warning("error in firing callbacks", e);
-          }
-        });
-      }
-    },
-    getWorkbook(cb) {
-      if (this._callbackQueue) {
-        this._callbackQueue.push(cb);
-      }
-      if (this._workbook) {
-        cb(this._workbook);
-      }
-    }
-  }
-};
-
-var script = {
-  mixins: [WorkbookHandler],
-  props: {
-    file: {
-      type: null,
-      default: null
-    },
-    options: {
-      type: Object,
-      default: () => ({})
-    }
-  },
-  computed: {
-    loadedAndFile() {
-      return this.libLoaded ? this.file : null;
-    }
-  },
-  watch: {
-    loadedAndFile: {
-      immediate: true,
-      handler(file) {
-        if (file) {
-          this.parseFile(file);
-        }
-      }
-    }
-  },
-  mounted() {
-    this.load();
-  },
-  methods: {
-    async load() {
-      const { globalPolyfill } = __webpack_require__(/*! ../polyfills */ "./node_modules/vue-xlsx/dist/polyfills.js");
-      globalPolyfill();
-      const { read } = await Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(1)]).then(__webpack_require__.t.bind(null, /*! xlsx */ "./node_modules/xlsx/xlsx.js", 7));
-      this._read = read;
-      this.libLoaded = true;
-      this._callbackQueue = [];
-    },
-    parseFile(file) {
-      this.startLoading();
-      const reader = new FileReader();
-      reader.onload = e => {
-        let binary = "";
-        const bytes = new Uint8Array(e.target.result);
-        const length = bytes.byteLength;
-        for (var i = 0; i < length; i++) {
-          binary += String.fromCharCode(bytes[i]);
-        }
-        this._workbook = this._read(binary, {
-          type: "binary",
-          ...this.options
-        });
-        this.fireCallBacks();
-        this.$emit("parsed", this._workbook);
-        this.endLoading();
-      };
-      reader.onerror = e => {
-        console.log(e);
-      };
-      reader.readAsArrayBuffer(file);
-    }
-  },
-  render(h) {
-    if (this.$scopedSlots.default && this.libLoaded) {
-      return h("div", [
-        this.$scopedSlots.default({
-          loading: this.loading
-        })
-      ]);
-    }
-    return null;
-  }
-};
-
-function normalizeComponent(template, style, script, scopeId, isFunctionalTemplate, moduleIdentifier
-/* server only */
-, shadowMode, createInjector, createInjectorSSR, createInjectorShadow) {
-  if (typeof shadowMode !== 'boolean') {
-    createInjectorSSR = createInjector;
-    createInjector = shadowMode;
-    shadowMode = false;
-  } // Vue.extend constructor export interop.
-
-
-  var options = typeof script === 'function' ? script.options : script; // render functions
-
-  if (template && template.render) {
-    options.render = template.render;
-    options.staticRenderFns = template.staticRenderFns;
-    options._compiled = true; // functional template
-
-    if (isFunctionalTemplate) {
-      options.functional = true;
-    }
-  } // scopedId
-
-
-  if (scopeId) {
-    options._scopeId = scopeId;
-  }
-
-  var hook;
-
-  if (moduleIdentifier) {
-    // server build
-    hook = function hook(context) {
-      // 2.3 injection
-      context = context || // cached call
-      this.$vnode && this.$vnode.ssrContext || // stateful
-      this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext; // functional
-      // 2.2 with runInNewContext: true
-
-      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
-        context = __VUE_SSR_CONTEXT__;
-      } // inject component styles
-
-
-      if (style) {
-        style.call(this, createInjectorSSR(context));
-      } // register component module identifier for async chunk inference
-
-
-      if (context && context._registeredComponents) {
-        context._registeredComponents.add(moduleIdentifier);
-      }
-    }; // used by ssr in case component is cached and beforeCreate
-    // never gets called
-
-
-    options._ssrRegister = hook;
-  } else if (style) {
-    hook = shadowMode ? function () {
-      style.call(this, createInjectorShadow(this.$root.$options.shadowRoot));
-    } : function (context) {
-      style.call(this, createInjector(context));
-    };
-  }
-
-  if (hook) {
-    if (options.functional) {
-      // register for functional component in vue file
-      var originalRender = options.render;
-
-      options.render = function renderWithStyleInjection(h, context) {
-        hook.call(context);
-        return originalRender(h, context);
-      };
-    } else {
-      // inject component registration as beforeCreate hook
-      var existing = options.beforeCreate;
-      options.beforeCreate = existing ? [].concat(existing, hook) : [hook];
-    }
-  }
-
-  return script;
-}
-
-var normalizeComponent_1 = normalizeComponent;
-
-/* script */
-const __vue_script__ = script;
-
-/* template */
-
-  /* style */
-  const __vue_inject_styles__ = undefined;
-  /* scoped */
-  const __vue_scope_id__ = undefined;
-  /* module identifier */
-  const __vue_module_identifier__ = undefined;
-  /* functional template */
-  const __vue_is_functional_template__ = undefined;
-  /* style inject */
-  
-  /* style inject SSR */
-  
-
-  
-  var XlsxRead = normalizeComponent_1(
-    {},
-    __vue_inject_styles__,
-    __vue_script__,
-    __vue_scope_id__,
-    __vue_is_functional_template__,
-    __vue_module_identifier__,
-    undefined,
-    undefined
-  );
-
-/* harmony default export */ __webpack_exports__["default"] = (XlsxRead);
-
-
-/***/ }),
-
-/***/ "./node_modules/vue-xlsx/dist/components/XlsxSheet.js":
-/*!************************************************************!*\
-  !*** ./node_modules/vue-xlsx/dist/components/XlsxSheet.js ***!
-  \************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-const typeFinder = value =>
-  value instanceof Array ? "array" : value instanceof Object ? "object" : false;
-
-const collectionValidator = collection => {
-  return collection.reduce((a, c) => {
-    if (a === null) {
-      return typeFinder(c);
-    } else {
-      return typeFinder(c) === a ? a : false;
-    }
-  }, null);
-};
-
-var script = {
-  inject: ["getWorkbook", "addSheet", "deleteSheet"],
-  props: {
-    sheetName: {
-      type: String,
-      required: true
-    },
-    collection: {
-      type: Array,
-      default: null,
-      validator(value) {
-        if (value && value.length > 0) {
-          const type = collectionValidator(value);
-          return ["array", "object"].includes(type);
-        }
-        return true;
-      }
-    }
-  },
-  data() {
-    return {
-      libLoaded: false
-    };
-  },
-  computed: {
-    readyToParse() {
-      return this.libLoaded ? this.collection : null;
-    }
-  },
-  watch: {
-    readyToParse: {
-      immediate: true,
-      handler(collection) {
-        if (collection) {
-          this.parseCollection(collection);
-        }
-      }
-    }
-  },
-  mounted() {
-    this.load();
-  },
-  beforeDestroy() {
-    this.deleteSheet(this.sheetName);
-  },
-  methods: {
-    async load() {
-      const {
-        utils: { aoa_to_sheet, json_to_sheet }
-      } = await Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(1)]).then(__webpack_require__.t.bind(null, /*! xlsx */ "./node_modules/xlsx/xlsx.js", 7));
-      this._aoa_to_sheet = aoa_to_sheet;
-      this._json_to_sheet = json_to_sheet;
-      this.libLoaded = true;
-      this.getWorkbook(wb => {
-        this._workbook = wb;
-      });
-    },
-    parseCollection(collection) {
-      const type = typeFinder(collection[0]);
-      const lib = {
-        array: this._aoa_to_sheet,
-        object: this._json_to_sheet
-      };
-      this._sheet = lib[type](collection, this.options);
-      this.$emit("parsed", this._sheet);
-      this.addSheet(this._sheet, this.sheetName);
-    }
-  },
-  render(h) {
-    if (this.$slots.default && this.libLoaded) {
-      return h("div", this.$slots.default);
-    }
-    return null;
-  }
-};
-
-function normalizeComponent(template, style, script, scopeId, isFunctionalTemplate, moduleIdentifier
-/* server only */
-, shadowMode, createInjector, createInjectorSSR, createInjectorShadow) {
-  if (typeof shadowMode !== 'boolean') {
-    createInjectorSSR = createInjector;
-    createInjector = shadowMode;
-    shadowMode = false;
-  } // Vue.extend constructor export interop.
-
-
-  var options = typeof script === 'function' ? script.options : script; // render functions
-
-  if (template && template.render) {
-    options.render = template.render;
-    options.staticRenderFns = template.staticRenderFns;
-    options._compiled = true; // functional template
-
-    if (isFunctionalTemplate) {
-      options.functional = true;
-    }
-  } // scopedId
-
-
-  if (scopeId) {
-    options._scopeId = scopeId;
-  }
-
-  var hook;
-
-  if (moduleIdentifier) {
-    // server build
-    hook = function hook(context) {
-      // 2.3 injection
-      context = context || // cached call
-      this.$vnode && this.$vnode.ssrContext || // stateful
-      this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext; // functional
-      // 2.2 with runInNewContext: true
-
-      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
-        context = __VUE_SSR_CONTEXT__;
-      } // inject component styles
-
-
-      if (style) {
-        style.call(this, createInjectorSSR(context));
-      } // register component module identifier for async chunk inference
-
-
-      if (context && context._registeredComponents) {
-        context._registeredComponents.add(moduleIdentifier);
-      }
-    }; // used by ssr in case component is cached and beforeCreate
-    // never gets called
-
-
-    options._ssrRegister = hook;
-  } else if (style) {
-    hook = shadowMode ? function () {
-      style.call(this, createInjectorShadow(this.$root.$options.shadowRoot));
-    } : function (context) {
-      style.call(this, createInjector(context));
-    };
-  }
-
-  if (hook) {
-    if (options.functional) {
-      // register for functional component in vue file
-      var originalRender = options.render;
-
-      options.render = function renderWithStyleInjection(h, context) {
-        hook.call(context);
-        return originalRender(h, context);
-      };
-    } else {
-      // inject component registration as beforeCreate hook
-      var existing = options.beforeCreate;
-      options.beforeCreate = existing ? [].concat(existing, hook) : [hook];
-    }
-  }
-
-  return script;
-}
-
-var normalizeComponent_1 = normalizeComponent;
-
-/* script */
-const __vue_script__ = script;
-
-/* template */
-
-  /* style */
-  const __vue_inject_styles__ = undefined;
-  /* scoped */
-  const __vue_scope_id__ = undefined;
-  /* module identifier */
-  const __vue_module_identifier__ = undefined;
-  /* functional template */
-  const __vue_is_functional_template__ = undefined;
-  /* style inject */
-  
-  /* style inject SSR */
-  
-
-  
-  var XlsxSheet = normalizeComponent_1(
-    {},
-    __vue_inject_styles__,
-    __vue_script__,
-    __vue_scope_id__,
-    __vue_is_functional_template__,
-    __vue_module_identifier__,
-    undefined,
-    undefined
-  );
-
-/* harmony default export */ __webpack_exports__["default"] = (XlsxSheet);
-
-
-/***/ }),
-
-/***/ "./node_modules/vue-xlsx/dist/components/XlsxSheets.js":
-/*!*************************************************************!*\
-  !*** ./node_modules/vue-xlsx/dist/components/XlsxSheets.js ***!
-  \*************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-var script = {
-  inject: ["getWorkbook"],
-  data() {
-    return {
-      innerValue: []
-    };
-  },
-  mounted() {
-    this.getWorkbook(this.parseSheets);
-  },
-  methods: {
-    parseSheets(wb) {
-      this.innerValue = [...wb.SheetNames];
-      this.$emit("parsed", [...wb.SheetNames]);
-    }
-  },
-  render(h) {
-    if (this.$scopedSlots.default) {
-      return h("div", [
-        this.$scopedSlots.default({
-          sheets: this.innerValue
-        })
-      ]);
-    }
-    return null;
-  }
-};
-
-function normalizeComponent(template, style, script, scopeId, isFunctionalTemplate, moduleIdentifier
-/* server only */
-, shadowMode, createInjector, createInjectorSSR, createInjectorShadow) {
-  if (typeof shadowMode !== 'boolean') {
-    createInjectorSSR = createInjector;
-    createInjector = shadowMode;
-    shadowMode = false;
-  } // Vue.extend constructor export interop.
-
-
-  var options = typeof script === 'function' ? script.options : script; // render functions
-
-  if (template && template.render) {
-    options.render = template.render;
-    options.staticRenderFns = template.staticRenderFns;
-    options._compiled = true; // functional template
-
-    if (isFunctionalTemplate) {
-      options.functional = true;
-    }
-  } // scopedId
-
-
-  if (scopeId) {
-    options._scopeId = scopeId;
-  }
-
-  var hook;
-
-  if (moduleIdentifier) {
-    // server build
-    hook = function hook(context) {
-      // 2.3 injection
-      context = context || // cached call
-      this.$vnode && this.$vnode.ssrContext || // stateful
-      this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext; // functional
-      // 2.2 with runInNewContext: true
-
-      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
-        context = __VUE_SSR_CONTEXT__;
-      } // inject component styles
-
-
-      if (style) {
-        style.call(this, createInjectorSSR(context));
-      } // register component module identifier for async chunk inference
-
-
-      if (context && context._registeredComponents) {
-        context._registeredComponents.add(moduleIdentifier);
-      }
-    }; // used by ssr in case component is cached and beforeCreate
-    // never gets called
-
-
-    options._ssrRegister = hook;
-  } else if (style) {
-    hook = shadowMode ? function () {
-      style.call(this, createInjectorShadow(this.$root.$options.shadowRoot));
-    } : function (context) {
-      style.call(this, createInjector(context));
-    };
-  }
-
-  if (hook) {
-    if (options.functional) {
-      // register for functional component in vue file
-      var originalRender = options.render;
-
-      options.render = function renderWithStyleInjection(h, context) {
-        hook.call(context);
-        return originalRender(h, context);
-      };
-    } else {
-      // inject component registration as beforeCreate hook
-      var existing = options.beforeCreate;
-      options.beforeCreate = existing ? [].concat(existing, hook) : [hook];
-    }
-  }
-
-  return script;
-}
-
-var normalizeComponent_1 = normalizeComponent;
-
-/* script */
-const __vue_script__ = script;
-
-/* template */
-
-  /* style */
-  const __vue_inject_styles__ = undefined;
-  /* scoped */
-  const __vue_scope_id__ = undefined;
-  /* module identifier */
-  const __vue_module_identifier__ = undefined;
-  /* functional template */
-  const __vue_is_functional_template__ = undefined;
-  /* style inject */
-  
-  /* style inject SSR */
-  
-
-  
-  var XlsxSheets = normalizeComponent_1(
-    {},
-    __vue_inject_styles__,
-    __vue_script__,
-    __vue_scope_id__,
-    __vue_is_functional_template__,
-    __vue_module_identifier__,
-    undefined,
-    undefined
-  );
-
-/* harmony default export */ __webpack_exports__["default"] = (XlsxSheets);
-
-
-/***/ }),
-
-/***/ "./node_modules/vue-xlsx/dist/components/XlsxTable.js":
-/*!************************************************************!*\
-  !*** ./node_modules/vue-xlsx/dist/components/XlsxTable.js ***!
-  \************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-var SheetTo = {
-  inject: ["getWorkbook"],
-  props: {
-    sheet: {
-      type: [String, Number],
-      default: 0
-    },
-    options: {
-      type: Object,
-      default: () => ({})
-    }
-  },
-  data() {
-    return {
-      loaded: false
-    };
-  },
-  computed: {
-    loadedAndSheet() {
-      return this.loaded ? this.sheet : null;
-    }
-  },
-  watch: {
-    loadedAndSheet: {
-      immediate: true,
-      handler(sheet) {
-        if (sheet !== null) {
-          this.getWorkbook(this._callBack);
-        }
-      }
-    }
-  },
-  mounted() {
-    this._callBack = () => {
-      console.warning("Missing data parsing callback");
-    };
-  },
-  methods: {
-    sheetNameFinder(workbook) {
-      return Number.isInteger(this.sheet)
-        ? workbook.SheetNames[this.sheet]
-        : this.sheet;
-    }
-  }
-};
 
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
-var script = {
-  mixins: [SheetTo],
-  data() {
+/* harmony default export */ __webpack_exports__["default"] = ({
+  components: {
+    AImport: _components_goodcatch_modules_core_admin_aimport__WEBPACK_IMPORTED_MODULE_3__["AImport"]
+  },
+  props: {},
+  data: function data() {
     return {
-      table: null
-    };
-  },
-  mounted() {
-    this._callBack = this.updateTable;
-    this.load();
-  },
-  methods: {
-    async load() {
-      const {
-        utils: { sheet_to_html }
-      } = await Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(1)]).then(__webpack_require__.t.bind(null, /*! xlsx */ "./node_modules/xlsx/xlsx.js", 7));
-      this._sheet_to_html = sheet_to_html;
-      this.loaded = true;
-    },
-    updateTable(workbook) {
-      const ws = workbook.Sheets[this.sheetNameFinder(workbook)];
-      this.table = this._sheet_to_html(ws, this.options);
-    }
-  }
-};
-
-function normalizeComponent(template, style, script, scopeId, isFunctionalTemplate, moduleIdentifier
-/* server only */
-, shadowMode, createInjector, createInjectorSSR, createInjectorShadow) {
-  if (typeof shadowMode !== 'boolean') {
-    createInjectorSSR = createInjector;
-    createInjector = shadowMode;
-    shadowMode = false;
-  } // Vue.extend constructor export interop.
-
-
-  var options = typeof script === 'function' ? script.options : script; // render functions
-
-  if (template && template.render) {
-    options.render = template.render;
-    options.staticRenderFns = template.staticRenderFns;
-    options._compiled = true; // functional template
-
-    if (isFunctionalTemplate) {
-      options.functional = true;
-    }
-  } // scopedId
-
-
-  if (scopeId) {
-    options._scopeId = scopeId;
-  }
-
-  var hook;
-
-  if (moduleIdentifier) {
-    // server build
-    hook = function hook(context) {
-      // 2.3 injection
-      context = context || // cached call
-      this.$vnode && this.$vnode.ssrContext || // stateful
-      this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext; // functional
-      // 2.2 with runInNewContext: true
-
-      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
-        context = __VUE_SSR_CONTEXT__;
-      } // inject component styles
-
-
-      if (style) {
-        style.call(this, createInjectorSSR(context));
-      } // register component module identifier for async chunk inference
-
-
-      if (context && context._registeredComponents) {
-        context._registeredComponents.add(moduleIdentifier);
-      }
-    }; // used by ssr in case component is cached and beforeCreate
-    // never gets called
-
-
-    options._ssrRegister = hook;
-  } else if (style) {
-    hook = shadowMode ? function () {
-      style.call(this, createInjectorShadow(this.$root.$options.shadowRoot));
-    } : function (context) {
-      style.call(this, createInjector(context));
-    };
-  }
-
-  if (hook) {
-    if (options.functional) {
-      // register for functional component in vue file
-      var originalRender = options.render;
-
-      options.render = function renderWithStyleInjection(h, context) {
-        hook.call(context);
-        return originalRender(h, context);
-      };
-    } else {
-      // inject component registration as beforeCreate hook
-      var existing = options.beforeCreate;
-      options.beforeCreate = existing ? [].concat(existing, hook) : [hook];
-    }
-  }
-
-  return script;
-}
-
-var normalizeComponent_1 = normalizeComponent;
-
-/* script */
-const __vue_script__ = script;
-
-/* template */
-var __vue_render__ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return (_vm.table)?_c('div',{domProps:{"innerHTML":_vm._s(_vm.table)}}):_vm._e()};
-var __vue_staticRenderFns__ = [];
-
-  /* style */
-  const __vue_inject_styles__ = undefined;
-  /* scoped */
-  const __vue_scope_id__ = undefined;
-  /* module identifier */
-  const __vue_module_identifier__ = undefined;
-  /* functional template */
-  const __vue_is_functional_template__ = false;
-  /* style inject */
-  
-  /* style inject SSR */
-  
-
-  
-  var XlsxTable = normalizeComponent_1(
-    { render: __vue_render__, staticRenderFns: __vue_staticRenderFns__ },
-    __vue_inject_styles__,
-    __vue_script__,
-    __vue_scope_id__,
-    __vue_is_functional_template__,
-    __vue_module_identifier__,
-    undefined,
-    undefined
-  );
-
-/* harmony default export */ __webpack_exports__["default"] = (XlsxTable);
-
-
-/***/ }),
-
-/***/ "./node_modules/vue-xlsx/dist/components/XlsxWorkbook.js":
-/*!***************************************************************!*\
-  !*** ./node_modules/vue-xlsx/dist/components/XlsxWorkbook.js ***!
-  \***************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-var WorkbookHandler = {
-  data() {
-    return {
-      libLoaded: false,
-      loading: false
-    };
-  },
-  provide() {
-    return {
-      getWorkbook: this.getWorkbook
-    };
-  },
-  methods: {
-    startLoading() {
-      this.loading = true;
-      this.$emit("loading", this.loading);
-    },
-    endLoading() {
-      this.loading = false;
-      this.$emit("loading", this.loading);
-    },
-    fireCallBacks() {
-      if (this._callbackQueue && Array.isArray(this._callbackQueue)) {
-        this._callbackQueue.forEach(cb => {
-          try {
-            cb(this._workbook);
-          } catch (e) {
-            console.warning("error in firing callbacks", e);
-          }
-        });
-      }
-    },
-    getWorkbook(cb) {
-      if (this._callbackQueue) {
-        this._callbackQueue.push(cb);
-      }
-      if (this._workbook) {
-        cb(this._workbook);
-      }
-    }
-  }
-};
-
-var script = {
-  mixins: [WorkbookHandler],
-  provide() {
-    return {
-      addSheet: this.addSheet,
-      deleteSheet: this.deleteSheet
-    };
-  },
-  mounted() {
-    this.load();
-  },
-  methods: {
-    async load() {
-      const { globalPolyfill } = __webpack_require__(/*! ../polyfills */ "./node_modules/vue-xlsx/dist/polyfills.js");
-      globalPolyfill();
-      const {
-        utils: { book_new, book_append_sheet }
-      } = await Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(1)]).then(__webpack_require__.t.bind(null, /*! xlsx */ "./node_modules/xlsx/xlsx.js", 7));
-      this._book_new = book_new;
-      this._book_append_sheet = book_append_sheet;
-      this._workbook = this._book_new();
-      this.$emit("created", this._workbook);
-      this.libLoaded = true;
-    },
-    addSheet(sheet, sheetName) {
-      if (this._workbook) {
-        this.deleteSheet(sheetName);
-        this._book_append_sheet(this._workbook, sheet, sheetName);
-        this.$emit("change", this._workbook);
-      }
-    },
-    deleteSheet(sheetName) {
-      if (this._workbook && this._workbook.Sheets[sheetName]) {
-        this._workbook.SheetNames = this._workbook.SheetNames.filter(
-          s => s !== sheetName
-        );
-        this._workbook.Sheets[sheetName] = undefined;
-        this.$emit("change", this._workbook);
-      }
-    }
-  },
-  render(h) {
-    if (this.$slots.default && this.libLoaded) {
-      return h("div", this.$slots.default);
-    }
-    return null;
-  }
-};
-
-function normalizeComponent(template, style, script, scopeId, isFunctionalTemplate, moduleIdentifier
-/* server only */
-, shadowMode, createInjector, createInjectorSSR, createInjectorShadow) {
-  if (typeof shadowMode !== 'boolean') {
-    createInjectorSSR = createInjector;
-    createInjector = shadowMode;
-    shadowMode = false;
-  } // Vue.extend constructor export interop.
-
-
-  var options = typeof script === 'function' ? script.options : script; // render functions
-
-  if (template && template.render) {
-    options.render = template.render;
-    options.staticRenderFns = template.staticRenderFns;
-    options._compiled = true; // functional template
-
-    if (isFunctionalTemplate) {
-      options.functional = true;
-    }
-  } // scopedId
-
-
-  if (scopeId) {
-    options._scopeId = scopeId;
-  }
-
-  var hook;
-
-  if (moduleIdentifier) {
-    // server build
-    hook = function hook(context) {
-      // 2.3 injection
-      context = context || // cached call
-      this.$vnode && this.$vnode.ssrContext || // stateful
-      this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext; // functional
-      // 2.2 with runInNewContext: true
-
-      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
-        context = __VUE_SSR_CONTEXT__;
-      } // inject component styles
-
-
-      if (style) {
-        style.call(this, createInjectorSSR(context));
-      } // register component module identifier for async chunk inference
-
-
-      if (context && context._registeredComponents) {
-        context._registeredComponents.add(moduleIdentifier);
-      }
-    }; // used by ssr in case component is cached and beforeCreate
-    // never gets called
-
-
-    options._ssrRegister = hook;
-  } else if (style) {
-    hook = shadowMode ? function () {
-      style.call(this, createInjectorShadow(this.$root.$options.shadowRoot));
-    } : function (context) {
-      style.call(this, createInjector(context));
-    };
-  }
-
-  if (hook) {
-    if (options.functional) {
-      // register for functional component in vue file
-      var originalRender = options.render;
-
-      options.render = function renderWithStyleInjection(h, context) {
-        hook.call(context);
-        return originalRender(h, context);
-      };
-    } else {
-      // inject component registration as beforeCreate hook
-      var existing = options.beforeCreate;
-      options.beforeCreate = existing ? [].concat(existing, hook) : [hook];
-    }
-  }
-
-  return script;
-}
-
-var normalizeComponent_1 = normalizeComponent;
-
-/* script */
-const __vue_script__ = script;
-
-/* template */
-
-  /* style */
-  const __vue_inject_styles__ = undefined;
-  /* scoped */
-  const __vue_scope_id__ = undefined;
-  /* module identifier */
-  const __vue_module_identifier__ = undefined;
-  /* functional template */
-  const __vue_is_functional_template__ = undefined;
-  /* style inject */
-  
-  /* style inject SSR */
-  
-
-  
-  var XlsxWorkbook = normalizeComponent_1(
-    {},
-    __vue_inject_styles__,
-    __vue_script__,
-    __vue_scope_id__,
-    __vue_is_functional_template__,
-    __vue_module_identifier__,
-    undefined,
-    undefined
-  );
-
-/* harmony default export */ __webpack_exports__["default"] = (XlsxWorkbook);
-
-
-/***/ }),
-
-/***/ "./node_modules/vue-xlsx/dist/mixins/SheetTo.js":
-/*!******************************************************!*\
-  !*** ./node_modules/vue-xlsx/dist/mixins/SheetTo.js ***!
-  \******************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-var SheetTo = {
-  inject: ["getWorkbook"],
-  props: {
-    sheet: {
-      type: [String, Number],
-      default: 0
-    },
-    options: {
-      type: Object,
-      default: () => ({})
-    }
-  },
-  data() {
-    return {
-      loaded: false
-    };
-  },
-  computed: {
-    loadedAndSheet() {
-      return this.loaded ? this.sheet : null;
-    }
-  },
-  watch: {
-    loadedAndSheet: {
-      immediate: true,
-      handler(sheet) {
-        if (sheet !== null) {
-          this.getWorkbook(this._callBack);
+      params: {
+        page: 1,
+        per_page: 30
+      },
+      total: 0,
+      //总页数
+      selectedRowKeys: [],
+      // 被选择的行
+      columns: [{
+        title: '#',
+        dataIndex: 'id',
+        fixed: 'left'
+      }, {
+        title: '上级部门',
+        scopedSlots: {
+          customRender: 'pid'
         }
-      }
-    }
-  },
-  mounted() {
-    this._callBack = () => {
-      console.warning("Missing data parsing callback");
+      }, {
+        title: '编码',
+        dataIndex: 'code'
+      }, {
+        title: '名称',
+        scopedSlots: {
+          customRender: 'name'
+        }
+      }, {
+        title: '简称',
+        dataIndex: 'short'
+      }, {
+        title: '别名',
+        dataIndex: 'alias'
+      }, {
+        title: '描述',
+        dataIndex: 'description'
+      }, {
+        title: '排序',
+        dataIndex: 'order'
+      }, {
+        title: '类型',
+        scopedSlots: {
+          customRender: 'type'
+        }
+      }, {
+        title: '类别',
+        dataIndex: 'category'
+      }, {
+        title: '状态',
+        scopedSlots: {
+          customRender: 'status'
+        }
+      }, {
+        title: '创建时间',
+        dataIndex: 'created_at'
+      }, {
+        title: '更新时间',
+        dataIndex: 'updated_at'
+      }, {
+        title: '操作',
+        fixed: 'right',
+        scopedSlots: {
+          customRender: 'action'
+        }
+      }],
+      list: [],
+      dictionary: {
+        status: {
+          enabled: '启用',
+          disabled: '禁用'
+        }
+      },
+      loading_status: {},
+      breadcrumb: [],
+      isOpenImportDialog: false
     };
   },
+  watch: {},
+  computed: {},
   methods: {
-    sheetNameFinder(workbook) {
-      return Number.isInteger(this.sheet)
-        ? workbook.SheetNames[this.sheet]
-        : this.sheet;
-    }
-  }
-};
+    // 选择框被点击
+    onSelectChange: function onSelectChange(selectedRowKeys) {
+      this.selectedRowKeys = selectedRowKeys;
+    },
+    // 选择分页
+    onChange: function onChange(e) {
+      this.params.page = e;
+    },
+    // 删除
+    del: function del() {
+      var _this = this;
 
-/* harmony default export */ __webpack_exports__["default"] = (SheetTo);
+      if (this.selectedRowKeys.length === 0) {
+        return this.$message.error('未选择数据.');
+      }
+
+      this.$confirm({
+        title: '你确定要删除选择的数据？',
+        content: '确定删除后无法恢复.',
+        okText: '是',
+        okType: 'danger',
+        cancelText: '取消',
+        onOk: function onOk() {
+          var ids = _this.selectedRowKeys.join(',');
+
+          _this.$delete(_this.$api.moduleCoreDepartments + '/' + ids).then(function (res) {
+            if (res.code === 200) {
+              _this.onload();
+
+              _this.$message.success('删除成功');
+            } else {
+              _this.$message.error(res.msg);
+            }
+          });
+        }
+      });
+    },
+    onStatusChange: function onStatusChange(record) {
+      var _this2 = this;
+
+      var reverse_status = [1, 0][record.status];
+      this.loading_status['_' + record.id] = true;
+      this.$put(this.$api.moduleCoreDepartments + '/' + record.id, Object.assign({}, record, {
+        status: reverse_status
+      })).then(function (res) {
+        _this2.loading_status['_' + record.id] = false;
+
+        if (res.code === 200) {
+          record.status = reverse_status;
+
+          _this2.$message.success(res.msg);
+        } else {
+          return _this2.$message.error(res.msg);
+        }
+      }).catch(function () {
+        return _this2.loading_status['_' + record.id] = false;
+      });
+    },
+    onClickName: function onClickName(record) {
+      if (record.path) {
+        if (record.path.length > 0) {
+          this.breadcrumb = record.path.reduce(function (breadcrumb, item) {
+            breadcrumb.push({
+              id: record.path[breadcrumb.length],
+              name: record.path_text[breadcrumb.length],
+              order: breadcrumb.length
+            });
+            return breadcrumb;
+          }, []);
+        } else {
+          if (this.breadcrumb.filter(function (item) {
+            return item.id === record.id;
+          }).length === 0) {
+            this.breadcrumb.push(record);
+          }
+        }
+
+        this.params = {
+          page: 1,
+          per_page: 30
+        };
+      } else {
+        this.breadcrumb = this.breadcrumb.filter(function (item) {
+          return item.order <= record.order;
+        });
+      }
+
+      this.getList(record.id);
+    },
+    openImportDialog: function openImportDialog() {
+      this.isOpenImportDialog = true;
+    },
+    handleImport: function handleImport(data) {
+      if (data) {
+        console.log(data);
+      }
+    },
+    getList: function getList(pid) {
+      var _this3 = this;
+
+      if (!pid) {
+        this.breadcrumb = [];
+      }
+
+      var params = pid ? Object.assign({}, this.params, {
+        pid: pid
+      }) : this.params;
+      this.$get(this.$api.moduleCoreDepartments, params).then(function (res) {
+        _this3.total = res.data.total;
+        _this3.list = res.data.data;
+      });
+    },
+    onload: function onload() {
+      this.getList();
+    }
+  },
+  created: function created() {
+    this.onload();
+  },
+  mounted: function mounted() {}
+});
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/goodcatch/modules/core/admin/aimport/AntImport.vue?vue&type=template&id=b8438d12&scoped=true&":
+/*!*************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/goodcatch/modules/core/admin/aimport/AntImport.vue?vue&type=template&id=b8438d12&scoped=true& ***!
+  \*************************************************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "a-modal",
+    {
+      attrs: {
+        title: _vm.title,
+        "body-style": { overflow: "scroll", height: _vm.height },
+        "dialog-style": { top: _vm.top },
+        visible: _vm.visible,
+        maskClosable: false,
+        closable: false,
+        cancelText: "关闭",
+        width: _vm.width
+      },
+      on: { cancel: _vm.close }
+    },
+    [
+      _c(
+        "a-layout-content",
+        [
+          _c(
+            "a-layout",
+            { staticStyle: { background: "#fff" } },
+            [
+              _c(
+                "a-layout-sider",
+                {
+                  staticStyle: {
+                    background: "#fff",
+                    "border-right": "1px solid #cfcfcf"
+                  },
+                  attrs: { width: "30%" }
+                },
+                [
+                  _c(
+                    "a-steps",
+                    {
+                      attrs: { direction: "vertical" },
+                      on: { change: _vm.onChangeSteps },
+                      model: {
+                        value: _vm.step,
+                        callback: function($$v) {
+                          _vm.step = $$v
+                        },
+                        expression: "step"
+                      }
+                    },
+                    [
+                      _c("a-step", {
+                        attrs: {
+                          title: "下载模版",
+                          description: "请使用模版文件"
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("a-step", {
+                        attrs: {
+                          title: "选择文件",
+                          description: "请选择上传的Excel文件"
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("a-step", {
+                        attrs: {
+                          title: "核对数据",
+                          description: "上传前对数据进行确认"
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("a-step", {
+                        attrs: { title: "完成", description: "上传结果显示" }
+                      })
+                    ],
+                    1
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "a-layout-content",
+                { style: { padding: "0 24px", minHeight: "280px" } },
+                [
+                  _vm.step === 0
+                    ? _c(
+                        "div",
+                        [
+                          _c(
+                            "vue-excel-xlsx",
+                            {
+                              attrs: {
+                                data: _vm.sampleData,
+                                columns: _vm.sampleColumns,
+                                filename: _vm.title
+                              }
+                            },
+                            [
+                              _vm._v(
+                                "\n                        点我下载模版\n                    "
+                              )
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _c("p", [
+                            _vm._v(
+                              "注：模版中第一行为表头，第二行为列的样例说明，数据行导入是从第二行开始"
+                            )
+                          ])
+                        ],
+                        1
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.step === 1
+                    ? _c("a-import-xlsx", {
+                        attrs: { columns: _vm.columns },
+                        on: { parsed: _vm.importFromFile }
+                      })
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.step === 2
+                    ? _c("a-table", {
+                        attrs: {
+                          bordered: "",
+                          size: "small",
+                          columns: _vm.columns,
+                          pagination: { pageSize: 10 },
+                          "data-source": _vm.data,
+                          scroll: { y: 420 },
+                          rowKey: "__row_key"
+                        },
+                        scopedSlots: _vm._u(
+                          [
+                            {
+                              key: "footer",
+                              fn: function(currentPageData) {
+                                return [
+                                  _vm._v(
+                                    "\n                        总计：" +
+                                      _vm._s(_vm.data.length) +
+                                      "行\n                    "
+                                  )
+                                ]
+                              }
+                            }
+                          ],
+                          null,
+                          false,
+                          2762726685
+                        )
+                      })
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    [
+                      _vm.step === 3
+                        ? _c(
+                            "a-button",
+                            {
+                              attrs: {
+                                type: "primary",
+                                disabled: _vm.loading,
+                                loading: _vm.loading
+                              },
+                              on: {
+                                click: function($event) {
+                                  _vm.loading = true
+                                }
+                              }
+                            },
+                            [
+                              _vm._v(
+                                "\n                        开始\n                    "
+                              )
+                            ]
+                          )
+                        : _vm._e()
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "template",
+        { slot: "footer" },
+        [
+          _c("a-button", { key: "back", on: { click: _vm.handleSubmit } }, [
+            _vm._v("\n            关闭\n        ")
+          ])
+        ],
+        1
+      )
+    ],
+    2
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
 
 
 /***/ }),
 
-/***/ "./node_modules/vue-xlsx/dist/mixins/WorkbookHandler.js":
-/*!**************************************************************!*\
-  !*** ./node_modules/vue-xlsx/dist/mixins/WorkbookHandler.js ***!
-  \**************************************************************/
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/goodcatch/modules/core/admin/aimport/AntImportXlsx.vue?vue&type=template&id=b35b1c20&":
+/*!*****************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/goodcatch/modules/core/admin/aimport/AntImportXlsx.vue?vue&type=template&id=b35b1c20& ***!
+  \*****************************************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c("input", {
+        attrs: { type: "file", accept: _vm.accept },
+        on: { change: _vm.onChange }
+      }),
+      _vm._v(" "),
+      _c(
+        "xlsx-read",
+        { attrs: { file: _vm.file } },
+        [
+          _c("xlsx-json", {
+            attrs: { options: { header: 1 } },
+            on: { parsed: _vm.parsed }
+          })
+        ],
+        1
+      )
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/views/Admin/departments/index.vue?vue&type=template&id=6c69ea15&scoped=true&":
+/*!*********************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/views/Admin/departments/index.vue?vue&type=template&id=6c69ea15&scoped=true& ***!
+  \*********************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _c(
+      "div",
+      { staticClass: "admin_table_page_title" },
+      [
+        _c(
+          "a-breadcrumb",
+          [
+            _c(
+              "a-breadcrumb-item",
+              [
+                _vm.breadcrumb.length > 0
+                  ? _c(
+                      "a-button",
+                      {
+                        attrs: { type: "link" },
+                        on: {
+                          click: function($event) {
+                            return _vm.getList()
+                          }
+                        }
+                      },
+                      [
+                        _c("a-icon", { attrs: { type: "home" } }),
+                        _vm._v("部门列表")
+                      ],
+                      1
+                    )
+                  : _c("span", [_vm._v("部门列表")])
+              ],
+              1
+            ),
+            _vm._v(" "),
+            _vm._l(_vm.breadcrumb, function(b) {
+              return _c(
+                "a-breadcrumb-item",
+                { key: b.id },
+                [
+                  _c(
+                    "a-button",
+                    {
+                      attrs: { type: "link" },
+                      on: {
+                        click: function($event) {
+                          return _vm.onClickName(b)
+                        }
+                      }
+                    },
+                    [
+                      _vm._v(
+                        "\n                    " +
+                          _vm._s(b.name) +
+                          "\n                "
+                      )
+                    ]
+                  )
+                ],
+                1
+              )
+            })
+          ],
+          2
+        )
+      ],
+      1
+    ),
+    _vm._v(" "),
+    _c("div", { staticClass: "unline underm" }),
+    _vm._v(" "),
+    _c(
+      "div",
+      { staticClass: "admin_table_handle_btn" },
+      [
+        _c(
+          "a-button",
+          {
+            attrs: { type: "primary", icon: "plus" },
+            on: {
+              click: function($event) {
+                return _vm.$router.push(
+                  "/Admin/goodcatch/m/core/departments/form"
+                )
+              }
+            }
+          },
+          [_vm._v("添加")]
+        ),
+        _vm._v(" "),
+        _c(
+          "a-button",
+          { attrs: { icon: "import" }, on: { click: _vm.openImportDialog } },
+          [_vm._v("批量导入")]
+        ),
+        _vm._v(" "),
+        _c(
+          "a-button",
+          {
+            staticClass: "admin_delete_btn",
+            attrs: { type: "danger", icon: "delete" },
+            on: { click: _vm.del }
+          },
+          [_vm._v("批量删除")]
+        ),
+        _vm._v(" "),
+        _c("a-import", {
+          attrs: {
+            open: _vm.isOpenImportDialog,
+            top: "20%",
+            width: "60%",
+            height: "560px"
+          },
+          on: {
+            close: function($event) {
+              _vm.isOpenImportDialog = false
+            },
+            ok: _vm.handleImport
+          }
+        })
+      ],
+      1
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      { staticClass: "admin_table_list" },
+      [
+        _c("a-table", {
+          attrs: {
+            columns: _vm.columns,
+            "data-source": _vm.list,
+            pagination: false,
+            "row-selection": {
+              selectedRowKeys: _vm.selectedRowKeys,
+              onChange: _vm.onSelectChange
+            },
+            "row-key": "id"
+          },
+          scopedSlots: _vm._u([
+            {
+              key: "pid",
+              fn: function(record) {
+                return _c("span", {}, [
+                  _vm._v(
+                    "\n                " +
+                      _vm._s(record.parent ? record.parent.name : "--") +
+                      "\n            "
+                  )
+                ])
+              }
+            },
+            {
+              key: "name",
+              fn: function(record) {
+                return _c(
+                  "a-button",
+                  {
+                    attrs: { type: "link" },
+                    on: {
+                      click: function($event) {
+                        return _vm.onClickName(record)
+                      }
+                    }
+                  },
+                  [
+                    _vm._v(
+                      "\n                " +
+                        _vm._s(record.name) +
+                        "\n            "
+                    )
+                  ]
+                )
+              }
+            },
+            {
+              key: "type",
+              fn: function(record) {
+                return _c("span", {}, [
+                  _vm._v(
+                    "\n                " +
+                      _vm._s(record.type === 0 ? "默认" : "其他") +
+                      "\n            "
+                  )
+                ])
+              }
+            },
+            {
+              key: "status",
+              fn: function(record) {
+                return _c("a-switch", {
+                  attrs: {
+                    loading: _vm.loading_status["_" + record.id],
+                    "checked-children": _vm.dictionary.status.enabled,
+                    "un-checked-children": _vm.dictionary.status.disabled,
+                    "default-checked": record.status === 1
+                  },
+                  on: {
+                    change: function($event) {
+                      return _vm.onStatusChange(record)
+                    }
+                  }
+                })
+              }
+            },
+            {
+              key: "action",
+              fn: function(rows) {
+                return _c(
+                  "span",
+                  {},
+                  [
+                    _c(
+                      "a-button",
+                      {
+                        attrs: { icon: "edit" },
+                        on: {
+                          click: function($event) {
+                            return _vm.$router.push(
+                              "/Admin/goodcatch/m/core/departments/form/" +
+                                rows.id
+                            )
+                          }
+                        }
+                      },
+                      [_vm._v("编辑")]
+                    )
+                  ],
+                  1
+                )
+              }
+            }
+          ])
+        }),
+        _vm._v(" "),
+        _vm.total > 0
+          ? _c(
+              "div",
+              { staticClass: "admin_pagination" },
+              [
+                _c("a-pagination", {
+                  attrs: {
+                    "page-size": _vm.params.per_page,
+                    total: _vm.total,
+                    "show-less-items": ""
+                  },
+                  on: {
+                    "update:pageSize": function($event) {
+                      return _vm.$set(_vm.params, "per_page", $event)
+                    },
+                    "update:page-size": function($event) {
+                      return _vm.$set(_vm.params, "per_page", $event)
+                    },
+                    change: _vm.onChange
+                  },
+                  model: {
+                    value: _vm.params.page,
+                    callback: function($$v) {
+                      _vm.$set(_vm.params, "page", $$v)
+                    },
+                    expression: "params.page"
+                  }
+                })
+              ],
+              1
+            )
+          : _vm._e()
+      ],
+      1
+    )
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/goodcatch/modules/core/admin/aimport/AntImport.vue":
+/*!************************************************************************************!*\
+  !*** ./resources/js/components/goodcatch/modules/core/admin/aimport/AntImport.vue ***!
+  \************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-var WorkbookHandler = {
-  data() {
-    return {
-      libLoaded: false,
-      loading: false
-    };
-  },
-  provide() {
-    return {
-      getWorkbook: this.getWorkbook
-    };
-  },
-  methods: {
-    startLoading() {
-      this.loading = true;
-      this.$emit("loading", this.loading);
-    },
-    endLoading() {
-      this.loading = false;
-      this.$emit("loading", this.loading);
-    },
-    fireCallBacks() {
-      if (this._callbackQueue && Array.isArray(this._callbackQueue)) {
-        this._callbackQueue.forEach(cb => {
-          try {
-            cb(this._workbook);
-          } catch (e) {
-            console.warning("error in firing callbacks", e);
-          }
-        });
-      }
-    },
-    getWorkbook(cb) {
-      if (this._callbackQueue) {
-        this._callbackQueue.push(cb);
-      }
-      if (this._workbook) {
-        cb(this._workbook);
-      }
-    }
-  }
-};
+/* harmony import */ var _AntImport_vue_vue_type_template_id_b8438d12_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AntImport.vue?vue&type=template&id=b8438d12&scoped=true& */ "./resources/js/components/goodcatch/modules/core/admin/aimport/AntImport.vue?vue&type=template&id=b8438d12&scoped=true&");
+/* harmony import */ var _AntImport_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AntImport.vue?vue&type=script&lang=js& */ "./resources/js/components/goodcatch/modules/core/admin/aimport/AntImport.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
-/* harmony default export */ __webpack_exports__["default"] = (WorkbookHandler);
 
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _AntImport_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _AntImport_vue_vue_type_template_id_b8438d12_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _AntImport_vue_vue_type_template_id_b8438d12_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  "b8438d12",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/goodcatch/modules/core/admin/aimport/AntImport.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
 
-/***/ "./node_modules/vue-xlsx/dist/polyfills.js":
-/*!*************************************************!*\
-  !*** ./node_modules/vue-xlsx/dist/polyfills.js ***!
-  \*************************************************/
-/*! exports provided: globalPolyfill */
+/***/ "./resources/js/components/goodcatch/modules/core/admin/aimport/AntImport.vue?vue&type=script&lang=js&":
+/*!*************************************************************************************************************!*\
+  !*** ./resources/js/components/goodcatch/modules/core/admin/aimport/AntImport.vue?vue&type=script&lang=js& ***!
+  \*************************************************************************************************************/
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "globalPolyfill", function() { return globalPolyfill; });
-const globalPolyfill = () => {
-  var global = global || window;
-  if (window) {
-    window.global = global;
-  }
-};
-
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_AntImport_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../../../../node_modules/vue-loader/lib??vue-loader-options!./AntImport.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/goodcatch/modules/core/admin/aimport/AntImport.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_AntImport_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
 
 /***/ }),
 
-/***/ "./node_modules/vue-xlsx/dist/utils.js":
-/*!*********************************************!*\
-  !*** ./node_modules/vue-xlsx/dist/utils.js ***!
-  \*********************************************/
-/*! exports provided: collectionValidator, typeFinder */
+/***/ "./resources/js/components/goodcatch/modules/core/admin/aimport/AntImport.vue?vue&type=template&id=b8438d12&scoped=true&":
+/*!*******************************************************************************************************************************!*\
+  !*** ./resources/js/components/goodcatch/modules/core/admin/aimport/AntImport.vue?vue&type=template&id=b8438d12&scoped=true& ***!
+  \*******************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "collectionValidator", function() { return collectionValidator; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "typeFinder", function() { return typeFinder; });
-const typeFinder = value =>
-  value instanceof Array ? "array" : value instanceof Object ? "object" : false;
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AntImport_vue_vue_type_template_id_b8438d12_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../../../../node_modules/vue-loader/lib??vue-loader-options!./AntImport.vue?vue&type=template&id=b8438d12&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/goodcatch/modules/core/admin/aimport/AntImport.vue?vue&type=template&id=b8438d12&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AntImport_vue_vue_type_template_id_b8438d12_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
-const collectionValidator = collection => {
-  return collection.reduce((a, c) => {
-    if (a === null) {
-      return typeFinder(c);
-    } else {
-      return typeFinder(c) === a ? a : false;
-    }
-  }, null);
-};
-
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AntImport_vue_vue_type_template_id_b8438d12_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
 /***/ }),
 
-/***/ "./node_modules/vue-xlsx/dist/vue-xlsx.es.js":
-/*!***************************************************!*\
-  !*** ./node_modules/vue-xlsx/dist/vue-xlsx.es.js ***!
-  \***************************************************/
-/*! exports provided: collectionValidator, typeFinder, XlsxDownload, XlsxJson, XlsxRead, XlsxSheet, XlsxSheets, XlsxTable, XlsxWorkbook, SheetToMixin, WorkbookHandlerMixin */
+/***/ "./resources/js/components/goodcatch/modules/core/admin/aimport/AntImportXlsx.vue":
+/*!****************************************************************************************!*\
+  !*** ./resources/js/components/goodcatch/modules/core/admin/aimport/AntImportXlsx.vue ***!
+  \****************************************************************************************/
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utils */ "./node_modules/vue-xlsx/dist/utils.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "collectionValidator", function() { return _utils__WEBPACK_IMPORTED_MODULE_0__["collectionValidator"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "typeFinder", function() { return _utils__WEBPACK_IMPORTED_MODULE_0__["typeFinder"]; });
-
-/* harmony import */ var _components_XlsxDownload__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/XlsxDownload */ "./node_modules/vue-xlsx/dist/components/XlsxDownload.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "XlsxDownload", function() { return _components_XlsxDownload__WEBPACK_IMPORTED_MODULE_1__["default"]; });
-
-/* harmony import */ var _components_XlsxJson__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/XlsxJson */ "./node_modules/vue-xlsx/dist/components/XlsxJson.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "XlsxJson", function() { return _components_XlsxJson__WEBPACK_IMPORTED_MODULE_2__["default"]; });
-
-/* harmony import */ var _components_XlsxRead__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/XlsxRead */ "./node_modules/vue-xlsx/dist/components/XlsxRead.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "XlsxRead", function() { return _components_XlsxRead__WEBPACK_IMPORTED_MODULE_3__["default"]; });
-
-/* harmony import */ var _components_XlsxSheet__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/XlsxSheet */ "./node_modules/vue-xlsx/dist/components/XlsxSheet.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "XlsxSheet", function() { return _components_XlsxSheet__WEBPACK_IMPORTED_MODULE_4__["default"]; });
-
-/* harmony import */ var _components_XlsxSheets__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/XlsxSheets */ "./node_modules/vue-xlsx/dist/components/XlsxSheets.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "XlsxSheets", function() { return _components_XlsxSheets__WEBPACK_IMPORTED_MODULE_5__["default"]; });
-
-/* harmony import */ var _components_XlsxTable__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./components/XlsxTable */ "./node_modules/vue-xlsx/dist/components/XlsxTable.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "XlsxTable", function() { return _components_XlsxTable__WEBPACK_IMPORTED_MODULE_6__["default"]; });
-
-/* harmony import */ var _components_XlsxWorkbook__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./components/XlsxWorkbook */ "./node_modules/vue-xlsx/dist/components/XlsxWorkbook.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "XlsxWorkbook", function() { return _components_XlsxWorkbook__WEBPACK_IMPORTED_MODULE_7__["default"]; });
-
-/* harmony import */ var _mixins_SheetTo__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./mixins/SheetTo */ "./node_modules/vue-xlsx/dist/mixins/SheetTo.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "SheetToMixin", function() { return _mixins_SheetTo__WEBPACK_IMPORTED_MODULE_8__["default"]; });
-
-/* harmony import */ var _mixins_WorkbookHandler__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./mixins/WorkbookHandler */ "./node_modules/vue-xlsx/dist/mixins/WorkbookHandler.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "WorkbookHandlerMixin", function() { return _mixins_WorkbookHandler__WEBPACK_IMPORTED_MODULE_9__["default"]; });
+/* harmony import */ var _AntImportXlsx_vue_vue_type_template_id_b35b1c20___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AntImportXlsx.vue?vue&type=template&id=b35b1c20& */ "./resources/js/components/goodcatch/modules/core/admin/aimport/AntImportXlsx.vue?vue&type=template&id=b35b1c20&");
+/* harmony import */ var _AntImportXlsx_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AntImportXlsx.vue?vue&type=script&lang=js& */ "./resources/js/components/goodcatch/modules/core/admin/aimport/AntImportXlsx.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
 
 
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _AntImportXlsx_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _AntImportXlsx_vue_vue_type_template_id_b35b1c20___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _AntImportXlsx_vue_vue_type_template_id_b35b1c20___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/goodcatch/modules/core/admin/aimport/AntImportXlsx.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/goodcatch/modules/core/admin/aimport/AntImportXlsx.vue?vue&type=script&lang=js&":
+/*!*****************************************************************************************************************!*\
+  !*** ./resources/js/components/goodcatch/modules/core/admin/aimport/AntImportXlsx.vue?vue&type=script&lang=js& ***!
+  \*****************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_AntImportXlsx_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../../../../node_modules/vue-loader/lib??vue-loader-options!./AntImportXlsx.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/goodcatch/modules/core/admin/aimport/AntImportXlsx.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_AntImportXlsx_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/goodcatch/modules/core/admin/aimport/AntImportXlsx.vue?vue&type=template&id=b35b1c20&":
+/*!***********************************************************************************************************************!*\
+  !*** ./resources/js/components/goodcatch/modules/core/admin/aimport/AntImportXlsx.vue?vue&type=template&id=b35b1c20& ***!
+  \***********************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AntImportXlsx_vue_vue_type_template_id_b35b1c20___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../../../../node_modules/vue-loader/lib??vue-loader-options!./AntImportXlsx.vue?vue&type=template&id=b35b1c20& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/goodcatch/modules/core/admin/aimport/AntImportXlsx.vue?vue&type=template&id=b35b1c20&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AntImportXlsx_vue_vue_type_template_id_b35b1c20___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AntImportXlsx_vue_vue_type_template_id_b35b1c20___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/goodcatch/modules/core/admin/aimport/index.js":
+/*!*******************************************************************************!*\
+  !*** ./resources/js/components/goodcatch/modules/core/admin/aimport/index.js ***!
+  \*******************************************************************************/
+/*! exports provided: AImport, AImportXlsx */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _AntImport__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AntImport */ "./resources/js/components/goodcatch/modules/core/admin/aimport/AntImport.vue");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "AImport", function() { return _AntImport__WEBPACK_IMPORTED_MODULE_0__["default"]; });
+
+/* harmony import */ var _AntImportXlsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AntImportXlsx */ "./resources/js/components/goodcatch/modules/core/admin/aimport/AntImportXlsx.vue");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "AImportXlsx", function() { return _AntImportXlsx__WEBPACK_IMPORTED_MODULE_1__["default"]; });
 
 
 
 
 
+/***/ }),
+
+/***/ "./resources/js/views/Admin/departments/index.vue":
+/*!********************************************************!*\
+  !*** ./resources/js/views/Admin/departments/index.vue ***!
+  \********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _index_vue_vue_type_template_id_6c69ea15_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./index.vue?vue&type=template&id=6c69ea15&scoped=true& */ "./resources/js/views/Admin/departments/index.vue?vue&type=template&id=6c69ea15&scoped=true&");
+/* harmony import */ var _index_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./index.vue?vue&type=script&lang=js& */ "./resources/js/views/Admin/departments/index.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _index_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _index_vue_vue_type_template_id_6c69ea15_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _index_vue_vue_type_template_id_6c69ea15_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  "6c69ea15",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/views/Admin/departments/index.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/views/Admin/departments/index.vue?vue&type=script&lang=js&":
+/*!*********************************************************************************!*\
+  !*** ./resources/js/views/Admin/departments/index.vue?vue&type=script&lang=js& ***!
+  \*********************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../node_modules/vue-loader/lib??vue-loader-options!./index.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/views/Admin/departments/index.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/views/Admin/departments/index.vue?vue&type=template&id=6c69ea15&scoped=true&":
+/*!***************************************************************************************************!*\
+  !*** ./resources/js/views/Admin/departments/index.vue?vue&type=template&id=6c69ea15&scoped=true& ***!
+  \***************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_template_id_6c69ea15_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib??vue-loader-options!./index.vue?vue&type=template&id=6c69ea15&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/views/Admin/departments/index.vue?vue&type=template&id=6c69ea15&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_template_id_6c69ea15_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_template_id_6c69ea15_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

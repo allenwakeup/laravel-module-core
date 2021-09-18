@@ -29,7 +29,7 @@
                 @ok="handleImport"
                 top="20%"
                 width="60%"
-                height="780px"></a-import>
+                height="560px"></a-import>
         </div>
         <div class="admin_table_list">
             <a-table :columns="columns" :data-source="list" :pagination="false" :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" row-key="id">
