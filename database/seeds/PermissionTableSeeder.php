@@ -16,54 +16,67 @@ class PermissionTableSeeder extends Seeder
         return [
             [
                 'name' => self::MODULE_NAME,
+                'icon' => 'icon-gc-' . self::MODULE_ALIAS,
                 'children' => [
                     [
                         'name' => '主数据',
+                        'icon' => 'icon-gc-data',
                         'children' => [
                             [
                                 'name' => '地区管理',
+                                'icon' => 'icon-gc-areas',
                                 'link' => $this->getSeedsModuleApiUri(self::MODULE_ALIAS,'areas'),
                             ],
                             [
                                 'name' => '部门管理',
+                                'icon' => 'icon-gc-departments',
                                 'link' => $this->getSeedsModuleApiUri(self::MODULE_ALIAS,'departments'),
                             ],
                             [
                                 'name' => '员工管理',
+                                'icon' => 'icon-gc-staff',
                                 'link' => $this->getSeedsModuleApiUri(self::MODULE_ALIAS,'staff'),
                             ],
                         ]
                     ],
                     [
                         'name' => '数据源管理',
+                        'icon' => 'icon-gc-datasource',
                         'children' => [
                             [
                                 'name' => '数据库信息',
+                                'icon' => 'icon-gc-databases',
                                 'link' => $this->getSeedsModuleApiUri(self::MODULE_ALIAS,'databases'),
                             ],
                             [
                                 'name' => '数据源',
+                                'icon' => 'icon-gc-datasources',
                                 'link' => $this->getSeedsModuleApiUri(self::MODULE_ALIAS,'datasources'),
                             ],
                             [
                                 'name' => '连接管理',
+                                'icon' => 'icon-gc-connections',
                                 'link' => $this->getSeedsModuleApiUri(self::MODULE_ALIAS,'connections'),
                             ],
                             [
                                 'name' => '数据路径',
+                                'icon' => 'icon-gc-data-routes',
                                 'link' => $this->getSeedsModuleApiUri(self::MODULE_ALIAS,'data_routes'),
                             ],
                             [
                                 'name' => '数据映射',
+                                'icon' => 'icon-gc-data-maps',
                                 'link' => $this->getSeedsModuleApiUri(self::MODULE_ALIAS,'data_maps'),
                             ]
                         ]
                     ],
                     [
                         'name' => '服务管理',
+                        'icon' => 'icon-gc-service',
                         'children' => [
                             [
                                 'name' => '计划与任务',
+                                'icon' => 'icon-gc-schedules',
                                 'link' => $this->getSeedsModuleApiUri(self::MODULE_ALIAS,'schedules'),
                             ]
                         ]

@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 /**
  *
  * @author allen <ali@goodcatch.cn>
- * 商城后台 路由
+ * 后台 路由
  *
  */
 Route::prefix('Admin')->group(function(){

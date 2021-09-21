@@ -132,6 +132,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
 
 
 
@@ -375,7 +377,7 @@ var render = function() {
             [
               _c("div", { staticClass: "base_shadow admin_menu_title" }, [
                 _c("span", { class: _vm.collapsed ? "hiddens" : "shows" }, [
-                  _vm._v("基础模块")
+                  _vm._v("核心模块")
                 ])
               ]),
               _vm._v(" "),
@@ -410,7 +412,7 @@ var render = function() {
                     [
                       _c("a-font", {
                         staticClass: "afont menu_icon",
-                        attrs: { type: "iconshouye" }
+                        attrs: { type: "icon-gc-home" }
                       }),
                       _c("span", [_vm._v("系统首页")])
                     ],
@@ -428,7 +430,7 @@ var render = function() {
                           [
                             _c("a-font", {
                               staticClass: "afont menu_icon",
-                              attrs: { type: v.icon || "iconshouye" }
+                              attrs: { type: v.icon || "icon-gc-home" }
                             }),
                             _c("span", [_vm._v(_vm._s(v.name))])
                           ],
@@ -449,29 +451,67 @@ var render = function() {
                                       }
                                     }
                                   },
-                                  [_vm._v(_vm._s(vo.name))]
+                                  [
+                                    !!vo.icon
+                                      ? _c("a-font", {
+                                          staticClass: "afont menu_icon",
+                                          attrs: { type: vo.icon }
+                                        })
+                                      : _vm._e(),
+                                    _vm._v(_vm._s(vo.name))
+                                  ],
+                                  1
                                 )
                               : _c(
                                   "a-sub-menu",
-                                  {
-                                    key: vo.id + "",
-                                    attrs: { title: vo.name }
-                                  },
-                                  _vm._l(vo.children || [], function(vo2) {
-                                    return _c(
-                                      "a-menu-item",
+                                  { key: vo.id + "" },
+                                  [
+                                    _c(
+                                      "span",
                                       {
-                                        key: vo2.id + "",
-                                        on: {
-                                          click: function($event) {
-                                            return _vm.to_nav(vo2.link, vo2.id)
-                                          }
-                                        }
+                                        attrs: { slot: "title" },
+                                        slot: "title"
                                       },
-                                      [_vm._v(_vm._s(vo2.name))]
-                                    )
-                                  }),
-                                  1
+                                      [
+                                        !!vo.icon
+                                          ? _c("a-font", {
+                                              staticClass: "afont menu_icon",
+                                              attrs: { type: vo.icon }
+                                            })
+                                          : _vm._e(),
+                                        _c("span", [_vm._v(_vm._s(vo.name))])
+                                      ],
+                                      1
+                                    ),
+                                    _vm._v(" "),
+                                    _vm._l(vo.children || [], function(vo2) {
+                                      return _c(
+                                        "a-menu-item",
+                                        {
+                                          key: vo2.id + "",
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.to_nav(
+                                                vo2.link,
+                                                vo2.id
+                                              )
+                                            }
+                                          }
+                                        },
+                                        [
+                                          !!vo2.icon
+                                            ? _c("a-font", {
+                                                staticClass: "afont menu_icon",
+                                                attrs: { type: vo2.icon }
+                                              })
+                                            : _vm._e(),
+                                          _vm._v(_vm._s(vo2.name))
+                                        ],
+                                        1
+                                      )
+                                    })
+                                  ],
+                                  2
                                 )
                           ]
                         })
@@ -667,71 +707,131 @@ var render = function() {
             { staticClass: "admin_menu mobile" },
             [
               _c("div", { staticClass: "admin_menu_title" }, [
-                _c("span", { class: "shows" }, [_vm._v("基础模块")])
+                _c("span", { class: "shows" }, [_vm._v("核心模块")])
               ]),
               _vm._v(" "),
               _c(
                 "a-menu",
                 { attrs: { mode: "inline", theme: "dark" } },
-                _vm._l(_vm.menus, function(v) {
-                  return _c(
-                    "a-sub-menu",
-                    { key: v.id },
+                [
+                  _c(
+                    "a-menu-item",
+                    {
+                      on: {
+                        click: function($event) {
+                          return _vm.to_nav("/Admin/index")
+                        }
+                      }
+                    },
                     [
-                      _c(
-                        "span",
-                        { attrs: { slot: "title" }, slot: "title" },
-                        [
-                          _c("a-font", {
-                            staticClass: "afont menu_icon",
-                            attrs: { type: v.icon || "iconshouye" }
-                          }),
-                          _c("span", [_vm._v(_vm._s(v.name))])
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _vm._l(v.children || [], function(vo) {
-                        return [
-                          _vm.$isEmpty(vo.children) || vo.children.length == 0
-                            ? _c(
-                                "a-menu-item",
-                                {
-                                  key: vo.id,
-                                  on: {
-                                    click: function($event) {
-                                      return _vm.to_nav(vo.link)
-                                    }
-                                  }
-                                },
-                                [_vm._v(_vm._s(vo.name))]
-                              )
-                            : _c(
-                                "a-sub-menu",
-                                { key: vo.id, attrs: { title: vo.name } },
-                                _vm._l(vo.children || [], function(vo2) {
-                                  return _c(
-                                    "a-menu-item",
-                                    {
-                                      key: vo2.id,
-                                      on: {
-                                        click: function($event) {
-                                          return _vm.to_nav(vo2.link)
-                                        }
-                                      }
-                                    },
-                                    [_vm._v(_vm._s(vo2.name))]
-                                  )
-                                }),
-                                1
-                              )
-                        ]
-                      })
+                      _c("a-font", {
+                        staticClass: "afont menu_icon",
+                        attrs: { type: "icon-gc-home" }
+                      }),
+                      _c("span", [_vm._v("系统首页")])
                     ],
-                    2
-                  )
-                }),
-                1
+                    1
+                  ),
+                  _vm._v(" "),
+                  _vm._l(_vm.menus, function(v) {
+                    return _c(
+                      "a-sub-menu",
+                      { key: v.id },
+                      [
+                        _c(
+                          "span",
+                          { attrs: { slot: "title" }, slot: "title" },
+                          [
+                            _c("a-font", {
+                              staticClass: "afont menu_icon",
+                              attrs: { type: v.icon || "icon-gc-home" }
+                            }),
+                            _c("span", [_vm._v(_vm._s(v.name))])
+                          ],
+                          1
+                        ),
+                        _vm._v(" "),
+                        _vm._l(v.children || [], function(vo) {
+                          return [
+                            _vm.$isEmpty(vo.children) ||
+                            vo.children.length === 0
+                              ? _c(
+                                  "a-menu-item",
+                                  {
+                                    key: vo.id,
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.to_nav(vo.link)
+                                      }
+                                    }
+                                  },
+                                  [
+                                    !!vo.icon
+                                      ? _c("a-font", {
+                                          staticClass: "afont menu_icon",
+                                          attrs: { type: vo.icon }
+                                        })
+                                      : _vm._e(),
+                                    _vm._v(_vm._s(vo.name))
+                                  ],
+                                  1
+                                )
+                              : _c(
+                                  "a-sub-menu",
+                                  { key: vo.id },
+                                  [
+                                    _c(
+                                      "span",
+                                      {
+                                        attrs: { slot: "title" },
+                                        slot: "title"
+                                      },
+                                      [
+                                        !!vo.icon
+                                          ? _c("a-font", {
+                                              staticClass: "afont menu_icon",
+                                              attrs: { type: vo.icon }
+                                            })
+                                          : _vm._e(),
+                                        _c("span", [_vm._v(_vm._s(vo.name))])
+                                      ],
+                                      1
+                                    ),
+                                    _vm._v(" "),
+                                    _vm._l(vo.children || [], function(vo2) {
+                                      return _c(
+                                        "a-menu-item",
+                                        {
+                                          key: vo2.id,
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.to_nav(vo2.link)
+                                            }
+                                          }
+                                        },
+                                        [
+                                          !!vo2.icon
+                                            ? _c("a-font", {
+                                                staticClass: "afont menu_icon",
+                                                attrs: { type: vo2.icon }
+                                              })
+                                            : _vm._e(),
+                                          _vm._v(_vm._s(vo2.name))
+                                        ],
+                                        1
+                                      )
+                                    })
+                                  ],
+                                  2
+                                )
+                          ]
+                        })
+                      ],
+                      2
+                    )
+                  })
+                ],
+                2
               )
             ],
             1
