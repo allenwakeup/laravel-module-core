@@ -1,33 +1,35 @@
 <template>
-    <a-modal
-      :title="title"
-      :body-style="{ overflow: 'scroll', height }"
-      :dialog-style="{ top: top }"
-      :visible="visible"
-      :maskClosable="false"
-      @cancel="close"
-      :closable="false"
-      cancelText="关闭"
-      :width="width"
-      >
+    <a-draggable-modal
+            :draggable="true"
+            :title="title"
+            :body-style="{ overflow: 'scroll', height }"
+            :dialog-style="{ top: top }"
+            :visible="visible"
+            :maskClosable="false"
+            @cancel="close"
+            :closable="false"
+            cancelText="关闭"
+            :width="width"
+    >
 
         <a-layout-content>
             <a-layout style="background: #fff">
-                <a-layout-sider width="30%" style="background: #fff; border-right: 1px solid #cfcfcf;">
+                <a-layout-sider width="30%"
+                                style="background: #fff; border-right: 1px solid #cfcfcf;">
                     <a-steps v-model="step" direction="vertical" @change="onChangeSteps">
-                        <a-step title="下载模版" description="请使用模版文件" />
-                        <a-step title="选择文件" description="请选择上传的Excel文件" />
-                        <a-step title="核对数据" description="上传前对数据进行确认" />
-                        <a-step title="完成" description="上传结果显示" />
+                        <a-step title="下载模版" description="请使用模版文件"/>
+                        <a-step title="选择文件" description="请选择上传的Excel文件"/>
+                        <a-step title="核对数据" description="上传前对数据进行确认"/>
+                        <a-step title="完成" description="上传结果显示"/>
                     </a-steps>
                 </a-layout-sider>
                 <a-layout-content :style="{ padding: '0 24px', minHeight: '280px' }">
 
-                    <div v-if="step === 0" >
+                    <div v-if="step === 0">
                         <vue-excel-xlsx
-                            :data="sampleData"
-                            :columns="sampleColumns"
-                            :filename="title"
+                                :data="sampleData"
+                                :columns="sampleColumns"
+                                :filename="title"
                         >
                             点我下载模版
                         </vue-excel-xlsx>
@@ -36,9 +38,9 @@
 
 
                     <a-import-xlsx
-                        v-if="step === 1"
-                        @parsed="importFromFile"
-                        :columns="columns"
+                            v-if="step === 1"
+                            @parsed="importFromFile"
+                            :columns="columns"
                     />
 
                     <a-table
@@ -59,7 +61,8 @@
 
                     <div>
 
-                        <a-button v-if="step === 3" @click="loading = true" type="primary" :disabled="loading" :loading="loading">
+                        <a-button v-if="step === 3" @click="loading = true" type="primary"
+                                  :disabled="loading" :loading="loading">
                             开始
                         </a-button>
                     </div>
@@ -73,112 +76,113 @@
                 关闭
             </a-button>
         </template>
-    </a-modal>
-    </template>
+    </a-draggable-modal>
+</template>
 
 <script>
-import AImportXlsx from "./AntImportXlsx";
+    import AImportXlsx from "./AntImportXlsx";
+    import ADraggableModal from '@/components/admin/amodal'
 
-export default {
-    name: "AntImport",
-    components: { AImportXlsx },
-    props: {
-        open: {
-            type: Boolean,
-            default: false
-        },
-        columns: {
-            type: Array,
-            default: () => [
-                {
-                    title: '编码',
-                    dataIndex: 'code',
-                    sorter: true,
-                    desc: '两个字符5位数字'
-                },
-                {
-                    title: '名称',
-                    dataIndex: 'name',
-                    format: val => '「' + val + '」',
-                    desc: '最少两个中文汉字'
-                }
-            ]
-        },
-        title: {
-            type: String,
-            default: '数据导入'
-        },
-        top: {
-            type: String,
-            default: '20px'
-        },
-        width: {
-            type: String,
-            default: '90%'
-        },
-        height: {
-            type: String,
-            default: '600px'
-        },
+    export default {
+        name: "AntImport",
+        components: {AImportXlsx, ADraggableModal},
+        props: {
+            open: {
+                type: Boolean,
+                default: false
+            },
+            columns: {
+                type: Array,
+                default: () => [
+                    {
+                        title: '编码',
+                        dataIndex: 'code',
+                        sorter: true,
+                        desc: '两个字符5位数字'
+                    },
+                    {
+                        title: '名称',
+                        dataIndex: 'name',
+                        format: val => '「' + val + '」',
+                        desc: '最少两个中文汉字'
+                    }
+                ]
+            },
+            title: {
+                type: String,
+                default: '数据导入'
+            },
+            top: {
+                type: String,
+                default: '20px'
+            },
+            width: {
+                type: String,
+                default: '90%'
+            },
+            height: {
+                type: String,
+                default: '600px'
+            },
 
 
-    },
-    data() {
-        return {
-            visible: false,
-            loading: false,
-            step: 0,
-            data: []
-        };
-    },
-    computed: {
-        sampleColumns(){
-            return this.columns.map(col => Object.assign({}, {
-                label: col.title,
-                field: col.dataIndex,
-                dataFormat: col.format
-            }))
         },
-        sampleData(){
-            return [this.columns.reduce((data, col) => {
-                data[col.dataIndex] = col.desc;
-                return data;
-            }, {})]
+        data() {
+            return {
+                visible: false,
+                loading: false,
+                step: 0,
+                data: []
+            };
         },
+        computed: {
+            sampleColumns() {
+                return this.columns.map(col => Object.assign({}, {
+                    label: col.title,
+                    field: col.dataIndex,
+                    dataFormat: col.format
+                }))
+            },
+            sampleData() {
+                return [this.columns.reduce((data, col) => {
+                    data[col.dataIndex] = col.desc;
+                    return data;
+                }, {})]
+            },
 
-    },
-    watch: {
-        open(val) {
-            this.visible = val;
         },
-    },
-    methods: {
-        onChangeSteps(step){
-            this.step = step;
+        watch: {
+            open(val) {
+                this.visible = val;
+            },
         },
-        importFromFile(data){
-            this.data = data.length > 1 ? data.slice(1) : data;
-            this.step = 2;
+        methods: {
+            onChangeSteps(step) {
+                this.step = step;
+            },
+            importFromFile(data) {
+                this.data = data.length > 1 ? data.slice(1) : data;
+                this.step = 2;
+            },
+            handleSubmit() {
+                this.$emit("ok", this.data.map(data => {
+                    const cp_data = Object.assign({}, data);
+                    delete cp_data.__row_key;
+                    return cp_data;
+                }));
+                this.close();
+            },
+            close() {
+                this.$emit("close");
+                this.visible = false;
+            }
         },
-        handleSubmit() {
-            this.$emit("ok", this.data.map(data => {
-                const cp_data = Object.assign({}, data);
-                delete cp_data.__row_key;
-                return cp_data;
-            }));
-            this.close();
+        created() {
+
         },
-        close() {
-            this.$emit("close");
-            this.visible = false;
+        mounted() {
         }
-    },
-    created() {
-
-    },
-    mounted() {
-    }
-};
+    };
 
 </script>
 <style lang="scss" scoped>

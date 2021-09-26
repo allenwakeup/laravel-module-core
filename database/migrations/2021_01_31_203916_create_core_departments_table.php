@@ -31,7 +31,7 @@ class CreateCoreDepartmentsTable extends Migration
             $table->unsignedInteger('status')->default(1)->comment('状态 0 禁用 1 启用');
             $table->timestamps();
 
-            $table->unique(['pid', 'name']);
+            $table->unique(['code']);
         });
     }
 
