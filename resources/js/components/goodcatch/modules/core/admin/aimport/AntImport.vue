@@ -7,8 +7,8 @@
             :visible="visible"
             :maskClosable="false"
             @cancel="close"
-            :closable="false"
             cancelText="关闭"
+            :footer="null"
             :width="width"
     >
 
@@ -61,21 +61,17 @@
 
                     <div>
 
-                        <a-button v-if="step === 3" @click="loading = true" type="primary"
+                        <a-button v-if="step === 3" @click="onClickBegin" type="primary"
                                   :disabled="loading" :loading="loading">
                             开始
                         </a-button>
+                        <p v-show="!$isEmpty(result)">{{ result }}</p>
                     </div>
 
 
                 </a-layout-content>
             </a-layout>
         </a-layout-content>
-        <template slot="footer">
-            <a-button key="back" @click="handleSubmit">
-                关闭
-            </a-button>
-        </template>
     </a-draggable-modal>
 </template>
 
@@ -125,12 +121,18 @@
                 default: '600px'
             },
 
+            action: {
+                type: String,
+                default: ''
+            },
+
 
         },
         data() {
             return {
                 visible: false,
                 loading: false,
+                result: '',
                 step: 0,
                 data: []
             };
@@ -154,6 +156,8 @@
         watch: {
             open(val) {
                 this.visible = val;
+                this.step = 1;
+                this.result = '';
             },
         },
         methods: {
@@ -164,13 +168,38 @@
                 this.data = data.length > 1 ? data.slice(1) : data;
                 this.step = 2;
             },
-            handleSubmit() {
-                this.$emit("ok", this.data.map(data => {
-                    const cp_data = Object.assign({}, data);
-                    delete cp_data.__row_key;
-                    return cp_data;
-                }));
-                this.close();
+            onClickBegin(){
+                if(!this.$isEmpty(this.action)){
+                    const form = new FormData();
+                    const vm = this;
+                    form.append('file', new Blob([JSON.stringify(
+                        this.data.map(data => {
+                            const cp_data = Object.assign({}, data);
+                            delete cp_data.__row_key;
+                            return cp_data;
+                        }) , null, 2)], {
+                        type: 'application/json;charset=UTF-8'
+                    }));
+                    vm.loading = true;
+                    this.$postfile(this.action, form).then(res=>{
+                        if(res.code === 200){
+                            vm.result = res.msg;
+
+                            vm.$message.success(res.msg)
+                        }else{
+                            vm.result = res.msg;
+                            vm.$message.error(res.msg)
+                        }
+                        vm.loading = false;
+                        vm.$emit("ok", res);
+                        setTimeout(()=>{
+                            vm.close();
+                        }, 2000)
+                    }, err=>{
+                        vm.loading = false;
+                    })
+                }
+
             },
             close() {
                 this.$emit("close");
