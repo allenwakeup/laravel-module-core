@@ -8,6 +8,7 @@ namespace Goodcatch\Modules\Core\Repositories\Admin;
 
 use Goodcatch\Modules\Laravel\Traits\Searchable;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 
 class BaseRepository
 {
@@ -28,23 +29,32 @@ class BaseRepository
             }
         }
     }
+    
+    public static function tree(Collection $data, $pid = 0, $level = 0, $path = [])
+    {
+        if(isset($data)){
+            return $data->where('pid', $pid)
+                ->map(function ($model) use ($data, $level, $path) {
+                    $mapped = array_merge($model->toArray(), [
+                        'id' => $model->id,
+                        'name' => $model->name,
+                        'level' => $level,
+                        'pid' => $model->pid,
+                        'path' => $path
+                    ]);
 
-    // 递归无线树状结构 多元数组
-    protected static function tree ($data, $pid = 0, $lev = 0){
-        $arr = [];
-        foreach($data as $v){
+                    $child = $data->where('pid', $model->id);
+                    if ($child->isEmpty()) {
+                        return $mapped;
+                    }
 
-            if($v ['pid'] === $pid){
-                $v ['lev'] = $lev;
-                $v ['children'] = self::tree ($data, $v ['id'], $lev + 1);
-                if(count ($v ['children']) <= 0){
-                    unset ($v ['children']);
-                }
-                $arr [] = $v;
-            }
+                    array_push($path, $model->id);
+                    $mapped['children'] = self::tree($data, $model->id, $level + 1, $path)->values()->all();
+                    return $mapped;
+                })
+                ->values();
         }
-        return $arr;
+        return \collect([]);
     }
-
 
 }
