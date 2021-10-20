@@ -4,6 +4,10 @@ export default [
         path:"/Admin/goodcatch/m/core/index",name:"goodcatch_m_core_index",component:()=>import("@/views/Admin/index"),children:[
             {path:"/Admin/goodcatch/m/core/index",name:"goodcatch_m_core_default",component:()=>import("@/views/Admin/default")}, // 打开默认页面
 
+            // 附件
+            {path:"/Admin/goodcatch/m/core/attachments",name:"goodcatch_m_core_admin_attachments",component:()=>import("@/views/Admin/attachments/index")},
+            {path:"/Admin/goodcatch/m/core/attachments/form/:id?",name:"goodcatch_m_core_admin_attachments_form",component:()=>import("@/views/Admin/attachments/form")},
+
             // 地区
             {path:"/Admin/goodcatch/m/core/areas",name:"goodcatch_m_core_admin_areas",component:()=>import("@/views/Admin/areas/index")},
             {path:"/Admin/goodcatch/m/core/areas/form/:id?",name:"goodcatch_m_core_admin_areas_form",component:()=>import("@/views/Admin/areas/form")},

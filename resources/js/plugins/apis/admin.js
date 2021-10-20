@@ -20,6 +20,7 @@ export default {
      * 模块化接口
      */
 
+    "moduleCoreAttachments": baseUrl + "Admin/goodcatch/m/core/attachments", // 附件
     "moduleCoreAreas": baseUrl + "Admin/goodcatch/m/core/areas", // 地区
     "moduleCoreDepartments": baseUrl + "Admin/goodcatch/m/core/departments", // 部门
     "moduleCoreStaff": baseUrl + "Admin/goodcatch/m/core/staff", // 员工

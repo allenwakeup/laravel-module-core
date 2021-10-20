@@ -27,11 +27,11 @@ class AreaController extends Controller
      */
     public function index(Request $request)
     {
-        $type = $request->type;
+        $data_type = $request->data_type;
         $conditions = $request->only($this->formNames);
 
-        if($type === 'selector'){
-            return $this->success(AreaRepository::select($conditions, $request->get($type), $request->keyword));
+        if($data_type === 'cascader'){
+            return $this->success(AreaRepository::select($conditions, $request->get($data_type), $request->keyword));
         } else {
             return $this->success(
                 new AreaCollection(AreaRepository::list(

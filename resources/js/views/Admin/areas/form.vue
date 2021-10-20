@@ -102,7 +102,7 @@ export default {
         },
         load_areas(selectedOptions){
             const targetOption = selectedOptions[selectedOptions.length - 1];
-            const params = {type: 'selector', selector: this.area_cascader[targetOption.cascader]};
+            const params = {data_type: 'cascader', cascader: this.area_cascader[targetOption.cascader]};
             params[targetOption.cascader + '_id'] = targetOption.value;
 
             targetOption.loading = true;
@@ -124,7 +124,7 @@ export default {
                 this.get_info();
             }
 
-            this.$get(this.$api.moduleCoreAreas, {type: 'selector', selector: 'province'}).then(res=>{
+            this.$get(this.$api.moduleCoreAreas, {data_type: 'cascader', cascader: 'province'}).then(res=>{
 
                 this.areas = res.data;
             });

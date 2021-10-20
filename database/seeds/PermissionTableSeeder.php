@@ -19,6 +19,11 @@ class PermissionTableSeeder extends Seeder
                 'icon' => 'icon-gc-' . self::MODULE_ALIAS,
                 'children' => [
                     [
+                        'name' => '附件管理',
+                        'icon' => 'icon-gc-attachments',
+                        'link' => $this->getSeedsModuleApiUri(self::MODULE_ALIAS,'areas'),
+                    ],
+                    [
                         'name' => '主数据',
                         'icon' => 'icon-gc-data',
                         'children' => [
@@ -88,6 +93,12 @@ class PermissionTableSeeder extends Seeder
 
     public function getSeedsPermissionGroups (){
         return [
+            // 附件管理
+            $this->getSeedsModuleMenuGroupName(self::MODULE_ALIAS, '附件管理') => [
+                self::MODULE_ALIAS . '.attachments' => [
+                    'download' => ['name' => '下载附件', 'content' => '下载附件']
+                ]
+            ],
             // 主数据
             // 地区管理
             $this->getSeedsModuleMenuGroupName(self::MODULE_ALIAS, '地区管理') => [

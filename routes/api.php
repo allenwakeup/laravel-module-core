@@ -26,6 +26,7 @@ Route::prefix('Admin')->group(function(){
             Route::prefix('core')->name('core.')->group(function(){
                 Route::group(['middleware'=>'jwt.admin'], function(){
                     Route::apiResources([
+                        'attachments'=>'AttachmentController', // 附件
                         'areas'=>'AreaController', // 区域
                         'departments'=>'DepartmentController', // 部门
                         'staff'=>'StaffController', // 员工
@@ -36,6 +37,7 @@ Route::prefix('Admin')->group(function(){
                         'data_maps'=>'DataMapController', // 数据映射
                     ], [
                         'parameters' => [
+                            'attachment' => 'id',
                             'datasource' => 'id',
                             'connection' => 'id',
                             'data_route' => 'id',
@@ -43,8 +45,9 @@ Route::prefix('Admin')->group(function(){
                             'staff' => 'id'
                         ]
                     ]);
+                    Route::get('/attachments/download', 'AttachmentController@download')->name('attachments.download'); // 下载附件
                     Route::get('/databases', 'DatabaseController@index')->name('databases.index'); // 数据库
-                    Route::post('/connections/test', 'ConnectionController@test')->name('connections.test'); // 数据库
+                    Route::post('/connections/test', 'ConnectionController@test')->name('connections.test'); // 数据库测试连接
                     Route::get('/schedules/{id}/logs', 'ScheduleController@logs')->name('schedules.logs'); // 计划任务日志
 
                     DataMapRepository::loadEnabledFromCache()->each(function($item){

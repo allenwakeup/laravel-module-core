@@ -13,9 +13,13 @@
 
     <link rel="stylesheet" href="{{ mix('css/app.css','dist') }}">
     <link rel="stylesheet" href="{{ mix('css/style.css','dist/module-core') }}">
-
-    <script src="/dist/vendor/vue/vue.min.js"></script>
-    <script src="/dist/vendor/vue-router/vue-router.min.js"></script>
+    @if($local)
+        <script src="/dist/vendor/vue/vue.js"></script>
+        <script src="/dist/vendor/vue-router/vue-router.js"></script>
+    @else
+        <script src="/dist/vendor/vue/vue.min.js"></script>
+        <script src="/dist/vendor/vue-router/vue-router.min.js"></script>
+    @endif
     <script src="/dist/vendor/moment/moment-with-locales.min.js"></script>
     <script src="/dist/vendor/clipboard/clipboard.min.js"></script>
     <script src="/dist/vendor/ant-design-vue/antd.min.js"></script>

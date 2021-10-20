@@ -29,5 +29,22 @@ class BaseRepository
         }
     }
 
+    // 递归无线树状结构 多元数组
+    protected static function tree ($data, $pid = 0, $lev = 0){
+        $arr = [];
+        foreach($data as $v){
+
+            if($v ['pid'] === $pid){
+                $v ['lev'] = $lev;
+                $v ['children'] = self::tree ($data, $v ['id'], $lev + 1);
+                if(count ($v ['children']) <= 0){
+                    unset ($v ['children']);
+                }
+                $arr [] = $v;
+            }
+        }
+        return $arr;
+    }
+
 
 }

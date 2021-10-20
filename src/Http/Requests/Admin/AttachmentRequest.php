@@ -22,15 +22,20 @@ class AttachmentRequest extends FormRequest
         switch ($this->method()) {
             case 'POST':
                 return [
-                    'attachable' => 'required|string|in:' . implode(',', \collect(Attachment::ATTACHABLES_MAPPING)->keys()->all()),
+                    'attachable' => 'required|string',
                     'id' => 'required|numeric'
                 ];
                 break;
             case 'DELETE':
                 return [
-                    'attachable' => 'required|string|in:' . implode(',', \collect(Attachment::ATTACHABLES_MAPPING)->keys()->all()),
+                    'attachable' => 'required|string',
                     'attachable_id' => 'required|numeric',
                     'id' => 'required|numeric'
+                ];
+                break;
+            case 'GET':
+                return [
+                    'name'=>'max:50'
                 ];
                 break;
         }
