@@ -17,22 +17,30 @@
         </div>
         <div class="unline underm"></div>
 
-
-
-        <div class="admin_table_handle_btn">
-            <a-button @click="$router.push('/Admin/goodcatch/m/core/departments/form')" type="primary" icon="plus">添加</a-button>
-            <a-button @click="openImportDialog" icon="import">批量导入</a-button>
-            <a-button class="admin_delete_btn" type="danger" icon="delete" @click="del">批量删除</a-button>
-            <a-import
-                :open="isOpenImportDialog"
-                @close="isOpenImportDialog = false"
-                @ok="handleImport"
-                top="20%"
-                width="60%"
-                height="560px"></a-import>
-        </div>
         <div class="admin_table_list">
-            <a-table :columns="columns" :data-source="list" :pagination="false" :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" row-key="id">
+            <a-table
+                    :columns="columns"
+                    :data-source="list"
+                    :loading="list_loading"
+                    :pagination="false"
+                    :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
+                    row-key="id">
+
+                <template slot="title" slot-scope="currentPageData">
+                    <search :search-config="search" @searchParams="onSearchParams"/>
+                    <div class="admin_table_handle_btn">
+                        <a-button @click="$router.push('/Admin/goodcatch/m/core/departments/form')" type="primary" icon="plus">添加</a-button>
+                        <a-button @click="openImportDialog" icon="import">批量导入</a-button>
+                        <a-button class="admin_delete_btn" type="danger" icon="delete" @click="del">批量删除</a-button>
+                        <a-import
+                                :open="isOpenImportDialog"
+                                @close="isOpenImportDialog = false"
+                                @ok="handleImport"
+                                top="20%"
+                                width="60%"
+                                height="560px"></a-import>
+                    </div>
+                </template>
                 <span slot="pid" slot-scope="record">
                     {{ record.parent ? record.parent.name : '--' }}
                 </span>
@@ -62,9 +70,10 @@
 </template>
 
 <script>
+import Search from '@/components/admin/search'
 import { AImport } from '@/components/goodcatch/modules/core/admin/aimport'
 export default {
-    components: { AImport },
+    components: { AImport, Search },
     props: {},
     data() {
       return {
@@ -73,6 +82,7 @@ export default {
               per_page:30,
           },
           total:0, //总页数
+          list_loading: false,
           selectedRowKeys:[], // 被选择的行
           columns:[
               {title:'#',dataIndex:'id',fixed:'left'},
@@ -106,6 +116,10 @@ export default {
     watch: {},
     computed: {},
     methods: {
+        // 查询条件
+        onSearchParams(search){
+            this.getList(null, search);
+        },
         // 选择框被点击
         onSelectChange(selectedRowKeys) {
             this.selectedRowKeys = selectedRowKeys;
@@ -189,14 +203,23 @@ export default {
                 console.log(data);
             }
         },
-        getList(pid){
+        getList(pid, search = {}){
             if(!pid){
                 this.breadcrumb = [];
             }
-            const params = pid ? Object.assign({}, this.params, { pid: pid }) : this.params;
+            this.list_loading = true;
+            const params = pid ?
+                Object.assign({}, search, this.params, { pid: pid })
+                : Object.assign({}, search, this.params);
             this.$get(this.$api.moduleCoreDepartments, params).then(res=>{
-                this.total = res.data.total;
-                this.list = res.data.data;
+                if (res.code === 200){
+                    this.total = res.data.total;
+                    this.list = res.data.data;
+                }
+                this.list_loading = false;
+            }, err=>{
+                this.$message.error('数据加载失败');
+                this.list_loading = false;
             });
         },
         onload(){

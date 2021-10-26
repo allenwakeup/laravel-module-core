@@ -6,7 +6,7 @@
         </div>
         <div class="unline underm"></div>
         <div class="admin_form">
-            <a-form-model :model="form" :rules="rules" :label-col="{ span: 6 }"  :wrapper-col="{ span: 16 }">
+            <a-form-model ref="form" :model="form" :rules="rules" :label-col="{ span: 6 }"  :wrapper-col="{ span: 16 }">
                 <a-form-model-item label="上级部门">
                     <a-cascader :load-data="load_departments"
                                 :options="departments"
@@ -83,34 +83,35 @@ export default {
     methods: {
         handleSubmit(){
 
-            // 验证代码处
-            if(this.$isEmpty(this.form.code)){
-                return this.$message.error('编码不能为空');
-            }
-            if(this.$isEmpty(this.form.name)){
-                return this.$message.error('名称不能为空');
-            }
+            this.$refs.form.validate(valid => {
+                if (valid) {
+                    let api = this.$apiHandle(this.$api.moduleCoreDepartments,this.id);
+                    if(api.status){
+                        this.$put(api.url,this.form).then(res=>{
+                            if(res.code === 200){
+                                this.$message.success(res.msg)
+                                return this.$router.back();
+                            }else{
+                                return this.$message.error(res.msg)
+                            }
+                        })
+                    }else{
+                        this.$post(api.url,this.form).then(res=>{
+                            if(res.code === 200 || res.code === 201){
+                                this.$message.success(res.msg)
+                                return this.$router.back();
+                            }else{
+                                return this.$message.error(res.msg)
+                            }
+                        })
+                    }
+                } else {
+                    this.$message.error('请按要求填写表单！');
+                    return false;
+                }
+            });
 
-            let api = this.$apiHandle(this.$api.moduleCoreDepartments,this.id);
-            if(api.status){
-                this.$put(api.url,this.form).then(res=>{
-                    if(res.code === 200){
-                        this.$message.success(res.msg)
-                        return this.$router.back();
-                    }else{
-                        return this.$message.error(res.msg)
-                    }
-                })
-            }else{
-                this.$post(api.url,this.form).then(res=>{
-                    if(res.code === 200 || res.code === 201){
-                        this.$message.success(res.msg)
-                        return this.$router.back();
-                    }else{
-                        return this.$message.error(res.msg)
-                    }
-                })
-            }
+
 
 
         },

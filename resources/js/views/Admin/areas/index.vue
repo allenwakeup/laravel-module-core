@@ -3,12 +3,22 @@
         <div class="admin_table_page_title">地区列表</div>
         <div class="unline underm"></div>
 
-        <div class="admin_table_handle_btn">
-            <a-button @click="$router.push('/Admin/goodcatch/m/core/areas/form')" type="primary" icon="plus">添加</a-button>
-            <a-button class="admin_delete_btn" type="danger" icon="delete" @click="del">批量删除</a-button>
-        </div>
+
         <div class="admin_table_list">
-            <a-table :columns="columns" :data-source="list" :pagination="false" :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" row-key="id">
+            <a-table
+                    :columns="columns"
+                    :data-source="list"
+                    :loading="list_loading"
+                    :pagination="false"
+                    :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
+                    row-key="id">
+                <template slot="title" slot-scope="currentPageData">
+                    <search :search-config="search" @searchParams="onSearchParams"/>
+                    <div class="admin_table_handle_btn">
+                        <a-button @click="$router.push('/Admin/goodcatch/m/core/areas/form')" type="primary" icon="plus">添加</a-button>
+                        <a-button class="admin_delete_btn" type="danger" icon="delete" @click="del">批量删除</a-button>
+                    </div>
+                </template>
                 <span slot="code" slot-scope="record">
                     {{ record.county.city.province.name + '/' + record.county.city.name + '/' + record.county.name }}
                 </span>
@@ -24,8 +34,9 @@
 </template>
 
 <script>
+import Search from '@/components/admin/search'
 export default {
-    components: {},
+    components: { Search },
     props: {},
     data() {
       return {
@@ -34,6 +45,7 @@ export default {
               per_page:30,
           },
           total:0, //总页数
+          list_loading: false,
           selectedRowKeys:[], // 被选择的行
           columns:[
               {title:'#',dataIndex:'id',fixed:'left'},
@@ -53,6 +65,10 @@ export default {
     watch: {},
     computed: {},
     methods: {
+        // 查询条件
+        onSearchParams(search){
+            this.getList(search);
+        },
         // 选择框被点击
         onSelectChange(selectedRowKeys) {
             this.selectedRowKeys = selectedRowKeys;
@@ -63,7 +79,7 @@ export default {
         },
         // 删除
         del(){
-            if(this.selectedRowKeys.length==0){
+            if(this.selectedRowKeys.length===0){
                 return this.$message.error('未选择数据.');
             }
             this.$confirm({
@@ -75,7 +91,7 @@ export default {
                 onOk:()=> {
                     let ids = this.selectedRowKeys.join(',');
                     this.$delete(this.$api.moduleCoreAreas+'/'+ids).then(res=>{
-                        if(res.code == 200){
+                        if(res.code === 200){
                             this.onload();
                             this.$message.success('删除成功');
                         }else{
@@ -86,12 +102,22 @@ export default {
                 },
             });
         },
-
-        onload(){
-            this.$get(this.$api.moduleCoreAreas,this.params).then(res=>{
-                this.total = res.data.total;
-                this.list = res.data.data;
+        getList(search = {}){
+            this.list_loading = true;
+            const params = Object.assign({}, search, this.params);
+            this.$get(this.$api.moduleCoreAreas, params).then(res=>{
+                if (res.code === 200){
+                    this.total = res.data.total;
+                    this.list = res.data.data;
+                }
+                this.list_loading = false;
+            }, err=>{
+                this.$message.error('数据加载失败');
+                this.list_loading = false;
             });
+        },
+        onload(){
+            this.getList();
         },
     },
     created() {

@@ -47,8 +47,9 @@
 </template>
 
 <script>
+    import Search from '@/components/admin/search'
     export default {
-        components: {},
+        components: { Search },
         props: {},
         data() {
             return {

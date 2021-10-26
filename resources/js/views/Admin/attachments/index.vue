@@ -3,12 +3,22 @@
         <div class="admin_table_page_title">附件列表</div>
         <div class="unline underm"></div>
 
-        <div class="admin_table_handle_btn">
-            <a-button @click="$router.push('/Admin/goodcatch/m/core/attachments/form')" type="primary" icon="plus">添加</a-button>
-            <a-button class="admin_delete_btn" type="danger" icon="delete" @click="del">批量删除</a-button>
-        </div>
+
         <div class="admin_table_list">
-            <a-table :columns="columns" :data-source="list" :pagination="false" :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" row-key="id">
+            <a-table
+                    :columns="columns"
+                    :data-source="list"
+                    :loading="list_loading"
+                    :pagination="false"
+                    :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
+                    row-key="id">
+                <template slot="title" slot-scope="currentPageData">
+                    <search :search-config="search" @searchParams="onSearchParams"/>
+                    <div class="admin_table_handle_btn">
+                        <a-button @click="$router.push('/Admin/goodcatch/m/core/attachments/form')" type="primary" icon="plus">添加</a-button>
+                        <a-button class="admin_delete_btn" type="danger" icon="delete" @click="del">批量删除</a-button>
+                    </div>
+                </template>
                 <span slot="action" slot-scope="rows">
                     <a-button icon="edit" @click="$router.push('/Admin/goodcatch/m/core/attachments/form/'+rows.id)">编辑</a-button>
                 </span>
@@ -21,8 +31,9 @@
 </template>
 
 <script>
+import Search from '@/components/admin/search'
 export default {
-    components: {},
+    components: { Search },
     props: {},
     data() {
       return {
@@ -31,6 +42,7 @@ export default {
               per_page:30,
           },
           total:0, //总页数
+          list_loading: false,
           selectedRowKeys:[], // 被选择的行
           columns:[
               {title:'#',dataIndex:'id',fixed:'left'},
@@ -45,6 +57,10 @@ export default {
     watch: {},
     computed: {},
     methods: {
+        // 查询条件
+        onSearchParams(search){
+            this.getList(search);
+        },
         // 选择框被点击
         onSelectChange(selectedRowKeys) {
             this.selectedRowKeys = selectedRowKeys;
@@ -78,12 +94,22 @@ export default {
                 },
             });
         },
-
-        onload(){
-            this.$get(this.$api.moduleCoreAttachments,this.params).then(res=>{
-                this.total = res.data.total;
-                this.list = res.data.data;
+        getList(search = {}){
+            this.list_loading = true;
+            const params = Object.assign({}, search, this.params);
+            this.$get(this.$api.moduleCoreAttachments, params).then(res=>{
+                if (res.code === 200){
+                    this.total = res.data.total;
+                    this.list = res.data.data;
+                }
+                this.list_loading = false;
+            }, err=>{
+                this.$message.error('数据加载失败');
+                this.list_loading = false;
             });
+        },
+        onload(){
+            this.getList();
         },
     },
     created() {

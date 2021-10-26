@@ -35,6 +35,10 @@ return [
             'right_id' => 'right_id',
 
         ]
+    ],
+
+    'menu' => [
+        'type' => 105
     ]
 
 ];

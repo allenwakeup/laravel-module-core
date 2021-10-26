@@ -2,13 +2,23 @@
     <div>
         <div class="admin_table_page_title">数据映射列表</div>
         <div class="unline underm"></div>
-        <div class="admin_table_handle_btn">
-            <a-button @click="$router.push('/Admin/goodcatch/m/core/data_maps/form')" type="primary" icon="plus">添加</a-button>
-            <a-button class="admin_delete_btn" type="danger" icon="delete" @click="del">批量删除</a-button>
-        </div>
-        <div class="admin_table_list">
-            <a-table :columns="columns" :data-source="list" :scroll="{ x: 2048, y: 400 }" :pagination="false" :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }" row-key="id">
 
+        <div class="admin_table_list">
+            <a-table
+                    :columns="columns"
+                    :data-source="list"
+                    :scroll="{ x: 2048, y: 400 }"
+                    :pagination="false"
+                    :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
+                    row-key="id">
+
+                <template slot="title" slot-scope="currentPageData">
+                    <search :search-config="search" @searchParams="onSearchParams"/>
+                    <div class="admin_table_handle_btn">
+                        <a-button @click="$router.push('/Admin/goodcatch/m/core/data_maps/form')" type="primary" icon="plus">添加</a-button>
+                        <a-button class="admin_delete_btn" type="danger" icon="delete" @click="del">批量删除</a-button>
+                    </div>
+                </template>
                 <span slot="data_route_id" slot-scope="record">
                     {{ record.dataRoute ? record.dataRoute.name : record.data_route_id }}
                 </span>
@@ -43,11 +53,10 @@
 </template>
 
 <script>
-
-    import AAssignment from "./assignment";
+    import Search from '@/components/admin/search'
 
     export default {
-        components: { AAssignment },
+        components: { AAssignment, Search },
         props: {},
         data() {
             return {
@@ -56,6 +65,7 @@
                     per_page:30,
                 },
                 total:0, //总页数
+                list_loading: false,
                 selectedRowKeys:[], // 被选择的行
                 columns:[
                     {title:'#',dataIndex:'id',fixed:'left', width: 80},
@@ -85,6 +95,10 @@
         watch: {},
         computed: {},
         methods: {
+            // 查询条件
+            onSearchParams(search){
+                this.getList(search);
+            },
             // 选择框被点击
             onSelectChange(selectedRowKeys) {
                 this.selectedRowKeys = selectedRowKeys;
@@ -118,12 +132,22 @@
                     },
                 });
             },
-
-            onload(){
-                this.$get(this.$api.moduleCoreDataMaps,this.params).then(res=>{
-                    this.total = res.data.total;
-                    this.list = res.data.data;
+            getList(search = {}){
+                this.list_loading = true;
+                const params = Object.assign({}, search, this.params);
+                this.$get(this.$api.moduleCoreDataMaps, params).then(res=>{
+                    if (res.code === 200){
+                        this.total = res.data.total;
+                        this.list = res.data.data;
+                    }
+                    this.list_loading = false;
+                }, err=>{
+                    this.$message.error('数据加载失败');
+                    this.list_loading = false;
                 });
+            },
+            onload(){
+                this.getList();
             },
             handleAssignment(record) {
                 this.selectedAssignment = record;

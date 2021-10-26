@@ -6,28 +6,28 @@
         </div>
         <div class="unline underm"></div>
         <div class="admin_form">
-            <a-form-model :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
+            <a-form-model ref="form" :model="form" :rules="rules" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
 
                 <a-form-model-item label="代码">
-                    <a-input v-model="info.code"></a-input>
+                    <a-input v-model="form.code"></a-input>
                 </a-form-model-item>
                 <a-form-model-item label="名称">
-                    <a-input v-model="info.name"></a-input>
+                    <a-input v-model="form.name"></a-input>
                 </a-form-model-item>
                 <a-form-model-item label="描述">
-                    <a-textarea v-model="info.description" :auto-size="{ minRows: 3, maxRows: 5 }" />
+                    <a-textarea v-model="form.description" :auto-size="{ minRows: 3, maxRows: 5 }" />
                 </a-form-model-item>
                 <a-form-model-item label="必填项">
-                    <a-textarea v-model="info.requires" :auto-size="{ minRows: 3, maxRows: 5 }" />
+                    <a-textarea v-model="form.requires" :auto-size="{ minRows: 3, maxRows: 5 }" />
                 </a-form-model-item>
                 <a-form-model-item label="选填项">
-                    <a-textarea v-model="info.options" :auto-size="{ minRows: 3, maxRows: 5 }" />
+                    <a-textarea v-model="form.options" :auto-size="{ minRows: 3, maxRows: 5 }" />
                 </a-form-model-item>
                 <a-form-model-item label="排序">
-                    <a-input-number v-model="info.order" :min="0" @change="onChangeOrder" />
+                    <a-input-number v-model="form.order" :min="0" @change="onChangeOrder" />
                 </a-form-model-item>
                 <a-form-model-item label="状态">
-                    <a-switch checked-children="启用" un-checked-children="禁用" :checked="info.status === 1" @change="onChangeStatus"/>
+                    <a-switch checked-children="启用" un-checked-children="禁用" :checked="form.status === 1" @change="onChangeStatus"/>
                 </a-form-model-item>
                 <a-form-model-item :wrapper-col="{ span: 12, offset: 5 }">
                     <a-button type="primary" @click="handleSubmit">提交</a-button>
@@ -45,7 +45,7 @@ export default {
     data() {
       return {
           cascader_area: [],
-          info:{
+          form:{
               code: '',
               name: '',
               description: '',
@@ -53,6 +53,18 @@ export default {
               options: '',
               order: 1,
               status: 1
+          },
+          rules: {
+
+              code: [
+                  {min: 1, max: 20, message: '1到20个字符', trigger: 'blur'},
+              ],
+              name: [
+                  {required: true, message: '请输入名称', trigger: 'blur'},
+                  {min: 2, max: 10, message: '至少两个字', trigger: 'blur'},
+              ]
+
+
           },
           id:0,
       };
@@ -62,50 +74,47 @@ export default {
     methods: {
         handleSubmit(){
 
-            // 验证代码处
-            if(this.$isEmpty(this.info.code)){
-                return this.$message.error('代码不能为空');
-            }
-            if(this.$isEmpty(this.info.code)){
-                return this.$message.error('代码不能为空');
-            }
-
-            if(this.$isEmpty(this.info.name)){
-                return this.$message.error('名称不能为空');
-            }
-
-            let api = this.$apiHandle(this.$api.moduleCoreDatasources,this.id);
-            if(api.status){
-                this.$put(api.url,this.info).then(res=>{
-                    if(res.code == 200){
-                        this.$message.success(res.msg)
-                        return this.$router.back();
+            this.$refs.form.validate(valid => {
+                if (valid) {
+                    let api = this.$apiHandle(this.$api.moduleCoreDatasources,this.id);
+                    if(api.status){
+                        this.$put(api.url,this.form).then(res=>{
+                            if(res.code === 200){
+                                this.$message.success(res.msg)
+                                return this.$router.back();
+                            }else{
+                                return this.$message.error(res.msg)
+                            }
+                        })
                     }else{
-                        return this.$message.error(res.msg)
+                        this.$post(api.url,this.form).then(res=>{
+                            if(res.code === 200 || res.code === 201){
+                                this.$message.success(res.msg)
+                                return this.$router.back();
+                            }else{
+                                return this.$message.error(res.msg)
+                            }
+                        })
                     }
-                })
-            }else{
-                this.$post(api.url,this.info).then(res=>{
-                    if(res.code == 200 || res.code == 201){
-                        this.$message.success(res.msg)
-                        return this.$router.back();
-                    }else{
-                        return this.$message.error(res.msg)
-                    }
-                })
-            }
+                } else {
+                    this.$message.error('请按要求填写表单！');
+                    return false;
+                }
+            });
+
+
 
 
         },
         onChangeOrder(value){
-            this.info.order = value;
+            this.form.order = value;
         },
         onChangeStatus(checked){
-            this.info.status = checked ? 1 : 0;
+            this.form.status = checked ? 1 : 0;
         },
         get_info(){
             this.$get(this.$api.moduleCoreDatasources+'/'+this.id).then(res=>{
-                this.info = res.data;
+                this.form = res.data;
             })
         },
 
