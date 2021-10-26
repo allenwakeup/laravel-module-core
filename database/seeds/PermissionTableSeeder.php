@@ -27,7 +27,7 @@ class PermissionTableSeeder extends Seeder
                         'name' => '附件管理',
                         'icon' => 'icon-gc-attachments',
                         'is_type' => $menu_type,
-                        'link' => $this->getSeedsModuleApiUri(self::MODULE_ALIAS,'areas'),
+                        'link' => $this->getSeedsModuleApiUri(self::MODULE_ALIAS,'attachments'),
                     ],
                     [
                         'name' => '主数据',

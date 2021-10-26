@@ -7,7 +7,7 @@
             <div class="base_shadow admin_menu_title"><span :class="collapsed?'hiddens':'shows'">核心模块</span></div>
             <a-menu mode="inline" theme="dark" :default-selected-keys="defaultSelectedKeys" :open-keys.sync="defaultOpenKeys">
                 <a-menu-item @click="to_nav('/Admin/index', 0)"><a-font class="afont menu_icon" type="icon-gc-home" /><span>系统首页</span></a-menu-item>
-                <a-sub-menu v-if="v.is_type > 100" v-for="v in menus" :key="v.id + ''">
+                <a-sub-menu v-for="v in menus" :key="v.id + ''">
                     <span slot="title"><a-font class="afont menu_icon" :type="v.icon||'icon-gc-home'" /><span>{{v.name}}</span></span>
                     <template v-for="vo in (v.children||[])">
                         <a-menu-item v-if="$isEmpty(vo.children) || vo.children.length===0" :key="vo.id + ''"  @click="to_nav(vo.link, vo.id)"><a-font class="afont menu_icon" v-if="!!vo.icon" :type="vo.icon" />{{vo.name}}</a-menu-item>
@@ -117,6 +117,7 @@ export default {
           drawerShow:false,
           screenWidth: document.body.clientWidth, // 屏幕宽度
           menus:[],
+          topMenus: [],
           isRefresh:true,
           defaultOpenKeys: []
       };
@@ -137,11 +138,6 @@ export default {
         ]),
         defaultSelectedKeys() {
             return this.pref.menu ? this.pref.menu.selected : []
-        },
-        topMenus (){
-            return this.menus.filter(menu => {
-                return menu.is_type > 100;
-            })
         }
     },
     methods: {
@@ -163,7 +159,16 @@ export default {
         },
         get_menus(){
             this.$get(this.$api.adminMenus).then(res=>{
-                this.menus = res.data;
+                if(window.menuType){
+                    const menus = res.data.filter(menu => menu.is_type === window.menuType);
+                    if(menus && menus.length > 0){
+                        this.menus = menus[0].children;
+                    }
+                }else{
+                    this.menus = res.data;
+                }
+
+                this.topMenus = res.data.filter(menu => menu.is_type > 100);
 
                 if(this.pref.menu){
                     if(!this.$isEmpty(this.pref.menu.route)){
