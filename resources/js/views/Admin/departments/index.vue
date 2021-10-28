@@ -83,6 +83,7 @@ export default {
           },
           total:0, //总页数
           list_loading: false,
+            searchParams: {},
           selectedRowKeys:[], // 被选择的行
           columns:[
               {title:'#',dataIndex:'id',fixed:'left'},
@@ -118,6 +119,7 @@ export default {
     methods: {
         // 查询条件
         onSearchParams(search){
+            this.searchParams = search;
             this.getList(null, search);
         },
         // 选择框被点击
@@ -203,14 +205,14 @@ export default {
                 console.log(data);
             }
         },
-        getList(pid, search = {}){
+        getList(pid){
             if(!pid){
                 this.breadcrumb = [];
             }
             this.list_loading = true;
             const params = pid ?
-                Object.assign({}, search, this.params, { pid: pid })
-                : Object.assign({}, search, this.params);
+                Object.assign({}, this.searchParams, this.params, { pid: pid })
+                : Object.assign({}, this.searchParams, this.params);
             this.$get(this.$api.moduleCoreDepartments, params).then(res=>{
                 if (res.code === 200){
                     this.total = res.data.total;

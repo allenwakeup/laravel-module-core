@@ -66,6 +66,7 @@
                 },
                 total:0, //总页数
                 list_loading: false,
+            searchParams: {},
                 selectedRowKeys:[], // 被选择的行
                 columns:[
                     {title:'#',dataIndex:'id',fixed:'left', width: 80},
@@ -97,7 +98,8 @@
         methods: {
             // 查询条件
             onSearchParams(search){
-                this.getList(search);
+            this.searchParams = search;
+                this.getList();
             },
             // 选择框被点击
             onSelectChange(selectedRowKeys) {
@@ -132,9 +134,9 @@
                     },
                 });
             },
-            getList(search = {}){
+            getList(){
                 this.list_loading = true;
-                const params = Object.assign({}, search, this.params);
+                const params = Object.assign({}, this.searchParams, this.params);
                 this.$get(this.$api.moduleCoreDataMaps, params).then(res=>{
                     if (res.code === 200){
                         this.total = res.data.total;

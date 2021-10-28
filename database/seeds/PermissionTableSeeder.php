@@ -57,6 +57,7 @@ class PermissionTableSeeder extends Seeder
                     [
                         'name' => '数据源管理',
                         'icon' => 'icon-gc-datasource',
+                        'is_type' => $menu_type,
                         'children' => [
                             [
                                 'name' => '数据库信息',
