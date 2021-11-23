@@ -165,7 +165,19 @@
                 this.step = step;
             },
             importFromFile(data) {
-                this.data = data.length > 1 ? data.slice(1) : data;
+                this.data = (data.length > 1 ? data.slice(1) : data).filter(d =>
+                    !this.$isEmpty(
+                        this.columns.reduce((val, column) => {
+                            return val + ('' + (
+                                    (
+                                        !d.hasOwnProperty(column.dataIndex)
+                                        || typeof d[column.dataIndex] === 'undefined'
+                                        || null ===  d[column.dataIndex]
+                                    ) ? '' : d[column.dataIndex])
+                            ).trim();
+                        }, '')
+                    )
+                );
                 this.step = 2;
             },
             onClickBegin(){
