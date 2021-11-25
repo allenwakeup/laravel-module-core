@@ -51,7 +51,8 @@
                 <a-col :md="!advanced && 8 || 12" :sm="12" style="padding-top:3px;">
                     <span class="table-page-search-submitButtons" :style="advanced && { float: 'right', overflow: 'hidden' } || {} ">
                         <a-button icon="search" @click="search">查询</a-button>
-                        <a-button style="margin-left: 8px" @click="reset">重置</a-button>
+                        <a-button :loading="exportLoading" icon="download" @click="download">导出</a-button>
+                        <a-button  @click="reset">重置</a-button>
                         <a v-if="searchConfig2.length>0" @click="advanced = !advanced" style="margin-left: 8px">
                         {{ advanced ? '收起' : '展开' }}
                         <a-icon :type="advanced ? 'up' : 'down'"/>
@@ -65,6 +66,11 @@
 
 <script>
 import moment from 'moment'
+
+import { createNamespacedHelpers } from 'vuex'
+import { STORE_ADMIN_COMMON } from '@/plugins/constant'
+
+const adminCommonStore = createNamespacedHelpers(STORE_ADMIN_COMMON)
 export default {
     props: {
         // 是否显示
@@ -79,29 +85,43 @@ export default {
         },
         autoParams:{
             type:Object,
-            default:() => {
-                return {};
-            }
+            default:() => ({})
+        },
+        export: {
+            type: Object,
+            default:() =>({
+                show: false,
+                url: '',
+                per_page: 100
+            })
         }
     },
     data() {
-      return {
-          advanced:false,
-          searchConfig1:[],
-          searchConfig2:[],
-          params:{
-          },
-          cascader:{},
-          select_remote:{},
-          load_cascader:{}
-      };
+        return {
+            advanced:false,
+            searchConfig1:[],
+            searchConfig2:[],
+            params:{
+            },
+            cascader:{},
+            select_remote:{},
+            load_cascader:{},
+            exportParams:{
+                page:1,
+                per_page: this.export.per_page > 0 ? this.export.per_page : 100,
+            },
+            exportTotal:0, //总数
+            exportData: [], //导出数据
+            exportLoading: false
+        };
     },
     watch: {},
     computed: {},
     methods: {
-        // 点击搜索
-        search(){
-
+        ...adminCommonStore.mapActions({
+            setTopBusy: 'gettingBusy'
+        }),
+        getSearchParams(){
             const params = Object.assign({}, this.params);
 
             Object.keys(params).forEach(k => {
@@ -113,18 +133,31 @@ export default {
                                 if(params[k].length === 2){
                                     params[k] = this.dateFormat(params[k][0]) + ' ~ ' + this.dateFormat(params[k][1]);
                                 }
-                            break;
+                                break;
                         }
                     }
 
                 }
             });
 
-            this.$emit('searchParams', params);
+            return params;
+        },
+        // 点击搜索
+        search(){
+            this.$emit('searchParams', this.getSearchParams());
         },
         reset(){
             this.params = {};
+            this.resetExport();
             this.$emit('searchParams', {});
+        },
+        resetExport(){
+            this.exportData = [];
+            this.exportParams = {
+                page:1,
+                per_page: this.export.per_page > 0 ? this.export.per_page : 100,
+            };
+            this.exportTotal = 0;
         },
         dateFormat(times){
             return moment(times).format('YYYY-MM-DD');
@@ -185,8 +218,40 @@ export default {
                     }
                 });
             }
-        }
+        },
+        download(){
+            if(this.$isEmpty(this.export.url)){
+                return this.$message.error('缺少数据来源地址');
+            }
 
+            this.setTopBusy(this.exportLoading = true);
+            const size = this.exportParams.page * this.exportParams.per_page;
+            const params = Object.assign({}, this.getSearchParams(), this.exportParams);
+            this.$get(this.export.url, params).then(res=>{
+                if (res.code === 200){
+                    if(res.data.total > 0){
+                        this.exportTotal = res.data.total;
+                    }
+                    this.exportData = this.exportData.concat(res.data.data);
+                    if(size < this.exportTotal){
+                        this.exportParams.page ++;
+                        return this.download();
+                    } else {
+                        this.setTopBusy(this.exportLoading = false);
+                        this.$emit('handleExport', this.exportData);
+                        this.resetExport();
+                    }
+                } else {
+                    this.setTopBusy(this.exportLoading = false);
+                    this.resetExport();
+                }
+
+            }, err=>{
+                this.$message.error('数据加载失败');
+                this.setTopBusy(this.exportLoading = false);
+            });
+
+        }
     },
     created() {
         if(this.searchConfig.length<=0){
@@ -205,10 +270,6 @@ export default {
         }
 
         this.initSelect(this.searchConfig);
-
-        
-
-
     },
     mounted() {}
 };
