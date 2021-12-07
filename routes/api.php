@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Route;
  */
 Route::group(
     [
-        'as' => 'man::',
+        'as' => 'core::',
     ],
     function () {
         Route::prefix('Admin')->group(function(){
