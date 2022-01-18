@@ -5,18 +5,25 @@
 
         <div class="admin_table_list">
             <a-table
-                    :columns="columns"
-                    :data-source="list"
-                    :scroll="{ x: 2048, y: 400 }"
+                    size="small"
+                    :columns="table.columns"
+                    :data-source="table.data"
+                    :scroll="{ y: sysWindowHeight - 400 }"
+                    :loading="table.loading"
                     :pagination="false"
-                    :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
+                    :row-selection="{ selectedRowKeys: table.selectedRowKeys, onChange: handleTableRowKeysChange }"
                     row-key="id">
 
                 <template slot="title" slot-scope="currentPageData">
-                    <search :search-config="search" @searchParams="onSearchParams"/>
+                    <search
+                            :search-config="search.fields"
+                            :auto-params="search.params"
+                            @searchParams="handleTableSearchParams"
+                            :export-config="exporting"
+                            @handleExport="handleTableExport"/>
                     <div class="admin_table_handle_btn">
                         <a-button @click="$router.push('/Admin/goodcatch/m/core/data_maps/form')" type="primary" icon="plus">添加</a-button>
-                        <a-button class="admin_delete_btn" type="danger" icon="delete" @click="del">批量删除</a-button>
+                        <a-button class="admin_delete_btn" type="danger" icon="delete" @click="handleRemoveTableRows">批量删除</a-button>
                     </div>
                 </template>
                 <span slot="data_route_id" slot-scope="record">
@@ -33,8 +40,8 @@
                     <a-button icon="interaction" @click="handleAssignment(record)">分配</a-button>
                 </span>
             </a-table>
-            <div class="admin_pagination" v-if="total>0">
-                <a-pagination v-model="params.page" :page-size.sync="params.per_page" :total="total" @change="onChange" show-less-items />
+            <div class="admin_pagination" v-if="table.total > 0">
+                <a-pagination v-model="table.params.page" :page-size.sync="table.params.per_page" :total="table.total" @change="handleTablePageChange" show-less-items />
             </div>
         </div>
         <a-modal
@@ -54,41 +61,57 @@
 
 <script>
     import Search from '@/components/admin/search'
+    import AAssignment from './assignment'
 
+    import { MixinList } from '@/plugins/mixins/admin'
     export default {
+        mixins: [ MixinList ],
         components: { AAssignment, Search },
         props: {},
         data() {
             return {
-                params:{
-                    page:1,
-                    per_page:30,
+
+                table: {
+                    actions: {
+                        list: this.$api.moduleCoreDataMaps,
+                        remove: this.$api.moduleCoreDataMaps
+                    },
+                    columns: [
+                        {title:'#',dataIndex:'id',fixed:'left', width: 80},
+                        {title:'数据路径', scopedSlots:{ customRender: 'data_route_id' }, width: 220},
+                        {title:'左表', scopedSlots:{ customRender: 'left' }, width: 220},
+                        {title:'左表模板',dataIndex:'left_tpl', width: 180},
+                        {title:'右表', scopedSlots:{ customRender: 'right' }, width: 220},
+                        {title:'右表模板',dataIndex:'right_tpl', width: 180},
+                        {title:'关联关系',dataIndex:'relationshipText', width: 180},
+                        {title:'Foreign Pivot Key',dataIndex:'foreign_pivot_key', width: 200},
+                        {title:'Related Pivot Key',dataIndex:'related_pivot_key', width: 200},
+                        {title:'Parent Key',dataIndex:'parent_key', width: 200},
+                        {title:'Related Key',dataIndex:'related_key', width: 200},
+                        {title:'多态前缀',dataIndex:'name', width: 180},
+                        {title:'描述',dataIndex:'description', width: 150},
+                        {title:'存储位置',dataIndex:'table', width: 180},
+                        {title:'状态',dataIndex:'status', width: 90},
+                        {title:'创建时间',dataIndex:'created_at', width: 200},
+                        {title:'更新时间',dataIndex:'updated_at', width: 200},
+                        {title:'操作',fixed:'right',scopedSlots: { customRender: 'action' }},
+                    ],
                 },
-                total:0, //总页数
-                list_loading: false,
-            searchParams: {},
-                selectedRowKeys:[], // 被选择的行
-                columns:[
-                    {title:'#',dataIndex:'id',fixed:'left', width: 80},
-                    {title:'数据路径', scopedSlots:{ customRender: 'data_route_id' }, width: 220},
-                    {title:'左表', scopedSlots:{ customRender: 'left' }, width: 220},
-                    {title:'左表模板',dataIndex:'left_tpl', width: 180},
-                    {title:'右表', scopedSlots:{ customRender: 'right' }, width: 220},
-                    {title:'右表模板',dataIndex:'right_tpl', width: 180},
-                    {title:'关联关系',dataIndex:'relationshipText', width: 180},
-                    {title:'Foreign Pivot Key',dataIndex:'foreign_pivot_key', width: 200},
-                    {title:'Related Pivot Key',dataIndex:'related_pivot_key', width: 200},
-                    {title:'Parent Key',dataIndex:'parent_key', width: 200},
-                    {title:'Related Key',dataIndex:'related_key', width: 200},
-                    {title:'多态前缀',dataIndex:'name', width: 180},
-                    {title:'描述',dataIndex:'description', width: 150},
-                    {title:'存储位置',dataIndex:'table', width: 180},
-                    {title:'状态',dataIndex:'status', width: 90},
-                    {title:'创建时间',dataIndex:'created_at', width: 200},
-                    {title:'更新时间',dataIndex:'updated_at', width: 200},
-                    {title:'操作',fixed:'right',scopedSlots: { customRender: 'action' }},
-                ],
-                list:[],
+                search: {
+                    fields: [
+                        {
+                            label: '左表',
+                            name: 'left_table',
+                            type: 'text'
+                        },
+                        {
+                            label: '右表',
+                            name: 'right_table',
+                            type: 'text'
+                        },
+
+                    ]
+                },
                 selectedAssignment: {},
                 openAssignmentModal: false
             };
@@ -96,60 +119,10 @@
         watch: {},
         computed: {},
         methods: {
-            // 查询条件
-            onSearchParams(search){
-            this.searchParams = search;
-                this.getList();
-            },
-            // 选择框被点击
-            onSelectChange(selectedRowKeys) {
-                this.selectedRowKeys = selectedRowKeys;
-            },
-            // 选择分页
-            onChange(e){
-                this.params.page = e;
-            },
-            // 删除
-            del(){
-                if(this.selectedRowKeys.length===0){
-                    return this.$message.error('未选择数据.');
-                }
-                this.$confirm({
-                    title: '你确定要删除选择的数据？',
-                    content: '确定删除后无法恢复.',
-                    okText: '是',
-                    okType: 'danger',
-                    cancelText: '取消',
-                    onOk:()=> {
-                        let ids = this.selectedRowKeys.join(',');
-                        this.$delete(this.$api.moduleCoreDataMaps+'/'+ids).then(res=>{
-                            if(res.code === 200){
-                                this.onload();
-                                this.$message.success('删除成功');
-                            }else{
-                                this.$message.error(res.msg)
-                            }
-                        });
 
-                    },
-                });
-            },
-            getList(){
-                this.list_loading = true;
-                const params = Object.assign({}, this.searchParams, this.params);
-                this.$get(this.$api.moduleCoreDataMaps, params).then(res=>{
-                    if (res.code === 200){
-                        this.total = res.data.total;
-                        this.list = res.data.data;
-                    }
-                    this.list_loading = false;
-                }, err=>{
-                    this.$message.error('数据加载失败');
-                    this.list_loading = false;
-                });
-            },
             onload(){
-                this.getList();
+                // 加载混入中的表格数据
+                this.loadTableData();
             },
             handleAssignment(record) {
                 this.selectedAssignment = record;

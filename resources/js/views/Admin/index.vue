@@ -408,7 +408,8 @@ export default {
 
         .progress-bar{
             position:absolute;
-            margin-top: -12px;
+            line-height: 0;
+            margin-top: -10px;
         }
 
     }
