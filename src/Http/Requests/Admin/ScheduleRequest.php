@@ -21,10 +21,10 @@ class ScheduleRequest extends FormRequest
             'name' => ['required', 'max:200', $this->uniqueOrExists (Schedule::class, 'name') . ':core_schedules'],
             'input' => 'required|max:500',
             'cron' => ['required', new Cron ()],
-            'ping_before' => 'max:500',
-            'ping_success' => 'max:500',
-            'ping_failure' => 'max:500',
-            'payload' => ['required_if:type,' . Schedule::TYPE_JOB, 'json'],
+            'ping_before' => 'nullable|max:500',
+            'ping_success' => 'nullable|max:500',
+            'ping_failure' => 'nullable|max:500',
+            'payload' => ['required_if:schedule_type,' . Schedule::TYPE_JOB, 'nullable', 'json'],
             'description' => 'max:255',
             'overlapping' => [
                 Rule::in ([Schedule::OVER_LAPPING_ENABLE, Schedule::OVER_LAPPING_DISABLE])

@@ -468,12 +468,18 @@
                     if (valid) {
                         const params = Object.assign({}, this.form, {
                             logs: '',
-                            payload: this.form.payload ? JSON.stringify(this.form.payload) : ''
                         });
+                        if(this.form.schedule_type === 3){
+                            params['payload'] = this.form.payload ? JSON.stringify(this.form.payload) : ''
+                        }
+                        params['input'] = params['input' + params.schedule_type];
+                        if(this.$isEmpty(params.background)){
+                            delete params.background;
+                        }
                         let api = this.$apiHandle(this.$api.moduleCoreSchedules,this.id);
                         if(api.status){
                             this.$put(api.url, params).then(res=>{
-                                if(res.code == 200){
+                                if(res.code === 200){
                                     this.$message.success(res.msg)
                                     return this.$router.back();
                                 }else{
@@ -482,7 +488,7 @@
                             })
                         }else{
                             this.$post(api.url, params).then(res=>{
-                                if(res.code == 200 || res.code == 201){
+                                if(res.code === 200 || res.code === 201){
                                     this.$message.success(res.msg)
                                     return this.$router.back();
                                 }else{
@@ -533,10 +539,12 @@
             },
             get_form(){
                 this.$get(this.$api.moduleCoreSchedules+'/'+this.id).then(res=>{
-                    res.data.payload = res.data.payload ? JSON.stringify(res.data.payload, null, 2) : '';
-                    this.form = res.data;
-                    if(res.data.schedule_type && res.data.input){
-                        this.form['input' + res.data.schedule_type] = res.data.input;
+                    if(res.code === 200){
+                        res.data.payload = res.data.payload ? JSON.stringify(res.data.payload, null, 2) : '';
+                        this.form = res.data;
+                        if(res.data.schedule_type && res.data.input){
+                            this.form['input' + res.data.schedule_type] = res.data.input;
+                        }
                     }
                 });
             },
