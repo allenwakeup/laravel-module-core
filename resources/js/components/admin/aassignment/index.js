@@ -1,3 +1,4 @@
 import AAssignment from './AntAssignment'
+import TableAssignment from './TableAssignment'
 
-export default AAssignment
+export { AAssignment, TableAssignment }

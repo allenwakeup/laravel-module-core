@@ -54,7 +54,7 @@
             <template slot="footer">
                 <span></span>
             </template>
-            <a-assignment :assignment-id="selectedAssignment.id"></a-assignment>
+            <a-assignment :assignment-id="selectedAssignment.id" :key="selectedAssignment.id"></a-assignment>
         </a-modal>
     </div>
 </template>

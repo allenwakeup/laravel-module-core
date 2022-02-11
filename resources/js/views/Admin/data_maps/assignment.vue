@@ -8,7 +8,7 @@
 
 <script>
 
-    import AAssignment from "@/components/admin/aassignment";
+    import { AAssignment } from "@/components/admin/aassignment";
 
     export default {
         components: { AAssignment },
@@ -21,26 +21,22 @@
         data() {
             return {
                 id: 0,
-                info: {}
+                info: {
+                    actions: {},
+                    api: '',
+                    title: ''
+                }
             };
         },
-        watch: {
-            _assignmentId(val){
-                if(val > 0){
-                    this.onload();
-                }
-            }
-        },
-        computed: {
-            _assignmentId(){
-                return this.assignmentId;
-            }
-        },
+        watch: {},
+        computed: {},
         methods: {
 
             get_form(){
                 this.$get(this.$api.moduleCoreDataMaps+'_'+this.id + '/' +this.id + '/assignment').then(res=>{
-                    this.info = res.data;
+                    if(res.code === 200){
+                        this.info = res.data;
+                    }
                 });
             },
 

@@ -108,23 +108,17 @@
                 data_right_selected: []
             };
         },
-        computed: {
-            _api(){
-                return this.api;
-            }
-        },
-        watch: {
-            _api(val){
-                this.onload();
-            }
-        },
+        computed: {},
+        watch: {},
         methods: {
             onload(){
                 if(!this.isEmpty(this.api)){
                     this.$get(this.api,{}).then(res=>{
-                        this.loading = false;
-                        this.loading_left = false;
-                        this.data_left = res.data.data
+                        if(res.code === 200){
+                            this.loading = false;
+                            this.loading_left = false;
+                            this.data_left = res.data.data
+                        }
                     });
                 }
                 this.loading = true;
@@ -222,7 +216,9 @@
                     || value.length === 0
             }
         },
-        created() {},
+        created() {
+            this.onload();
+        },
         mounted() {}
     };
 </script>

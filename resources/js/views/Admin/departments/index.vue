@@ -78,7 +78,7 @@
 
 <script>
 import Search from '@/components/admin/search'
-import { AImport } from '@/components/goodcatch/modules/core/admin/aimport'
+import { AImport } from '@/components/admin/aimport'
 import { MixinList } from '@/plugins/mixins/admin'
 export default {
     mixins: [ MixinList ],
