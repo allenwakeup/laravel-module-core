@@ -7,7 +7,7 @@
     // ************************************************************
 
     import moment from 'moment'
-    import { exportXls } from '@/plugins/function'
+    import { exportXls, draggableTitle } from '@/plugins/function'
     import { createNamespacedHelpers } from 'vuex'
     import { STORE_ADMIN_COMMON, STORE_ADMIN_LOGIN, APPEND_DATE_TIME_FORMAT } from '@/plugins/constant'
 
@@ -16,6 +16,13 @@
 
     export default {
         data() {
+
+            this.resizeableTitleComponents = {
+                header: {
+                    cell: draggableTitle.bind(this)
+                }
+            };
+
             return {
                 table: {
                     actions: {

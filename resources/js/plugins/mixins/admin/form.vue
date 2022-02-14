@@ -1,5 +1,5 @@
 <script>
-    import { appendObjectKeys } from '@/plugins/function'
+    import { appendObjectExistedKeys } from '@/plugins/function'
     import { PREFS_USER_TEAM_ID } from '@/plugins/constant'
     export default {
 
@@ -9,10 +9,10 @@
              */
             syncPrefForm(){
                 const prefName = this.getFormPrefName();
-                if(prefName !== ''){
-                    const prefForm = this.userPref [this.getFormPrefName()]
+                if(!this.$isEmpty(prefName)){
+                    const prefForm = this.userPref [prefName];
                     if(!!this.form && !!prefForm){
-                        this.form = prefForm;
+                        appendObjectExistedKeys(this.form, prefForm);
                     }
                 }
             },
@@ -20,7 +20,7 @@
             /**
              * 处理写入到偏好前的表单数据
              */
-            handleWatchPrefForm(form){
+            handlePrefForm(form){
 
                 return form;
             },
@@ -31,6 +31,13 @@
              */
             getFormPrefName(){
                 return '';
+            },
+
+            writePrefForm(){
+                const prefName = this.getFormPrefName();
+                if(!this.$isEmpty(prefName)){
+                    this.setUserPref(prefName, this.handlePrefForm(this.form));
+                }
             },
 
             /**
@@ -48,22 +55,22 @@
                 return value;
             }
         },
-        watch: {
-            form:{
-                handler(newForm, oldForm) {
-                    const prefName = this.getFormPrefName();
-                    if(prefName !== ''){
-                        const currPref = this.userPref [prefName];
-                        if(! currPref) {
-                            this.setUserPref(prefName, this.handleWatchPrefForm(newForm));
-                        } else {
-                            this.setUserPref(prefName, appendObjectKeys(currPref, this.handleWatchPrefForm(newForm)));
-                        }
-                    }
-                },
-                deep: true
-            }
-        },
+        // watch: {
+        //     form:{
+        //         handler(newForm, oldForm) {
+        //             const prefName = this.getFormPrefName();
+        //             if(!this.$isEmpty(prefName)){
+        //                 const currPref = this.userPref [prefName];
+        //                 if(! currPref) {
+        //                     this.setUserPref(prefName, this.handlePrefForm(newForm));
+        //                 } else {
+        //                     this.setUserPref(prefName, Object.assign(currPref, this.handlePrefForm(newForm)));
+        //                 }
+        //             }
+        //         },
+        //         deep: true
+        //     }
+        // },
         created() {}
     };
 </script>
