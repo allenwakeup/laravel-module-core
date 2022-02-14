@@ -3,6 +3,15 @@ import {message} from 'ant-design-vue';
 import XLSX from 'xlsx';
 import moment from "moment";
 
+
+/*判断是否为空*/
+export function isEmpty(str){
+    if(str === '' || str === null || str === undefined){
+        return true;
+    }
+    return false;
+}
+
 export function formatDate (date, fmt) {
     if (/(y+)/.test(fmt)) {
         fmt = fmt.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length));
@@ -27,6 +36,10 @@ export function toDateString(str, from = 'YYYY-MM-DD', to = 'YYYY-MM-DD'){
     return isEmpty(str) ? str : moment(str, from).format(to)
 }
 
+export function toSubDateString(subtract = 1, to = 'YYYY-MM-DD'){
+    return moment().subtract(subtract, 'days').format(to)
+}
+
 export function getSession(name){
     let token_type = sessionStorage.getItem(name);
     return localStorage.getItem(token_type);
@@ -36,25 +49,32 @@ export function isArray(obj) {
     return Object.prototype.toString.call(obj).slice(8, -1) === 'Array';
 }
 
-export function appendObjectKeys(target, source){
-    Object.keys(source).forEach(k => {
-        if(source.hasOwnProperty(k)){
-            const val = source[k];
-            const val_type = typeof source[k];
-            switch(val_type){
-                case 'string':
-                    if(!isEmpty(val)){
-                        target[k] = val;
-                    }
-                    break;
-                case 'number':
-                case 'object':
-                case 'boolean':
-                    target[k] = val;
-                    break;
-            }
+export function uniqueArray(arr, prop){
+    const result = [];
+    const map = new Map();
+    for (const item of arr) {
+        const key = item[prop];
+        if(!map.has(key)){
+            map.set(key, true);
+            result.push(item);
         }
-    });
+    }
+    return result;
+}
+
+export function generateArray(start, end){
+    return Array.from(new Array(end + 1).keys()).slice(start);
+}
+
+export function appendObjectExistedKeys(target, source){
+    if(!!target && !!source){
+        Object.keys(source).forEach(k => {
+            if(source.hasOwnProperty(k)
+                && target.hasOwnProperty(k)){
+                target[k] = source[k];
+            }
+        });
+    }
     return target;
 }
 
@@ -265,6 +285,15 @@ export function hasRoute(vueRouter, route_resolve){
     });
 }
 
+export function toPercent(num, total){
+    return Math.round(num / total * 10000) / 100.00;
+}
+
+
+export function getAdminName(admin){
+    return !!admin && !!admin.nickname ? admin.nickname : '';
+}
+
 export function exportXls(res = {}){
     let createXLSLFormatObj = [];
     let newXlsHeader = [];
@@ -294,6 +323,46 @@ export function exportXls(res = {}){
         ws = XLSX.utils.aoa_to_sheet(createXLSLFormatObj);
     XLSX.utils.book_append_sheet(wb, ws, (res.sheetName || 'New Sheet'));
     XLSX.writeFile(wb, (res.fileName || '数据导出') + ".xlsx");
+}
+
+/**
+ * 伸缩列
+ *
+ * @param h
+ * @param props
+ * @param children
+ * @returns {*}
+ */
+export function draggableTitle (h, props, children) {
+    const { key, ...restProps } = props;
+    const col = this.table.columns.find(col => {
+        const k = col.dataIndex || col.key;
+        return k === key;
+    });
+    if (!col || !col.width) {
+        return h('th', { ...restProps }, [ ...children ])
+    }
+
+    const dragProps = {
+        key: col.dataIndex || col.key,
+        class: 'table-draggable-handle',
+        attrs: {
+            w: 10,
+            x: col.width,
+            z: 1,
+            axis: 'x',
+            draggable: true,
+            resizable: false
+        },
+        on: {
+            dragging: (x, y) => {
+                col.width = Math.max(x, 1)
+            }
+        }
+    }
+
+    const drag = h ('vue-draggable-resizable', { ...dragProps })
+    return h('th', { ...restProps, class: 'resize-table-th' }, [ ...children, drag ])
 }
 
 function padLeftZero (str) {

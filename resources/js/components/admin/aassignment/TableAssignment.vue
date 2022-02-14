@@ -28,6 +28,7 @@
             getRowSelection({ disabled: listDisabled, selectedKeys, itemSelectAll, itemSelect })
           "
                         :columns="direction === 'left' ? left.columns : right.columns"
+                        :components="direction === 'left' ? left.components : right.components"
                         :data-source="filteredItems"
                         :loading="direction === 'left' ? left.loading : right.loading"
                         size="small"
@@ -116,7 +117,7 @@
             loadRightData(api){
                 if(! this.$isEmpty(api)){ // 组建需设置好请求地址
                     this.right.loading = true; // 更改表格加载状态
-                    this.$get(api).then(res=>{
+                    this.$get(api, Object.assign({}, this.search.params, this.right.params)).then(res=>{
                         this.targetKeys = [];
                         if (res.code === 200){
                             if(!! res.data){
