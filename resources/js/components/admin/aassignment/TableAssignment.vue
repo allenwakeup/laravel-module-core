@@ -6,21 +6,23 @@
             :auto-params="search.params"
             @searchParams="handleSearchParams"/>
 
-        <a-row type="flex" :gutter="16">
+        <a-row type="flex" :gutter="16" style="position:relative;">
             <vue-draggable-resizable
                     v-if="!!this.left"
-                    :w="5"
+                    :w="10"
                     :x="leftWidth"
                     :z="1"
                     axis="x"
+                    class="draggable-handle"
+                    :style="{left: width + 'px'}"
                     :parent="true"
                     @dragging="onDrag"
                     :resizable="false"
             >
-                <a-icon type="pause" class="draggable-icon" />
             </vue-draggable-resizable>
             <a-col v-if="!!this.left" :flex="leftWidth + 'px'" :style="{ flex: '0 0 ' + width + 'px'}" :class="{ 'container-left' : !!this.left }">
                 <a-tree
+                        :multiple="!!left.multiple"
                         @select="onSelectLeft"
                         :tree-data="leftData"
                         show-line
@@ -32,6 +34,7 @@
             <a-col flex="auto" :class="{ 'container-right' : !!this.left }">
                 <a-transfer
                     :data-source="source"
+                    :selected-keys="selectedKeys"
                     :target-keys="targetKeys"
                     :titles="titles"
                     :list-style="{maxHeight: '100%', width: width + 'px'}"
@@ -39,7 +42,8 @@
                     show-search
                     :filter-option="(inputValue, item) => item.title.indexOf(inputValue) !== -1"
                     :show-select-all="false"
-                    @change="onChange"
+                    @change="onRightChange"
+                    @selectChange="onRightSelectChange"
                 >
                     <template
                         slot="children"
@@ -72,6 +76,7 @@
 </template>
 <script>
 import difference from 'lodash/difference';
+import { isArray, isEmpty } from '@/plugins/function'
 import Search from '@/components/admin/search'
 export default {
     components: { Search },
@@ -109,18 +114,19 @@ export default {
             loading: false,
             leftData: [],
             source: [],
+            selectedKeys: [],
             targetKeys: [],
-            leftSelectedKey: undefined
+            leftSelectedKeys: undefined
         };
     },
     methods: {
 
         onDrag: function(x, y) {
-            this.width = x;
+            this.width = Math.max(x, this.leftWidth);
         },
 
         loadLeftData(){
-            if(!! this.left && ! this.$isEmpty(this.left.api)){ // 组建需设置好请求地址
+            if(!! this.left && ! this.$isEmpty(this.left.api)){ // 组件需设置好请求地址
                 this.left.loading = true; // 更改表格加载状态
                 const search = !! this.left ? this.search.params : {};
                 this.$get(this.left.api, Object.assign({}, search, this.left.params)).then(res=>{
@@ -148,23 +154,25 @@ export default {
         },
 
         loadRightSourceData(){
-            if(!! this.right && !! this.right.source && ! this.$isEmpty(this.right.source.api)){ // 组建需设置好请求地址
+            if(!! this.right && !! this.right.source && ! this.$isEmpty(this.right.source.api)){ // 组件需设置好请求地址
                 this.right.source.loading = true; // 更改表格加载状态
                 const search = !! this.left ? {} : this.search.params;
                 const { api, params } = this.handleApiParamsReplacement(
                     this.right.source.api,
-                    Object.assign({}, search, this.right.source.params)
+                    Object.assign({}, search, this.right.source.params),
+                    this.right.source
                 );
                 this.source = [];
                 this.$get(api, params).then(res=>{
-
                     if (res.code === 200){
                         if(!! res.data){
-
                             if(typeof this.right.source.transform === 'function'){
                                 this.source = this.right.source.transform(res.data);
                             }else {
                                 this.source = res.data;
+                            }
+                            if(this.source.length > 0){
+                                this.loadRightDefault();
                             }
                         }
                     } else {
@@ -179,14 +187,48 @@ export default {
                 this.$message.error('未定义数据源.');
             }
         },
+        
+        loadRightDefault(){
+            if(!! this.right && !! this.right.default){ // 组件需设置好请求地址
+                if(this.$isEmpty(this.right.default.api)){
+                    this.selectedKeys = this.right.default.selectedKeys || [];
+                    console.log(this.selectedKeys)
+                } else {
+                    const search = !! this.left ? {} : this.search.params;
+                    const { api, params } = this.handleApiParamsReplacement(
+                        this.right.default.api,
+                        Object.assign({}, search, this.right.default.params),
+                        this.right.default
+                    );
+                    this.selectedKeys = [];
+                    this.$get(api, params).then(res=>{
+                        if (res.code === 200){
+                            if(!! res.data){
+                                if(typeof this.right.default.transform === 'function'){
+                                    this.selectedKeys = this.right.default.transform(res.data);
+                                }else {
+                                    this.selectedKeys = res.data;
+                                }
+                            }
+                        } else {
+                            this.$message.error(res.msg);
+                        }
+                    }, err=>{
+                        this.$message.error(err);
+                    });
+                }
+
+            }
+        },
 
         loadRightTargetData(){
-            if(!! this.right && !! this.right.target && ! this.$isEmpty(this.right.target.api)){ // 组建需设置好请求地址
+            if(!! this.right && !! this.right.target && ! this.$isEmpty(this.right.target.api)){ // 组件需设置好请求地址
                 this.right.target.loading = true; // 更改表格加载状态
                 const search = !! this.left ? {} : this.search.params;
                 const { api, params } = this.handleApiParamsReplacement(
                     this.right.target.api,
-                    Object.assign({}, search, this.right.target.params)
+                    Object.assign({}, search, this.right.target.params),
+                    this.right.target
                 );
 
                 this.targetKeys = [];
@@ -220,22 +262,28 @@ export default {
             this.onload();
         },
 
-        onChange(targetKeys, direction, moveKeys) {
+        onRightChange(targetKeys, direction, moveKeys) {
             this.targetKeys = targetKeys;
             this.$emit('change', { targetKeys, direction, moveKeys, data: this.source.filter(d => moveKeys.includes(d.key)) });
+        },
+
+        onRightSelectChange(sourceSelectedKeys, targetSelectedKeys){
+            this.selectedKeys = (sourceSelectedKeys || []).concat((targetSelectedKeys || []));
         },
 
         onSelectLeft(selectedKeys, info) {
 
             if(selectedKeys.length > 0){
-                this.leftSelectedKey = selectedKeys [0];
+                this.leftSelectedKeys = selectedKeys;
+                                
                 this.loadRightSourceData();
-                this.loadRightTargetData();
+               // this.loadRightTargetData();
             }
         },
 
         getRowSelection({ disabled, selectedKeys, itemSelectAll, itemSelect }) {
             return {
+                columnWidth: 25,
                 getCheckboxProps: item => ({ props: { disabled: disabled || item.disabled } }),
                 onSelectAll(selected, selectedRows) {
                     const treeSelectedKeys = selectedRows
@@ -253,35 +301,45 @@ export default {
             };
         },
 
-        handleApiParamsReplacement(api, params){
-            const search = !! this.left ? this.search.params : {};
-
+        handleApiParamsReplacement(api, params, config){
             const { leftData } = this;
 
-            if(!!this.leftSelectedKey){
+            if(!!this.leftSelectedKeys && this.leftSelectedKeys.length > 0){
 
-                const left_selected = leftData.find(d => d.key === this.leftSelectedKey);
+                const left_selected = leftData.filter(d => this.leftSelectedKeys.includes(d.key));
 
-                const replacements = [].concat(this.right.source.replacements);
-                const parameters = [].concat(this.right.source.parameters);
-                if(! this.$isEmpty(this.right.source.replacement)){
-                    replacements.push(this.right.source.replacement);
-                } else if(! this.$isEmpty(this.right.source.parameter)) {
-                    parameters.push(this.right.source.parameter);
+                const replacements = [].concat(config.replacements);
+                const parameters = isArray(config.parameters) ? config.parameters.reduce((kv, parameter) => {
+                    kv[parameter] = parameter;
+                    return kv;
+                }, {}) : config.parameters;
+
+                if(! this.$isEmpty(config.replacement)){
+                    replacements.push(config.replacement);
+                } else if(! this.$isEmpty(config.parameter)) {
+                    parameters[config.parameter] = config.parameter;
                 }
-                if(!!left_selected){
+                if(!!left_selected && left_selected.length > 0){
                     if(replacements.length > 0){
                         replacements.forEach(replacement => {
-                            api = api.replace(`{${replacement}}`, left_selected[replacement]);
+                            api = api.replace(`{${replacement}}`, left_selected.reduce((vals, selected) => {
+                                vals.push(selected[replacement]);
+                                return vals;
+                            }, []).join(','));
                         });
                     }
-                    if(parameters.length > 0){
-                        parameters.forEach(parameter => {
-                            params [parameter] = left_selected[replacement];
-                        });
+                    if(Object.keys(parameters).filter(p => parameters.hasOwnProperty(p)).length > 0){
+                        Object.keys(parameters)
+                            .filter(k => parameters.hasOwnProperty(k) && !isEmpty(parameters[k]))
+                            .forEach(k => params [parameters[k]] = left_selected
+                                .reduce((vals, selected) => {
+                                    vals.push(selected[k]);
+                                    return vals;
+                                }, [])
+                                .join(',')
+                            )
                     }
                 }
-
             }
 
             return {api, params};
@@ -304,11 +362,17 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.draggable-icon {
+    .ant-tree li .ant-tree-node-content-wrapper.ant-tree-node-selected{
+        background: #13c2c2!important;
+    }
+.draggable-handle {
     position: absolute;
-    right: -11px;
-    top: 5px;
+    height: 100% !important;
     cursor: col-resize;
+    touch-action: none;
+    border: none;
+    transform: none !important;
+    box-shadow: inset 0 0 3px #999999;
 }
 .container-left {
     box-shadow: inset -0.5px 0 1px #cfcfcf;
