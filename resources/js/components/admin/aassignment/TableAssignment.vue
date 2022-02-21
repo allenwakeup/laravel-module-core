@@ -377,7 +377,10 @@ export default {
 
         onRightChange(targetKeys, direction, moveKeys) {
             this.targetKeys = targetKeys;
-            this.$emit('change', { targetKeys, direction, moveKeys, data: this.source.filter(d => moveKeys.includes(d.key)) });
+            const selectKeys = this.leftSelectedKeys;
+            const selects = this.leftSelectedNodes;
+
+            this.$emit('change', { targetKeys, direction, moveKeys, selectKeys, selects, data: this.source.filter(d => moveKeys.includes(d.key)) });
         },
 
         onRightSelectChange(sourceSelectedKeys, targetSelectedKeys){
@@ -440,6 +443,7 @@ export default {
                                 vals.push(selected[replacement]);
                                 return vals;
                             }, []).join(config.join || ','));
+                            console.log('api', replacement, api);
                         });
                     }
                     if(Object.keys(parameters).filter(p => parameters.hasOwnProperty(p)).length > 0){
