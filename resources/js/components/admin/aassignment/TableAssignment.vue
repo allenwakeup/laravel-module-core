@@ -8,7 +8,7 @@
 
         <a-row type="flex" :gutter="16" style="position:relative;">
             <vue-draggable-resizable
-                    v-if="!!this.left"
+                    v-if="!!left"
                     :w="10"
                     :x="leftWidth"
                     :z="1"
@@ -20,7 +20,7 @@
                     :resizable="false"
             >
             </vue-draggable-resizable>
-            <a-col v-if="!!this.left" :flex="leftWidth + 'px'" :style="{ flex: '0 0 ' + width + 'px'}" :class="{ 'container-left' : !!this.left }">
+            <a-col v-if="!!left" :flex="leftWidth + 'px'" :style="{ flex: '0 0 ' + width + 'px'}" :class="{ 'container-left' : !!left }">
                 <a-tree
                         :multiple="!!left.multiple"
                         @select="onSelectLeft"
@@ -31,7 +31,7 @@
                 </a-tree>
 
             </a-col>
-            <a-col flex="auto" :class="{ 'container-right' : !!this.left }">
+            <a-col flex="auto" :class="{ 'container-right' : !!left }">
                 <a-transfer
                     :data-source="source"
                     :selected-keys="selectedKeys"
@@ -75,6 +75,92 @@
     </div>
 </template>
 <script>
+/*
+左数据源
+    left: {
+        loading: false, // 加载状态
+        api: 'http://xxx/yyy/zzz', // 数据请求地址
+        transform (list_data) { // 数据转换的回调
+            return list_data;
+        },
+        data: [], // 静态数据，仅当「api」未设置
+        multiple: false, // 是否支持多选
+        params: {} // 查询参数,
+        load: search => new Promise((resolve, reject) => {
+            if(true) {
+                resolve([]);
+            } else {
+                reject([]);
+            }
+        })
+    }
+右数据源
+    right: {
+        // 来源数据
+        source: {
+            loading: false, 加载状态
+            api: 'http://xxx/yyy/zzz/{param_1}/{param_n}/source', // 数据请求地址
+            columns: [
+                {title: '名称', dataIndex: 'name', width: 90, key: 'name', ellipsis: true,},
+            ],
+            transform (list_data) { // 数据转换的回调
+                return list_data;
+            },
+            data: [], // 静态数据，仅当「api」未设置
+            params: {} // 查询参数
+            join: ',', // 可选，多选时参数拼接的连接符
+            replacements: [ // API请求地址替换文本，替换的名称与列表中的模型属性名相同，文本为属性值，支持多选
+                'param_1',
+                .
+                .
+                .
+                'param_n'
+            ]
+            replacement: 'param_1',
+            parameters: [ // 形态一：数组型，请求参数载荷
+                'id', 'name'  // 取列表中模型对应的属性名称所对应的值，支持多选
+            ],
+            parameters: [ // 形态二：键值型，请求参数载荷
+                id: 'param_1', // 与形态一不同的是生成的参数名支持映射
+                name: 'param_n'
+            ],
+            parameter: 'id' // 单一参数，效果同 parameters: [ parameter ]
+        },
+        // 已设置的数据
+        target: {
+            loading: false,
+            api: 'http://xxx/yyy/zzz/{param_1}/{param_n}/target', // 数据请求地址
+            columns: [
+                {title: '名称', dataIndex: 'name', width: 90, key: 'name', ellipsis: true,},
+            ],
+            transform (list_data) {
+                return list_data;
+            },
+            params: {} // 查询参数
+            join: ',',
+            replacements: []
+            replacement: '',
+            parameters: [],
+            parameters: [],
+            parameter: ''
+        },
+        default: {
+            api: 'http://xxx/yyy/zzz/{param_1}/{param_n}/default',
+            transform (list_data) {
+                return list_data;
+            },
+            data: [],
+            params: {}
+            join: ',',
+            replacements: []
+            replacement: '',
+            parameters: [],
+            parameters: [],
+            parameter: ''
+        }
+    }
+
+ */
 import difference from 'lodash/difference';
 import { isArray, isEmpty } from '@/plugins/function'
 import Search from '@/components/admin/search'
@@ -116,7 +202,8 @@ export default {
             source: [],
             selectedKeys: [],
             targetKeys: [],
-            leftSelectedKeys: undefined
+            leftSelectedKeys: undefined,
+            leftSelectedNodes: undefined
         };
     },
     methods: {
@@ -147,10 +234,32 @@ export default {
                     this.$message.error(err);
                     this.left.loading = false;
                 });
+            } else if(!! this.left && !! this.left.data) {
+                if(typeof this.left.transform === 'function'){
+                    this.leftData = this.left.transform(this.right.source.data)
+                } else {
+                    this.leftData = this.left.data;
+                }
+            } else if(!! this.left && !! this.left.load) {
+                if(typeof this.left.load === 'function'){
+                    this.left.loading = true; // 更改表格加载状态
+                    const search = !! this.left ? this.search.params : {};
+                    this.left.load(Object.assign({}, search, this.left.params)).then(data => {
+                        this.left.loading = false;
+                        if(typeof this.left.transform === 'function'){
+                            this.leftData = this.left.transform(data)
+                        } else {
+                            this.leftData = data;
+                        }
+                    }, err=>{
+                        this.left.loading = false;
+                    })
+                } else {
+                    this.leftData = this.left.data;
+                }
             } else {
                 this.$message.error('未定义数据源.');
             }
-
         },
 
         loadRightSourceData(){
@@ -183,16 +292,21 @@ export default {
                     this.$message.error(err);
                     this.right.source.loading = false;
                 });
+            } else if(!! this.right && !! this.right.source && !!this.right.source.data) {
+                if(typeof this.right.source.transform === 'function'){
+                    this.source = this.right.source.transform(this.right.source.data)
+                } else {
+                    this.source = this.right.source.data;
+                }
             } else {
                 this.$message.error('未定义数据源.');
             }
         },
-        
+
         loadRightDefault(){
             if(!! this.right && !! this.right.default){ // 组件需设置好请求地址
                 if(this.$isEmpty(this.right.default.api)){
-                    this.selectedKeys = this.right.default.selectedKeys || [];
-                    console.log(this.selectedKeys)
+                    this.selectedKeys = this.right.default.data || [];
                 } else {
                     const search = !! this.left ? {} : this.search.params;
                     const { api, params } = this.handleApiParamsReplacement(
@@ -217,7 +331,6 @@ export default {
                         this.$message.error(err);
                     });
                 }
-
             }
         },
 
@@ -275,9 +388,10 @@ export default {
 
             if(selectedKeys.length > 0){
                 this.leftSelectedKeys = selectedKeys;
-                                
+                this.leftSelectedNodes = this.findLeftSelectedNodes(this.leftData);
+
                 this.loadRightSourceData();
-               // this.loadRightTargetData();
+                this.loadRightTargetData();
             }
         },
 
@@ -303,29 +417,29 @@ export default {
 
         handleApiParamsReplacement(api, params, config){
             const { leftData } = this;
-
             if(!!this.leftSelectedKeys && this.leftSelectedKeys.length > 0){
 
-                const left_selected = leftData.filter(d => this.leftSelectedKeys.includes(d.key));
+                if(!!this.leftSelectedNodes && this.leftSelectedNodes.length > 0){
 
-                const replacements = [].concat(config.replacements);
-                const parameters = isArray(config.parameters) ? config.parameters.reduce((kv, parameter) => {
-                    kv[parameter] = parameter;
-                    return kv;
-                }, {}) : config.parameters;
+                    const replacements = [].concat(config.replacements || []);
+                    const parameters = isArray(config.parameters) ? config.parameters.reduce((kv, parameter) => {
+                        kv[parameter] = parameter;
+                        return kv;
+                    }, {}) : (config.parameters || {});
 
-                if(! this.$isEmpty(config.replacement)){
-                    replacements.push(config.replacement);
-                } else if(! this.$isEmpty(config.parameter)) {
-                    parameters[config.parameter] = config.parameter;
-                }
-                if(!!left_selected && left_selected.length > 0){
+                    if(! this.$isEmpty(config.replacement)){
+                        replacements.push(config.replacement);
+                    }
+                    if(! this.$isEmpty(config.parameter)) {
+                        parameters[config.parameter] = config.parameter;
+                    }
+
                     if(replacements.length > 0){
                         replacements.forEach(replacement => {
-                            api = api.replace(`{${replacement}}`, left_selected.reduce((vals, selected) => {
+                            api = api.replace(`{${replacement}}`, this.leftSelectedNodes.reduce((vals, selected) => {
                                 vals.push(selected[replacement]);
                                 return vals;
-                            }, []).join(','));
+                            }, []).join(config.join || ','));
                         });
                     }
                     if(Object.keys(parameters).filter(p => parameters.hasOwnProperty(p)).length > 0){
@@ -336,13 +450,36 @@ export default {
                                     vals.push(selected[k]);
                                     return vals;
                                 }, [])
-                                .join(',')
+                                .join(config.join || ',')
                             )
                     }
                 }
             }
 
             return {api, params};
+        },
+
+        findLeftSelectedNodes(nodes = []){
+            let res = [];
+            if(!! this.leftSelectedKeys){
+                if(!!nodes && nodes.length > 0){
+                    nodes.forEach(n => {
+                        if(!! n.children && n.children.length > 0){
+                            res = res.concat(n.children.filter(
+                                c =>
+                                    (!c.children || c.children.length === 0)
+                                    && this.leftSelectedKeys.includes(c.id)
+                            ));
+                            n.children
+                                .filter(c => !! c.children && c.children.length > 0)
+                                .forEach(c => {
+                                    res = res.concat(this.findLeftSelectedNodes(c.children));
+                                })
+                        }
+                    })
+                }
+            }
+            return res;
         },
 
         onload(){
