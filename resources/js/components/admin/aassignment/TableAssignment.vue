@@ -377,10 +377,10 @@ export default {
 
         onRightChange(targetKeys, direction, moveKeys) {
             this.targetKeys = targetKeys;
-            const selectKeys = this.leftSelectedKeys;
+            const selectedKeys = this.leftSelectedKeys;
             const selects = this.leftSelectedNodes;
 
-            this.$emit('change', { targetKeys, direction, moveKeys, selectKeys, selects, data: this.source.filter(d => moveKeys.includes(d.key)) });
+            this.$emit('change', { targetKeys, direction, moveKeys, selectedKeys, selects, data: this.source.filter(d => moveKeys.includes(d.key)) });
         },
 
         onRightSelectChange(sourceSelectedKeys, targetSelectedKeys){
@@ -392,6 +392,8 @@ export default {
             if(selectedKeys.length > 0){
                 this.leftSelectedKeys = selectedKeys;
                 this.leftSelectedNodes = this.findLeftSelectedNodes(this.leftData);
+
+                this.$emit('select', { selectedKeys, selects: this.leftSelectedNodes });
 
                 this.loadRightSourceData();
                 this.loadRightTargetData();
@@ -443,7 +445,6 @@ export default {
                                 vals.push(selected[replacement]);
                                 return vals;
                             }, []).join(config.join || ','));
-                            console.log('api', replacement, api);
                         });
                     }
                     if(Object.keys(parameters).filter(p => parameters.hasOwnProperty(p)).length > 0){
@@ -516,6 +517,7 @@ export default {
     box-shadow: inset 0 0 3px #999999;
 }
 .container-left {
+    overflow-x:hidden;
     box-shadow: inset -0.5px 0 1px #cfcfcf;
 }
 .container-right {
