@@ -20,8 +20,10 @@
                     :resizable="false"
             >
             </vue-draggable-resizable>
-            <a-col v-if="!!left" :flex="leftWidth + 'px'" :style="{ flex: '0 0 ' + width + 'px'}" :class="{ 'container-left' : !!left }">
+            <a-col v-if="!!left" :flex="leftWidth + 'px'" :style="{ flex: '0 0 ' + width + 'px'}" :class="{ 'container-left' : !!left, 'loading-left': !!left && left.loading }">
+                <a-spin size="small" v-show="!!left && left.loading"/>
                 <a-tree
+                        v-if="!!leftData && leftData.length > 0"
                         :multiple="!!left.multiple"
                         @select="onSelectLeft"
                         :tree-data="leftData"
@@ -29,7 +31,7 @@
                         :replace-fields="{children:'children', title:'name', key:'id', value: 'id' }">
                     <a-icon slot="switcherIcon" type="down" />
                 </a-tree>
-
+                <p v-if="(!leftData || leftData.length === 0) && (!left || !left.loading)">没有找到更多的数据...</p>
             </a-col>
             <a-col flex="auto" :class="{ 'container-right' : !!left }">
                 <a-transfer
@@ -40,7 +42,7 @@
                     :list-style="{maxHeight: '100%', width: width + 'px'}"
                     :operations="operations"
                     show-search
-                    :filter-option="(inputValue, item) => item.title.indexOf(inputValue) !== -1"
+                    :filter-option="filterTransferOptions"
                     :show-select-all="false"
                     @change="onRightChange"
                     @selectChange="onRightSelectChange"
@@ -76,6 +78,10 @@
 </template>
 <script>
 /*
+*********************
+数据源配置示例与说明
+*********************
+
 左数据源
     left: {
         loading: false, // 加载状态
@@ -103,8 +109,8 @@
             columns: [
                 {title: '名称', dataIndex: 'name', width: 90, key: 'name', ellipsis: true,},
             ],
-            transform (list_data) { // 数据转换的回调
-                return list_data;
+            transform ({data, selectedKeys, selects }) { // 数据转换的回调
+                return data;
             },
             data: [], // 静态数据，仅当「api」未设置
             params: {} // 查询参数
@@ -133,8 +139,8 @@
             columns: [
                 {title: '名称', dataIndex: 'name', width: 90, key: 'name', ellipsis: true,},
             ],
-            transform (list_data) {
-                return list_data;
+            transform ({data, selectedKeys, selects }) { // 数据转换的回调
+                return data;
             },
             params: {} // 查询参数
             join: ',',
@@ -157,6 +163,9 @@
             parameters: [],
             parameters: [],
             parameter: ''
+        },
+        filter (inputValue, item) { // 返回 bool 过滤选项
+            return item.title.indexOf(inputValue) !== -1;
         }
     }
 
@@ -196,28 +205,48 @@ export default {
     },
     data() {
         return {
-            width: this.leftWidth,
-            loading: false,
-            leftData: [],
-            source: [],
-            selectedKeys: [],
-            targetKeys: [],
+            width: this.leftWidth, // 左侧数据容器的初始宽度
+            leftData: [], // 左侧数据列表
+            source: [], // 右侧来源数据列表
+            selectedKeys: [], // 右侧被默认勾选的内容
+            targetKeys: [], // 右侧目标数据泪飙
             leftSelectedKeys: undefined,
             leftSelectedNodes: undefined
         };
     },
     methods: {
 
+        /**
+         * 拖动效果触发函数
+         * @param x
+         * @param y
+         */
         onDrag: function(x, y) {
             this.width = Math.max(x, this.leftWidth);
         },
 
+        /**
+         * 过滤搜索框
+         * @param inputValue
+         * @param item
+         */
+        filterTransferOptions(inputValue, item) {
+            if(!!this.right && this.right.filter === 'function'){
+                return this.right.filter(inputValue, item);
+            }
+            return item.title.indexOf(inputValue) !== -1;
+        },
+
+        /**
+         * 加载左侧主选择框树型数据
+         */
         loadLeftData(){
             if(!! this.left && ! this.$isEmpty(this.left.api)){ // 组件需设置好请求地址
                 this.left.loading = true; // 更改表格加载状态
+                this.reset();
                 const search = !! this.left ? this.search.params : {};
+                this.leftData = [];
                 this.$get(this.left.api, Object.assign({}, search, this.left.params)).then(res=>{
-                    this.leftData = [];
                     if (res.code === 200){
                         if(!! res.data){
                             if(typeof this.left.transform === 'function'){
@@ -276,7 +305,7 @@ export default {
                     if (res.code === 200){
                         if(!! res.data){
                             if(typeof this.right.source.transform === 'function'){
-                                this.source = this.right.source.transform(res.data);
+                                this.source = this.right.source.transform({data: res.data, selectedKeys: this.leftSelectedKeys, selects: this.leftSelectedNodes });
                             }else {
                                 this.source = res.data;
                             }
@@ -294,7 +323,7 @@ export default {
                 });
             } else if(!! this.right && !! this.right.source && !!this.right.source.data) {
                 if(typeof this.right.source.transform === 'function'){
-                    this.source = this.right.source.transform(this.right.source.data)
+                    this.source = this.right.source.transform({data: this.right.source.data, selectedKeys: this.leftSelectedKeys, selects: this.leftSelectedNodes })
                 } else {
                     this.source = this.right.source.data;
                 }
@@ -319,7 +348,7 @@ export default {
                         if (res.code === 200){
                             if(!! res.data){
                                 if(typeof this.right.default.transform === 'function'){
-                                    this.selectedKeys = this.right.default.transform(res.data);
+                                    this.selectedKeys = this.right.default.transform({data: res.data, selectedKeys: this.leftSelectedKeys, selects: this.leftSelectedNodes });
                                 }else {
                                     this.selectedKeys = res.data;
                                 }
@@ -350,7 +379,7 @@ export default {
                     if (res.code === 200){
                         if(!! res.data){
                             if(typeof this.right.target.transform === 'function'){
-                                this.targetKeys = this.right.target.transform(res.data)
+                                this.targetKeys = this.right.target.transform({data: res.data, selectedKeys: this.leftSelectedKeys, selects: this.leftSelectedNodes })
                             } else {
                                 this.targetKeys = res.data;
                             }
@@ -377,10 +406,14 @@ export default {
 
         onRightChange(targetKeys, direction, moveKeys) {
             this.targetKeys = targetKeys;
-            const selectedKeys = this.leftSelectedKeys;
-            const selects = this.leftSelectedNodes;
-
-            this.$emit('change', { targetKeys, direction, moveKeys, selectedKeys, selects, data: this.source.filter(d => moveKeys.includes(d.key)) });
+            this.$emit('change', {
+                targetKeys,
+                direction,
+                moveKeys,
+                selectedKeys: this.leftSelectedKeys,
+                selects: this.leftSelectedNodes,
+                data: this.source.filter(d => moveKeys.includes(d.key))
+            });
         },
 
         onRightSelectChange(sourceSelectedKeys, targetSelectedKeys){
@@ -420,8 +453,19 @@ export default {
             };
         },
 
+        /**
+         * 替换 API 参数
+         *
+         * replacements 替换 API 字符串中包含 {参数名} 的参数，值来自于左侧选择的内容中对应键名的值
+         * parameters 作为字段映射，值来自于左侧选择的内容中对应键名的值
+         *
+         *
+         * @param api
+         * @param params
+         * @param config
+         * @returns {{api, params}}
+         */
         handleApiParamsReplacement(api, params, config){
-            const { leftData } = this;
             if(!!this.leftSelectedKeys && this.leftSelectedKeys.length > 0){
 
                 if(!!this.leftSelectedNodes && this.leftSelectedNodes.length > 0){
@@ -464,6 +508,12 @@ export default {
             return {api, params};
         },
 
+        /**
+         * 左侧数据源根据所选查出对应的节点列表
+         *
+         * @param nodes
+         * @returns {*[]}
+         */
         findLeftSelectedNodes(nodes = []){
             let res = [];
             if(!! this.leftSelectedKeys){
@@ -487,7 +537,22 @@ export default {
             return res;
         },
 
+        /**
+         * 重置右侧数据源
+         */
+        reset(){
+            this.source = [];
+            this.selectedKeys = [];
+            this.targetKeys = [];
+            this.leftSelectedKeys = undefined;
+            this.leftSelectedNodes = undefined;
+        },
+
+        /**
+         * 初始化
+         */
         onload(){
+            // 如果配置了左测数据源，初始化顺序改变
             if(!! this.left){
                 this.loadLeftData();
             } else {
@@ -522,5 +587,8 @@ export default {
 }
 .container-right {
     box-shadow: inset 0 -0.5px 1px #cfcfcf;
+}
+.loading-left {
+    background-color: #fcfcfc;
 }
 </style>
