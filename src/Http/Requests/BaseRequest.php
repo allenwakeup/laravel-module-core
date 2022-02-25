@@ -3,6 +3,7 @@
 namespace Goodcatch\Modules\Core\Http\Requests;
 
 use Goodcatch\Modules\Laravel\Http\Requests\CommonFormRequest as FormRequest;
+use Illuminate\Support\Arr;
 
 class BaseRequest extends FormRequest
 {
@@ -16,9 +17,10 @@ class BaseRequest extends FormRequest
     protected function getValidatorInstance ()
     {
         $validator = parent::getValidatorInstance ();
-        $validator->addCustomAttributes (__ ('core::validation.attributes'));
-        $validator->setCustomMessages (__ ('core::validation.custom'));
-        $validator->addCustomValues (__ ('core::validation.values'));
+        $lang = require __DIR__ . '/../../../resources/lang/zh-CN/validation.php';
+        $validator->addCustomAttributes (Arr::get($lang,'attributes'));
+        $validator->setCustomMessages (Arr::get($lang,'custom'));
+        $validator->addCustomValues (Arr::get($lang,'values'));
         return $validator;
     }
 
