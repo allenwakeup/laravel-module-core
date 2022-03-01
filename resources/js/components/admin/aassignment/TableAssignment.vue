@@ -418,6 +418,9 @@ export default {
 
         onRightSelectChange(sourceSelectedKeys, targetSelectedKeys){
             this.selectedKeys = (sourceSelectedKeys || []).concat((targetSelectedKeys || []));
+            if(!this.left){
+                this.$emit('select', { selectedKeys: this.selectedKeys, selects: this.source.filter(s => this.selectedKeys.includes(s.key)) });
+            }
         },
 
         onSelectLeft(selectedKeys, info) {
