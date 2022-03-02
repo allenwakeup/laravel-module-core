@@ -6,9 +6,11 @@
 namespace Goodcatch\Modules\Core\Repositories\Admin;
 
 
+use App\Models\MaterialRequisition;
 use Goodcatch\Modules\Laravel\Traits\Searchable;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 class BaseRepository
 {
@@ -29,7 +31,15 @@ class BaseRepository
             }
         }
     }
-    
+
+    public static function generateCode($prefix,$modelClass)
+    {
+        do{
+            $code = "{$prefix}-".date('YmdHis').'-'.Str::upper(Str::random(6));
+        }while($modelClass::where('code', $code)->exists());
+        return $code;
+    }
+
     public static function tree(Collection $data, $pid = 0, $level = 0, $path = [])
     {
         if(isset($data)){
