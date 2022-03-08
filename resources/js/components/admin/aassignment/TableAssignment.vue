@@ -8,28 +8,31 @@
 
         <a-row type="flex" :gutter="16" style="position:relative;">
             <vue-draggable-resizable
-                    v-if="!!left"
-                    :w="10"
-                    :x="leftWidth"
-                    :z="1"
-                    axis="x"
-                    class="draggable-handle"
-                    :style="{left: width + 'px'}"
-                    :parent="true"
-                    @dragging="onDrag"
-                    :resizable="false"
+                v-if="!!left"
+                :w="10"
+                :x="leftWidth"
+                :z="1"
+                axis="x"
+                class="draggable-handle"
+                :style="{left: width + 'px'}"
+                :parent="true"
+                @dragging="onDrag"
+                :resizable="false"
             >
             </vue-draggable-resizable>
             <a-col v-if="!!left" :flex="leftWidth + 'px'" :style="{ flex: '0 0 ' + width + 'px'}" :class="{ 'container-left' : !!left, 'loading-left': !!left && left.loading }">
                 <a-spin size="small" v-show="!!left && left.loading"/>
                 <a-tree
-                        v-if="!!leftData && leftData.length > 0"
-                        :multiple="!!left.multiple"
-                        @select="onSelectLeft"
-                        :tree-data="leftData"
-                        show-line
-                        :replace-fields="{children:'children', title:'name', key:'id', value: 'id' }">
+                    v-if="!!leftData && leftData.length > 0"
+                    :multiple="!!left.multiple"
+                    @select="onSelectLeft"
+                    :tree-data="leftData"
+                    show-line
+                    :replace-fields="leftReplaceFields">
                     <a-icon slot="switcherIcon" type="down" />
+                    <div slot="title" slot-scope="{ dataRef }">
+                        <slot name="leftTitle" :data="dataRef">{{dataRef.name}}</slot>
+                    </div>
                 </a-tree>
                 <p v-if="(!leftData || leftData.length === 0) && (!left || !left.loading)">没有找到更多的数据...</p>
             </a-col>
@@ -201,6 +204,17 @@ export default {
         leftWidth: {
             type: Number,
             default: 300
+        },
+        leftReplaceFields: {
+            type: Object,
+            default() {
+                return {
+                    children:'children',
+                    title:'name',
+                    key:'id',
+                    value: 'id'
+                }
+            }
         }
     },
     data() {
@@ -572,9 +586,9 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-    .ant-tree li .ant-tree-node-content-wrapper.ant-tree-node-selected{
-        background: #13c2c2!important;
-    }
+.ant-tree li .ant-tree-node-content-wrapper.ant-tree-node-selected{
+    background: #13c2c2!important;
+}
 .draggable-handle {
     position: absolute;
     height: 100% !important;
