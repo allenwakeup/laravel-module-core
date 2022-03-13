@@ -547,6 +547,10 @@ export default {
                                 .forEach(c => {
                                     res = res.concat(this.findLeftSelectedNodes(c.children));
                                 })
+                        } else {
+                            if(this.leftSelectedKeys.includes(n.id)){
+                                res.push(n);
+                            }
                         }
                     })
                 }
