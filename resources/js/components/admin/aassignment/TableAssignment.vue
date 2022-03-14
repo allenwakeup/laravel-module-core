@@ -22,17 +22,35 @@
             </vue-draggable-resizable>
             <a-col v-if="!!left" :flex="leftWidth + 'px'" :style="{ flex: '0 0 ' + width + 'px'}" :class="{ 'container-left' : !!left, 'loading-left': !!left && left.loading }">
                 <a-spin size="small" v-show="!!left && left.loading"/>
+                <a-input-search
+                        v-show="!!left && !left.loading"
+                        v-if="!!left.showSearch"
+                        v-model="searchValue"
+                        style="margin-bottom: 8px"
+                        :style="{ maxWidth: leftWidth + 'px' }"
+                        placeholder="搜索"
+                        @change="onSearchLeft" />
                 <a-tree
                     v-if="!!leftData && leftData.length > 0"
                     :defaultExpandAll="!!left.defaultExpandAll"
+                    :auto-expand-parent="!!left.autoExpandParent"
+                    :expanded-keys="leftExpandedKeys"
                     :multiple="!!left.multiple"
                     @select="onSelectLeft"
+                    @expand="onExpandLeft"
                     :tree-data="leftData"
                     show-line
                     :replace-fields="leftReplaceFields">
                     <a-icon slot="switcherIcon" type="down" />
                     <div slot="title" slot-scope="{ dataRef }">
-                        <slot name="leftTitle" :data="dataRef">{{dataRef.name}}</slot>
+                        <slot name="leftTitle" :data="dataRef" :search="searchValue">
+                            <span v-if="dataRef.name.indexOf(searchValue) > -1">
+                              {{ dataRef.name.substr(0, dataRef.name.indexOf(searchValue)) }}
+                              <span style="color: #f50">{{ searchValue }}</span>
+                              {{ dataRef.name.substr(dataRef.name.indexOf(searchValue) + searchValue.length) }}
+                            </span>
+                            <span v-else>{{ dataRef.name }}</span>
+                        </slot>
                     </div>
                 </a-tree>
                 <p v-if="(!leftData || leftData.length === 0) && (!left || !left.loading)">没有找到更多的数据...</p>
@@ -91,6 +109,8 @@
         loading: false, // 加载状态
         api: 'http://xxx/yyy/zzz', // 数据请求地址
         defaultExpandAll: false, // 默认不全部展开
+        autoExpandParent: false, // 默认不展开父级
+        showSearch: false, // 显示搜索框
         transform (list_data) { // 数据转换的回调
             return list_data;
         },
@@ -227,7 +247,10 @@ export default {
             selectedKeys: [], // 右侧被默认勾选的内容
             targetKeys: [], // 右侧目标数据泪飙
             leftSelectedKeys: undefined,
-            leftSelectedNodes: undefined
+            leftExpandedKeys: undefined,
+            leftSelectedNodes: undefined,
+            searchValue: '',
+            searchLoading: false
         };
     },
     methods: {
@@ -452,6 +475,35 @@ export default {
             }
         },
 
+        onExpandLeft(expandedKeys) {
+            this.leftExpandedKeys = expandedKeys;
+            this.left.autoExpandParent = false;
+        },
+        onSearchLeft(e) {
+            const value = e.target.value;
+
+            if(!! this.leftExpandedKeys && this.leftExpandedKeys.length > 0){
+                this.leftExpandedKeys = [];
+            }
+
+            if(!this.searchLoading){
+                setTimeout(() => {
+                    this.leftExpandedKeys = this.grabTreeNodes(this.leftData, node => {
+                        return node.hasOwnProperty(this.leftReplaceFields.title)
+                            && !!node[this.leftReplaceFields.title]
+                            && node[this.leftReplaceFields.title].indexOf(value) > -1
+                    })
+                        .filter(node => node.hasOwnProperty(this.leftReplaceFields.key))
+                        .map(node => node[this.leftReplaceFields.key]);
+                    this.searchLoading = false;
+                }, 500);
+            }
+            this.searchLoading = true;
+
+
+            this.left.autoExpandParent = true;
+        },
+
         getRowSelection({ disabled, selectedKeys, itemSelectAll, itemSelect }) {
             return {
                 columnWidth: 25,
@@ -556,6 +608,21 @@ export default {
                         }
                     })
                 }
+            }
+            return res;
+        },
+
+        grabTreeNodes(treeData, cb){
+            let res = [];
+            if(!!treeData && treeData.length > 0){
+                treeData.forEach(n => {
+                    if(!!cb && !!cb(n)){
+                        res.push(n);
+                    }
+                    if(n.hasOwnProperty(this.leftReplaceFields.children) && !!n[this.leftReplaceFields.children].length > 0){
+                        res = res.concat(this.grabTreeNodes(n[this.leftReplaceFields.children], cb));
+                    }
+                })
             }
             return res;
         },
