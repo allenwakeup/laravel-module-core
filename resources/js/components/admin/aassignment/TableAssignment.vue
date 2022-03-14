@@ -24,6 +24,7 @@
                 <a-spin size="small" v-show="!!left && left.loading"/>
                 <a-tree
                     v-if="!!leftData && leftData.length > 0"
+                    :defaultExpandAll="!!left.defaultExpandAll"
                     :multiple="!!left.multiple"
                     @select="onSelectLeft"
                     :tree-data="leftData"
@@ -89,6 +90,7 @@
     left: {
         loading: false, // 加载状态
         api: 'http://xxx/yyy/zzz', // 数据请求地址
+        defaultExpandAll: false, // 默认不全部展开
         transform (list_data) { // 数据转换的回调
             return list_data;
         },
