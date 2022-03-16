@@ -35,6 +35,8 @@
                     :defaultExpandAll="!!left.defaultExpandAll"
                     :auto-expand-parent="!!left.autoExpandParent"
                     :expanded-keys="leftExpandedKeys"
+                    :class="left.class || {}"
+                    :style="left.style || {}"
                     :multiple="!!left.multiple"
                     @select="onSelectLeft"
                     @expand="onExpandLeft"
@@ -123,7 +125,9 @@
             } else {
                 reject([]);
             }
-        })
+        }),
+        class: {},
+        style: {}
     }
 右数据源
     right: {
