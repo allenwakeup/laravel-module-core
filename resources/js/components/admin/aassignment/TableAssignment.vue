@@ -670,7 +670,9 @@ export default {
         },
     },
     created() {
-        this.onload();
+        if(!this.search.fire){
+            this.onload();
+        }
     },
     mounted() {}
 };
