@@ -4,6 +4,7 @@
             v-if="!!search"
             :search-config="search.fields"
             :auto-params="search.params"
+            :fire="!!search.fire"
             @searchParams="handleSearchParams"/>
 
         <a-row type="flex" :gutter="16" style="position:relative;">
