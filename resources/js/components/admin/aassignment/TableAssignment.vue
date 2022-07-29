@@ -81,6 +81,7 @@
                             :components="direction === 'left' ? right.source.components : right.target.components"
                             :data-source="filteredItems"
                             :loading="direction === 'left' ? right.source.loading : right.target.loading"
+                            :pagination="direction === 'left' ? (!!right.source.pagination ? right.source.pagination : {}) : (!!right.target.pagination ? right.target.pagination : {})"
                             size="small"
                             :style="{ pointerEvents: listDisabled ? 'none' : null }"
                             :custom-row="({ key, disabled: itemDisabled }) => ({
@@ -143,6 +144,7 @@
                 return data;
             },
             data: [], // 静态数据，仅当「api」未设置
+            pagination: {}, // 分页设置
             params: {} // 查询参数
             join: ',', // 可选，多选时参数拼接的连接符
             replacements: [ // API请求地址替换文本，替换的名称与列表中的模型属性名相同，文本为属性值，支持多选
@@ -172,6 +174,7 @@
             transform ({data, selectedKeys, selects }) { // 数据转换的回调
                 return data;
             },
+            pagination: {}, // 分页设置
             params: {} // 查询参数
             join: ',',
             replacements: []
