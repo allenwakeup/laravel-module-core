@@ -4,6 +4,7 @@
             v-if="!!search"
             :search-config="search.fields"
             :auto-params="search.params"
+            :fire="!!search.fire"
             @searchParams="handleSearchParams"/>
 
         <a-row type="flex" :gutter="16" style="position:relative;">
@@ -80,6 +81,7 @@
                             :components="direction === 'left' ? right.source.components : right.target.components"
                             :data-source="filteredItems"
                             :loading="direction === 'left' ? right.source.loading : right.target.loading"
+                            :pagination="direction === 'left' ? (!!right.source.pagination ? right.source.pagination : {}) : (!!right.target.pagination ? right.target.pagination : {})"
                             size="small"
                             :style="{ pointerEvents: listDisabled ? 'none' : null }"
                             :custom-row="({ key, disabled: itemDisabled }) => ({
@@ -142,6 +144,7 @@
                 return data;
             },
             data: [], // 静态数据，仅当「api」未设置
+            pagination: {}, // 分页设置
             params: {} // 查询参数
             join: ',', // 可选，多选时参数拼接的连接符
             replacements: [ // API请求地址替换文本，替换的名称与列表中的模型属性名相同，文本为属性值，支持多选
@@ -171,6 +174,7 @@
             transform ({data, selectedKeys, selects }) { // 数据转换的回调
                 return data;
             },
+            pagination: {}, // 分页设置
             params: {} // 查询参数
             join: ',',
             replacements: []
@@ -283,54 +287,66 @@ export default {
         /**
          * 加载左侧主选择框树型数据
          */
-        loadLeftData(){
+        loadLeftData() {
+            const loadLeftTreeExpandedKeys = () => {
+                if(!!this.left.defaultExpandAll && !!this.leftData && this.leftData.length > 0){
+                    this.leftExpandedKeys = this.grabTreeNodes(this.leftData, node => (true))
+                        .filter(node => node.hasOwnProperty(this.leftReplaceFields.key))
+                        .map(node => node[this.leftReplaceFields.key]);
+                }
+            }
             if(!! this.left && ! this.$isEmpty(this.left.api)){ // 组件需设置好请求地址
                 this.left.loading = true; // 更改表格加载状态
                 this.reset();
                 const search = !! this.left ? this.search.params : {};
                 this.leftData = [];
-                this.$get(this.left.api, Object.assign({}, search, this.left.params)).then(res=>{
-                    if (res.code === 200){
-                        if(!! res.data){
-                            if(typeof this.left.transform === 'function'){
-                                this.leftData = this.left.transform(res.data)
-                            } else {
-                                this.leftData = res.data;
+                this.$get(this.left.api, Object.assign({}, search, this.left.params))
+                    .then(res => {
+                        if (res.code === 200){
+                            if(!! res.data){
+                                if(typeof this.left.transform === 'function'){
+                                    this.leftData = this.left.transform(res.data)
+                                } else {
+                                    this.leftData = res.data;
+                                }
                             }
-                        }
-                    } else {
-                        this.$message.error(res.msg);
-                    }
-                    this.left.loading = false;
-                }, err=>{
-                    this.$message.error(err);
-                    this.left.loading = false;
-                });
-            } else if(!! this.left && !! this.left.data) {
-                if(typeof this.left.transform === 'function'){
-                    this.leftData = this.left.transform(this.right.source.data)
-                } else {
-                    this.leftData = this.left.data;
-                }
-            } else if(!! this.left && !! this.left.load) {
-                if(typeof this.left.load === 'function'){
-                    this.left.loading = true; // 更改表格加载状态
-                    const search = !! this.left ? this.search.params : {};
-                    this.left.load(Object.assign({}, search, this.left.params)).then(data => {
-                        this.left.loading = false;
-                        if(typeof this.left.transform === 'function'){
-                            this.leftData = this.left.transform(data)
                         } else {
-                            this.leftData = data;
+                            this.$message.error(res.msg);
                         }
+                        this.left.loading = false;
                     }, err=>{
+                        this.$message.error(err);
                         this.left.loading = false;
                     })
-                } else {
-                    this.leftData = this.left.data;
-                }
+                    .then(res => this.$nextTick(() => setTimeout(loadLeftTreeExpandedKeys, 50)));
             } else {
-                this.$message.error('未定义数据源.');
+                if (!!this.left && !!this.left.data) {
+                    if (typeof this.left.transform === 'function') {
+                        this.leftData = this.left.transform(this.right.source.data)
+                    } else {
+                        this.leftData = this.left.data;
+                    }
+                } else if (!!this.left && !!this.left.load) {
+                    if (typeof this.left.load === 'function') {
+                        this.left.loading = true; // 更改表格加载状态
+                        const search = !!this.left ? this.search.params : {};
+                        this.left.load(Object.assign({}, search, this.left.params)).then(data => {
+                            this.left.loading = false;
+                            if (typeof this.left.transform === 'function') {
+                                this.leftData = this.left.transform(data)
+                            } else {
+                                this.leftData = data;
+                            }
+                        }, err => {
+                            this.left.loading = false;
+                        })
+                    } else {
+                        this.leftData = this.left.data;
+                    }
+                } else {
+                    this.$message.error('未定义数据源.');
+                }
+                this.$nextTick(() => setTimeout(loadLeftTreeExpandedKeys, 50))
             }
         },
 
@@ -657,7 +673,9 @@ export default {
         },
     },
     created() {
-        this.onload();
+        if(!this.search.fire){
+            this.onload();
+        }
     },
     mounted() {}
 };
