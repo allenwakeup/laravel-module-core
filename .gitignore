@@ -9,3 +9,4 @@ yarn-error.log
 .env
 /.phpintel
 /public/upload/
+/public/dist/module-core-dev

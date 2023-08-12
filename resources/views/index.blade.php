@@ -9,7 +9,7 @@
     <title>{{$title}} {{$goodcatch}}</title>
     <meta name="keywords" content="{{$keywords}}">
     <meta name="description" content="{{$description}}" />
-    <link rel="stylesheet" href="/dist/vendor/ant-design-vue/antd.min.css">
+    {{--    <link rel="stylesheet" href="/dist/vendor/ant-design-vue/antd.min.css">--}}
 
     <link rel="stylesheet" href="{{ mix('css/app.css','dist') }}">
     <link rel="stylesheet" href="{{ mix('css/style.css','dist') }}">
@@ -35,10 +35,14 @@
 
 
 </body>
+<link rel="stylesheet/less" type="text/css" href="/dist/color.less" />
+<script> window.less = { async: false, env: 'production' }; </script>
+<script type="text/javascript" src="/dist/vendor/less/less.min.js"></script>
 
 <script type="text/javascript">
     window.baseUrl = '{{$base_url}}';
     window.apiTimeout = {{isset($api_timeout) ? $api_timeout : 'false'}};
+    window.app_name = '{{isset($app_name) ? $app_name : ''}}';
     window.menuType = {{isset($menu_type) ? $menu_type : 'false'}};
 </script>
 <script src="{{ mix('js/app.js','dist/module-core') }}"></script>

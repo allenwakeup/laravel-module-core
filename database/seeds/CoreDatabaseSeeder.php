@@ -16,8 +16,6 @@ class CoreDatabaseSeeder extends Seeder
     {
         Model::unguard();
         $this->call(PermissionTableSeeder::class);
-        $this->call(RegionsTableSeeder::class);
-        $this->call(AreaTableSeeder::class);
         $this->call(DatasourcesTableSeeder::class);
         $this->call(ConfigsTableSeeder::class);
         $this->call(ConnectionTableSeeder::class);

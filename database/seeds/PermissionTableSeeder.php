@@ -9,9 +9,23 @@ class PermissionTableSeeder extends Seeder
 {
     use PermissionSeedsTrait;
 
+    // 模块菜单名称
     const MODULE_NAME = '核心模块';
+
+    /*
+     * 模块路由/权限，名称前缀
+     * 如 core::admin.examples
+     */
     const MODULE_ALIAS = 'core';
 
+    /*
+     * 参考路由配置
+     *
+     * Route::group(
+     * [
+     *      'as' => 'core::',
+     * ],
+     */
     const MODULE_API_PREFIX = 'core';
 
     public function getSeedsMenus (){
@@ -27,33 +41,16 @@ class PermissionTableSeeder extends Seeder
                         'name' => '附件管理',
                         'icon' => 'icon-gc-attachments',
                         'is_type' => $menu_type,
-                        'link' => $this->getSeedsModuleApiUri(self::MODULE_ALIAS,'attachments'),
-                    ],
-                    [
-                        'name' => '主数据',
-                        'icon' => 'icon-gc-data',
-                        'is_type' => $menu_type,
                         'children' => [
                             [
-                                'name' => '地区管理',
-                                'icon' => 'icon-gc-areas',
+                                'name' => '列表',
+                                'icon' => 'icon-gc-attachments',
                                 'is_type' => $menu_type,
-                                'link' => $this->getSeedsModuleApiUri(self::MODULE_ALIAS,'areas'),
-                            ],
-                            [
-                                'name' => '部门管理',
-                                'icon' => 'icon-gc-departments',
-                                'is_type' => $menu_type,
-                                'link' => $this->getSeedsModuleApiUri(self::MODULE_ALIAS,'departments'),
-                            ],
-                            [
-                                'name' => '员工管理',
-                                'icon' => 'icon-gc-staff',
-                                'is_type' => $menu_type,
-                                'link' => $this->getSeedsModuleApiUri(self::MODULE_ALIAS,'staff'),
+                                'link' => $this->getSeedsModuleApiUri(self::MODULE_ALIAS,'attachments'),
                             ],
                         ]
                     ],
+
                     [
                         'name' => '数据源管理',
                         'icon' => 'icon-gc-datasource',
@@ -116,19 +113,6 @@ class PermissionTableSeeder extends Seeder
                 self::MODULE_API_PREFIX . '::admin.attachments' => [
                     'download' => ['name' => '下载附件', 'content' => '下载附件']
                 ]
-            ],
-            // 主数据
-            // 地区管理
-            $this->getSeedsModuleMenuGroupName(self::MODULE_ALIAS, '地区管理') => [
-                self::MODULE_API_PREFIX . '::admin.areas'
-            ],
-            // 部门管理
-            $this->getSeedsModuleMenuGroupName(self::MODULE_ALIAS, '部门管理') => [
-                self::MODULE_API_PREFIX . '::admin.departments'
-            ],
-            // 员工管理
-            $this->getSeedsModuleMenuGroupName(self::MODULE_ALIAS, '员工管理') => [
-                self::MODULE_API_PREFIX . '::admin.staff'
             ],
             // 数据源管理
             // 数据库信息

@@ -5,26 +5,32 @@
 
 
         <div class="admin_table_list">
-            <a-table
-                    size="small"
-                    :columns="table.columns"
-                    :data-source="table.data"
-                    :scroll="{ y: sysWindowHeight - 280 }"
-                    :loading="table.loading"
-                    :pagination="false"
-                    :row-selection="{ selectedRowKeys: table.selectedRowKeys, onChange: handleTableRowKeysChange }"
-                    row-key="id">
+	        <a-table
+		        :size="sysSize"
+		        :components="resizeableTitleComponents"
+		        :columns="getCachedTableColumns(table.columns)"
+		        :data-source="table.data"
+		        :scroll="{ y: sysWindowHeight - 280 }"
+		        :loading="table.loading"
+		        :pagination="false"
+		        :row-selection="{ columnWidth: 25, selectedRowKeys: table.selectedRowKeys, onChange: handleTableRowKeysChange }"
+		        :row-key="table.rowId">
 
-                <template slot="title" slot-scope="currentPageData">
-                    <search
-                            :search-config="search.fields"
-                            :auto-params="search.params"
-                            @searchParams="handleTableSearchParams"
-                            :export-config="exporting"
-                            @handleExport="handleTableExport"/>
+		        <template slot="title" slot-scope="currentPageData">
+
+			        <search
+				        :search-config="search.fields"
+				        :auto-params="search.params"
+				        @searchParams="handleTableSearchParams"/>
                     <div class="admin_table_handle_btn">
-                        <a-button @click="$router.push('/Admin/goodcatch/m/core/schedules/form')" type="primary" icon="plus">添加</a-button>
-                        <a-button class="admin_delete_btn" type="danger" icon="delete" @click="handleRemoveTableRows">批量删除</a-button>
+                        <a-button @click="$router.push($moduleUrl('schedules/form'))" type="primary" :size="sysSize" icon="plus">添加</a-button>
+	                    <a-radio-group v-if="!!search.quickSearch && !!search.quick.data && search.quick.data.length > 0" :value="search.quick.selected" :size="sysSize" @change="handleChangeTableQuickSearch($event.target.value)">
+		                    <a-radio-button v-for="(v, k) in search.quick.data.slice(0, 3)" :value="k" :key="k">{{ !!v.label ? v.label : '其他' }}</a-radio-button>
+	                    </a-radio-group>
+	                    <a-select v-if="!!search.quickSearch && !!search.quick.data && search.quick.data.length > 3" :value="search.quick.selected" placeholder="更多选项" :size="sysSize" @change="handleChangeTableQuickSearch" style="width: 150px">
+		                    <a-select-option v-for="(v, k) in search.quick.data" :value="k" :key="k">{{ !!v.label ? v.label : '其他' }}</a-select-option>
+	                    </a-select>
+                        <a-button class="admin_delete_btn" type="danger" :size="sysSize" icon="delete" @click="handleRemoveTableRows">批量删除</a-button>
                     </div>
                 </template>
                 <div slot="id" slot-scope="record" @click="handleIdClick(record)">{{ record.id }}</div>
@@ -63,22 +69,22 @@
                     :default-checked="record.status === 1" />
 
                 <span slot="action" slot-scope="rows">
-                    <a-button icon="edit" @click="$router.push('/Admin/goodcatch/m/core/schedules/form/'+rows.id)">编辑</a-button>
+                    <a-button icon="edit" :size="sysSize" @click="$router.push($moduleUrl('schedules/form/'+rows.id))">编辑</a-button>
                 </span>
             </a-table>
-            <div class="admin_pagination" v-if="table.total > 0">
-                <a-pagination v-model="table.params.page" :page-size.sync="table.params.per_page" :total="table.total" @change="handleTablePageChange" show-less-items />
-            </div>
+	        <div class="admin_pagination" v-if="table.total > 0">
+		        <a-pagination v-model="table.params.page" :size="sysSize" :page-size-options="table.pageSizeOptions" :total="table.total" @change="handleTablePageChange" show-less-items show-size-changer show-quick-jumper :page-size="table.params.per_page" @showSizeChange="handleTablePageSizeChange"/>
+	        </div>
         </div>
         <a-modal
             v-model="logs.show"
             title="任务详情">
             <template slot="footer">
-                <a-button key="submit" type="primary" @click="() => this.logs.show = false">
+                <a-button key="submit" type="primary" :size="sysSize" @click="() => this.logs.show = false">
                     知道了
                 </a-button>
             </template>
-            <a-table :columns="logs.columns" :data-source="logs.list" :pagination="false" row-key="id">
+            <a-table :size="sysSize" :columns="logs.columns" :data-source="logs.list" :pagination="false" row-key="id">
             </a-table>
             <div class="admin_pagination" v-if="logs.total>0">
                 <a-pagination v-model="logs.params.page" :page-size.sync="logs.params.per_page" :total="logs.total" @change="onChangeLogs" show-less-items />
@@ -89,9 +95,10 @@
 
 <script>
 import Search from '@/components/admin/search'
-import { MixinList } from '@/plugins/mixins/admin'
+import {MixinList, MixinStore} from '@/plugins/mixins/admin'
+
 export default {
-    mixins: [ MixinList ],
+	mixins: [MixinList, MixinStore],
     components: { Search },
     props: {},
     data() {
@@ -99,11 +106,11 @@ export default {
 
           table: {
               actions: {
-                  list: this.$api.moduleCoreSchedules,
-                  remove: this.$api.moduleCoreSchedules
+                  list: this.$api.adminSchedules,
+                  remove: this.$api.adminSchedules
               },
               columns: [
-                  {title:'#',scopedSlots: { customRender: 'id' },fixed:'left', width: 80},
+                  {title:'#',scopedSlots: { customRender: 'id' }, width: 80},
                   {title:'名称',scopedSlots: { customRender: 'name' }, width: 180},
                   {title:'描述',dataIndex:'description', width: 150},
                   {title:'状态',scopedSlots: { customRender: 'status' }, width: 90},
@@ -140,7 +147,8 @@ export default {
                       type: 'text'
                   }
 
-              ]
+              ],
+	          quickSearch: true
           },
           dictionary: {
               status: {
@@ -178,7 +186,7 @@ export default {
         onStatusChange(record){
             const reverse_status = [1, 0][record.status];
             this.loading_status ['_' + record.id] = true;
-            this.$put(this.$api.moduleCoreSchedules + '/' + record.id, Object.assign({}, record, {
+            this.$put(this.$api.adminSchedules + '/' + record.id, Object.assign({}, record, {
                 status: reverse_status,
                 logs: '',
                 payload: record.payload ? JSON.stringify(record.payload) : ''
@@ -194,13 +202,13 @@ export default {
         },
         handleNameClick(record){
             this.loading_start['_' + record.id] = true;
-            this.$put(this.$api.moduleCoreSchedules + '/' + record.id, Object.assign({}, record, {
+            this.$put(this.$api.adminSchedules + '/' + record.id, Object.assign({}, record, {
                 start: 1,
                 logs: '',
                 payload: record.payload ? JSON.stringify(record.payload) : ''
             })).then(res=>{
                 this.loading_start['_' + record.id] = false;
-                if(res.code == 200){
+                if(res.code === 200){
                     this.$message.success(res.msg);
                 }else{
                     return this.$message.error(res.msg);
@@ -209,7 +217,7 @@ export default {
         },
         handleIdClick(record){
             this.logs.show = true;
-            this.$get(this.$api.moduleCoreSchedules + '/' + record.id + '/logs',this.logs.params).then(res=>{
+            this.$get(this.$api.adminSchedules + '/' + record.id + '/logs',this.logs.params).then(res=>{
                 this.logs.total = res.data.total;
 
                 this.logs.list = res.data.data;

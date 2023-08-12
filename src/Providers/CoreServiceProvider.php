@@ -42,8 +42,6 @@ class CoreServiceProvider extends ServiceProvider
 
         DataMap::observe (DataMapObserver::class);
         DataRoute::observe (DataRouteObserver::class);
-        Department::observe (DepartmentObserver::class);
-        Staff::observe (StaffObserver::class);
     }
 
     /**

@@ -407,4 +407,9 @@ class DataMapRepository extends BaseRepository
         return Arr::get (self::$REFLECT_METHOD_ARGS, $method, []);
     }
 
+
+    public static function flushCache() {
+        Cache::forget(config('modules.cache.key') . '.core.data_maps');
+        Cache::forget(config('modules.cache.key') . '.core.data_maps.enabled');
+    }
 }

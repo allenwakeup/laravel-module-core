@@ -55,7 +55,7 @@ class DataMapServiceProvider extends ServiceProvider
 
             if (isset ($data_maps) && count ($data_maps) > 0)
             {
-                $config_repository->set (self::CONFIG_KEY_DATA_MAPPING_DEFINED, $data_maps);
+                $config_repository->set (self::CONFIG_KEY_DATA_MAPPING . '.defined', $data_maps);
             }
         }
     }

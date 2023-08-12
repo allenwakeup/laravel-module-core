@@ -8,7 +8,9 @@ namespace Goodcatch\Modules\Core\Repositories\Admin;
 
 use Goodcatch\Modules\Core\Model\Admin\Schedule;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 
 class ScheduleRepository extends BaseRepository
 {
@@ -19,7 +21,7 @@ class ScheduleRepository extends BaseRepository
 
     ];
 
-    public static function list ($perPage, $condition = [], $keyword = null)
+    public static function getList ($perPage, $condition = [], $keyword = null)
     {
         $data = Schedule::query ()
             ->with (['logs' => function ($query) {
@@ -47,6 +49,32 @@ class ScheduleRepository extends BaseRepository
         });
 
         return $data;
+    }
+
+    public static function quick ($condition, $keyword) {
+        return Schedule::query ()
+            ->select('group')
+            ->distinct()
+            ->where (function ($query) use ($condition, $keyword) {
+                self::buildQuery ($query, $condition);
+                if (! empty ($keyword))
+                {
+                    $query->orWhere('name', 'like', "%$keyword%");
+                }
+            })
+            ->get()
+            ->filter(function (Schedule $schedule) {
+                return ! empty($schedule->group);
+            })
+            ->map(function (Schedule $schedule) {
+                return [
+                    'label' => isset($schedule->group) ? $schedule->group : '--',
+                    'params' => [
+                        'group' => $schedule->group
+                    ]
+                ];
+            })
+            ->values();
     }
 
     public static function add ($data)

@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="admin_table_page_title">
-            <a-button @click="$router.back()" class="float_right" icon="arrow-left">返回</a-button>
+            <a-button type="link" @click="$router.back()" class="float_right" icon="arrow-left">返回</a-button>
             计划与任务编辑
         </div>
         <div class="unline underm"></div>
@@ -10,28 +10,29 @@
                 <a-form-model-item label="名称" prop="name">
                     <a-row :gutter="8">
                         <a-col :span="12">
-                            <a-input v-model="form.name" placeholder="请输入名称">
+                            <a-input v-model="form.name" placeholder="请输入名称" :size="sysSize">
                                 <a-tooltip slot="suffix" title="计划或任务名称，长度200个字符以内">
                                     <a-icon type="info-circle" />
                                 </a-tooltip>
                             </a-input>
                         </a-col>
                         <a-col :span="12">
-                            <a-switch checked-children="更多选项" un-checked-children="更少选项" @change="onChangeMoreOptions"/>
+                            <a-switch checked-children="更多选项" un-checked-children="更少选项" @change="onChangeMoreOptions" :size="sysSize"/>
                         </a-col>
                     </a-row>
                 </a-form-model-item>
                 <a-form-model-item label="描述" prop="description">
-                    <a-textarea v-model="form.description" placeholder="请输入计划或任务的描述信息，例如：用途，作用，周期说明等等。" :auto-size="{ minRows: 3, maxRows: 5 }" />
+                    <a-textarea v-model="form.description" placeholder="请输入计划或任务的描述信息，例如：用途，作用，周期说明等等。" :auto-size="{ minRows: 3, maxRows: 5 }" :size="sysSize" />
                 </a-form-model-item>
                 <a-form-model-item label="执行" prop="schedule_type">
-                    <a-input-group compact>
+                    <a-input-group compact :size="sysSize">
                         <a-select
-                                placeholder="选择计划或任务的类型"
-                                :value="form.schedule_type"
-                                :model="form.schedule_type"
-                                style="width: 100px"
-                                @change="handleScheduleTypeChange">
+	                        :size="sysSize"
+                            placeholder="选择计划或任务的类型"
+                            :value="form.schedule_type"
+                            :model="form.schedule_type"
+                            style="width: 100px"
+                            @change="handleScheduleTypeChange">
                             <a-select-option :value="1">
                                 执行指令
                             </a-select-option>
@@ -42,18 +43,19 @@
                                 任务模板
                             </a-select-option>
                         </a-select>
-                        <a-input v-model="form.input1" placeholder="执行指令，如 config:cache" v-show="showFormItem['input1']" style="width: 350px">
+                        <a-input v-model="form.input1" placeholder="执行指令，如 config:cache" v-show="showFormItem['input1']" style="width: 350px" :size="sysSize">
                             <a-tooltip slot="suffix" title="指令，当计划任务类型是命令时显示，如：php artisan config:cache 只需要输入 config:cache">
                                 <a-icon type="info-circle" />
                             </a-tooltip>
                         </a-input>
-                        <a-textarea v-model="form.input2" placeholder="请输入执行脚本，如：npm run production" :auto-size="{ minRows: 5, maxRows: 8 }" v-show="showFormItem['input2']" style="width: 400px"></a-textarea>
+                        <a-textarea v-model="form.input2" placeholder="请输入执行脚本，如：npm run production" :auto-size="{ minRows: 5, maxRows: 8 }" v-show="showFormItem['input2']" style="width: 400px" :size="sysSize"></a-textarea>
                         <a-select
-                                placeholder="请选择任务模板"
-                                :model="form.input3"
-                                style="width: 180px"
-                                :label-in-value="true"
-                                @change="handleInput3Change" v-show="showFormItem['input3']">
+	                        :size="sysSize"
+                            placeholder="请选择任务模板"
+                            :model="form.input3"
+                            style="width: 180px"
+                            :label-in-value="true"
+                            @change="handleInput3Change" v-show="showFormItem['input3']">
                             <a-select-option value="App\\Modules\\Core\\Jobs\\ExchangeData">
                                 数据交换
                             </a-select-option>
@@ -68,9 +70,9 @@
                 </a-form-model-item>
 
                 <a-form-model-item :label="form.input3Text" prop="payload" v-show="showFormItem['input3'] && form.input3">
-                    <a-textarea v-model="form.payload" :auto-size="{ minRows: 8, maxRows: 12 }" />
-                    <a-button type="link" @click="showPaylaodHelper1Modal" icon="info-circle">格式参考</a-button>
-                    <a-button type="link" @click="showPaylaodHelper2Modal" icon="info-circle">邮件校验格式参考</a-button>
+                    <a-textarea v-model="form.payload" :auto-size="{ minRows: 8, maxRows: 12 }" :size="sysSize" />
+                    <a-button type="link" :size="sysSize" @click="showPaylaodHelper1Modal" icon="info-circle">格式参考</a-button>
+                    <a-button type="link" :size="sysSize" @click="showPaylaodHelper2Modal" icon="info-circle">邮件校验格式参考</a-button>
                     <a-modal
                             v-model="payloadHelper1"
                             title="输入表、输出表、队列任务配置参考"
@@ -79,7 +81,7 @@
                             width="80%"
                             height="600px">
                         <template slot="footer">
-                            <a-button key="submit" type="primary" @click="handlePayloadHelperOk2">
+                            <a-button key="submit" type="primary" :size="sysSize" @click="handlePayloadHelperOk2">
                                 知道了
                             </a-button>
                         </template>
@@ -269,7 +271,7 @@
                             width="80%"
                             height="600px">
                         <template slot="footer">
-                            <a-button key="submit" type="primary" @click="handlePayloadHelperOk2">
+                            <a-button key="submit" type="primary" :size="sysSize" @click="handlePayloadHelperOk2">
                                 知道了
                             </a-button>
                         </template>
@@ -334,54 +336,54 @@
                 </a-form-model-item>
                 <a-form-model-item label="执行周期">
                     <a-cron
-                            ref="innerVueCron"
-                            :value="form.cron"
-                            @change="setCorn"></a-cron>
+                        ref="innerVueCron"
+                        :value="form.cron"
+                        @change="setCorn"></a-cron>
                 </a-form-model-item>
                 <a-form-model-item label="其他设置" v-show="showFormItem['overlapping']">
-                    <a-input-group size="large">
+                    <a-input-group :size="sysSize">
                         <a-row :gutter="8">
                             <a-col :span="6">
-                                <a-switch checked-children="重复任务/覆盖" un-checked-children="重复任务/等待" @change="onChangeOverlappingOptions" v-show="showFormItem['overlapping']"/>
+                                <a-switch checked-children="重复任务/覆盖" un-checked-children="重复任务/等待" @change="onChangeOverlappingOptions" v-show="showFormItem['overlapping']" :size="sysSize"/>
                             </a-col>
                             <a-col :span="6">
-                                <a-switch checked-children="单例模式" un-checked-children="集群模式" @change="onChangeOneServerOptions" v-show="showFormItem['one_server']"/>
+                                <a-switch checked-children="单例模式" un-checked-children="集群模式" @change="onChangeOneServerOptions" v-show="showFormItem['one_server']" :size="sysSize"/>
                             </a-col>
                             <a-col :span="6">
-                                <a-switch checked-children="后台模式" un-checked-children="前台模式" @change="onChangeBackgroundOptions" v-show="showFormItem['background']"/>
+                                <a-switch checked-children="后台模式" un-checked-children="前台模式" @change="onChangeBackgroundOptions" v-show="showFormItem['background']" :size="sysSize"/>
                             </a-col>
                             <a-col :span="6">
-                                <a-switch checked-children="维护模式/运行" un-checked-children="维护模式/停止" @change="onChangeMaintenanceOptions" v-show="showFormItem['maintenance']"/>
+                                <a-switch checked-children="维护模式/运行" un-checked-children="维护模式/停止" @change="onChangeMaintenanceOptions" v-show="showFormItem['maintenance']" :size="sysSize"/>
                             </a-col>
                         </a-row>
                     </a-input-group>
                 </a-form-model-item>
                 <a-form-model-item label="PING" prop="ping_before" v-show="showFormItem['ping_before']">
-                    <a-textarea v-model="form.ping_before" placeholder="任务执行前 ping一次系统可以访问到的任意网页地址，若地址可访问，任务才会执行。" :auto-size="{ minRows: 3, maxRows: 5 }" />
+                    <a-textarea v-model="form.ping_before" placeholder="任务执行前 ping一次系统可以访问到的任意网页地址，若地址可访问，任务才会执行。" :auto-size="{ minRows: 3, maxRows: 5 }" :size="sysSize" />
                 </a-form-model-item>
                 <a-form-model-item label="PING" prop="ping_success" v-show="showFormItem['ping_success']">
-                    <a-textarea v-model="form.ping_success" placeholder="任务执行成功后，ping一次系统可以访问到的任意网页地址。" :auto-size="{ minRows: 3, maxRows: 5 }" />
+                    <a-textarea v-model="form.ping_success" placeholder="任务执行成功后，ping一次系统可以访问到的任意网页地址。" :auto-size="{ minRows: 3, maxRows: 5 }" :size="sysSize" />
                 </a-form-model-item>
                 <a-form-model-item label="PING" prop="ping_failure" v-show="showFormItem['ping_failure']">
-                    <a-textarea v-model="form.ping_failure" placeholder="任务执行失败后 ping一次系统可以访问到的任意网页地址。" :auto-size="{ minRows: 3, maxRows: 5 }" />
+                    <a-textarea v-model="form.ping_failure" placeholder="任务执行失败后 ping一次系统可以访问到的任意网页地址。" :auto-size="{ minRows: 3, maxRows: 5 }" :size="sysSize" />
                 </a-form-model-item>
                 <a-form-model-item label="分组" placeholder="对计划或任务进行分组设置，请输入分组名称" prop="group">
-                    <a-input v-model="form.group"></a-input>
+                    <a-input v-model="form.group" :size="sysSize"></a-input>
                 </a-form-model-item>
                 <a-form-model-item label="排序" prop="order">
-                    <a-input-number v-model="form.order" :min="0" @change="onChangeOrder" />
+                    <a-input-number v-model="form.order" :min="0" @change="onChangeOrder" :size="sysSize" />
                 </a-form-model-item>
                 <a-form-model-item label="状态">
-                    <a-switch checked-children="启用" un-checked-children="禁用" :checked="form.status === 1" @change="onChangeStatus"/>
+                    <a-switch checked-children="启用" un-checked-children="禁用" :checked="form.status === 1" @change="onChangeStatus" :size="sysSize"/>
                 </a-form-model-item>
                 <a-form-model-item label="单次任务" v-show="form.status === 1">
-                    <a-switch checked-children="是" un-checked-children="否" :checked="form.once === 1" @change="onChangeOnceOptions"/>
+                    <a-switch checked-children="是" un-checked-children="否" :checked="form.once === 1" @change="onChangeOnceOptions" :size="sysSize"/>
                 </a-form-model-item>
                 <a-form-model-item label="立即启动" v-show="id === 0 || form.schedule_type !== 3">
-                    <a-switch checked-children="启动" un-checked-children="否" :checked="form.start === 1" @change="onChangeStartOptions"/>
+                    <a-switch checked-children="启动" un-checked-children="否" :checked="form.start === 1" @change="onChangeStartOptions" :size="sysSize"/>
                 </a-form-model-item>
                 <a-form-model-item :wrapper-col="{ span: 12, offset: 5 }">
-                    <a-button type="primary" @click="handleSubmit">提交</a-button>
+                    <a-button type="primary" :size="sysSize" @click="handleSubmit">提交</a-button>
                 </a-form-model-item>
             </a-form-model>
 
@@ -390,203 +392,209 @@
 </template>
 
 <script>
-    import ACron from "@/components/admin/acron";
+import ACron from "@this/components/admin/acron";
 
-    export default {
-        components: { ACron },
-        props: {},
-        data() {
-            return {
-                formItemRequires: {
-                    overlapping: false,
-                    one_server: false,
-                    background: false,
-                    maintenance: false,
-                    ping_before: false,
-                    ping_success: false,
-                    ping_failure: false
-                },
-                payloadHelper1: false,
-                payloadHelper2: false,
-                moreOption: false,
-                form:{
-                    name: '',
-                    input1: '',
-                    input2: '',
-                    input3: undefined,
-                    cron: '0 0 0 2 * ?',
-                    ping_before: '',
-                    ping_success: '',
-                    ping_failure: '',
-                    payload: '',
-                    description: '',
-                    schedule_type: 1,
-                    overlapping: 0,
-                    one_server: 0,
-                    background: '',
-                    maintenance: 0,
-                    once: 1,
-                    group: '',
-                    order: 1,
-                    status: 1,
-                    start: 0
-                },
-                id:0,
-                rules: {
-                    group: [
-                        {
-                            required: true,
-                            message: '请填写分组'
-                        }
-                    ]
-                },
-                test: {
-                    loading: false
-                }
-            };
-        },
-        watch: {},
-        computed: {
+import { MixinForm, MixinStore } from '@/plugins/mixins/admin'
+export default {
+	mixins: [ MixinForm, MixinStore ],
+    components: { ACron },
+    props: {},
+    data() {
+        return {
+            formItemRequires: {
+                overlapping: false,
+                one_server: false,
+                background: false,
+                maintenance: false,
+                ping_before: false,
+                ping_success: false,
+                ping_failure: false
+            },
+            payloadHelper1: false,
+            payloadHelper2: false,
+            moreOption: false,
+            form:{
+                name: '',
+                input1: '',
+                input2: '',
+                input3: undefined,
+                cron: '0 0 0 2 * ?',
+                ping_before: '',
+                ping_success: '',
+                ping_failure: '',
+                payload: '',
+                description: '',
+                schedule_type: 1,
+                overlapping: 0,
+                one_server: 0,
+                background: '',
+                maintenance: 0,
+                once: 1,
+                group: '',
+                order: 1,
+                status: 1,
+                start: 0
+            },
+            id:0,
+            rules: {
+                group: [
+                    {
+                        required: true,
+                        message: '请填写分组'
+                    }
+                ]
+            },
+            test: {
+                loading: false
+            }
+        };
+    },
+    watch: {},
+    computed: {
 
-            showFormItem(){
-                const items = {};
-                for(const key in this.formItemRequires) {
-                    if (this.formItemRequires.hasOwnProperty(key)) {
-                        if (this.formItemRequires[key] === false && this.moreOption) {
-                            items[key] = true;
-                        }
+        showFormItem(){
+            const items = {};
+            for(const key in this.formItemRequires) {
+                if (this.formItemRequires.hasOwnProperty(key)) {
+                    if (this.formItemRequires[key] === false && this.moreOption) {
+                        items[key] = true;
                     }
                 }
-                [1, 2, 3].forEach(el => items ['input' + el] = (el === this.form.schedule_type));
-                return items;
+            }
+            [1, 2, 3].forEach(el => items ['input' + el] = (el === this.form.schedule_type));
+            return items;
+        }
+    },
+    methods: {
+        handleSubmit(){
+
+            this.$refs.form.validate(valid => {
+                if (valid) {
+                    const params = Object.assign({}, this.form, {
+                        logs: '',
+                    });
+                    if(this.form.schedule_type === 3){
+                        params['payload'] = this.form.payload ? JSON.stringify(this.form.payload) : ''
+                    }
+                    params['input'] = params['input' + params.schedule_type];
+                    if(this.$isEmpty(params.background)){
+                        delete params.background;
+                    }
+                    let api = this.$apiHandle(this.$api.adminSchedules,this.id);
+                    if(api.status){
+                        this.$put(api.url, params).then(res=>{
+                            if(res.code === 200){
+	                            this.$message.success(res.msg);
+	                            this.sendMessageFormUpdated();
+	                            this.$router.back();
+	                            return this.$tabs.close();
+                            }else{
+                                return this.$message.error(res.msg)
+                            }
+                        })
+                    }else{
+                        this.$post(api.url, params).then(res=>{
+                            if(res.code === 200 || res.code === 201){
+	                            this.$message.success(res.msg);
+	                            this.sendMessageFormUpdated();
+	                            this.$router.back();
+	                            return this.$tabs.close();
+                            }else{
+                                return this.$message.error(res.msg);
+                            }
+                        })
+                    }
+
+                } else {
+                    this.$message.error('请正确填写表单！');
+                    return false;
+                }
+            });
+        },
+
+        onChangeMoreOptions(checked){
+            this.moreOption = checked;
+        },
+
+        onChangeOverlappingOptions(checked){
+            this.form.overlapping = checked ? 1 : 0;
+        },
+
+        onChangeOneServerOptions(checked){
+            this.form.one_server = checked ? 1 : 0;
+        },
+        onChangeBackgroundOptions(checked){
+            this.form.background = checked ? 1 : 0;
+        },
+        onChangeMaintenanceOptions(checked){
+            this.form.maintenance = checked ? 1 : 0;
+        },
+        onChangeOnceOptions(checked){
+            this.form.once = checked ? 1 : 0;
+        },
+        onChangeStartOptions(checked){
+            this.form.start = checked ? 1 : 0;
+        },
+
+        onChangeOrder(value){
+            this.form.order = value;
+        },
+        onChangePort(value){
+            this.form.port = value;
+        },
+        onChangeStatus(checked){
+            this.form.status = checked ? 1 : 0;
+        },
+        get_form(){
+            this.$get(this.$api.adminSchedules+'/'+this.id).then(res=>{
+                if(res.code === 200){
+                    res.data.payload = res.data.payload ? JSON.stringify(res.data.payload, null, 2) : '';
+                    this.form = res.data;
+                    if(res.data.schedule_type && res.data.input){
+                        this.form['input' + res.data.schedule_type] = res.data.input;
+                    }
+                }
+            });
+        },
+        handleScheduleTypeChange(value){
+            this.form.schedule_type = value;
+        },
+        handleInput3Change(kv) {
+            this.form.input3 = kv.key;
+            this.form.input3Text = kv.label;
+        },
+        showPaylaodHelper1Modal(){
+            this.payloadHelper1 = true;
+        },
+        showPaylaodHelper2Modal(){
+            this.payloadHelper2 = true;
+        },
+        handlePayloadHelperOk1(){
+            this.payloadHelper1 = false;
+        },
+        handlePayloadHelperOk2(){
+            this.payloadHelper2 = false;
+        },
+        setCorn(cron){
+            this.form.cron = cron;
+        },
+
+        // 获取列表
+        onload(){
+            // 判断你是否是编辑
+            if(!this.$isEmpty(this.$route.params.id)){
+                this.id = this.$route.params.id;
+                this.get_form();
             }
         },
-        methods: {
-            handleSubmit(){
-
-                this.$refs.form.validate(valid => {
-                    if (valid) {
-                        const params = Object.assign({}, this.form, {
-                            logs: '',
-                        });
-                        if(this.form.schedule_type === 3){
-                            params['payload'] = this.form.payload ? JSON.stringify(this.form.payload) : ''
-                        }
-                        params['input'] = params['input' + params.schedule_type];
-                        if(this.$isEmpty(params.background)){
-                            delete params.background;
-                        }
-                        let api = this.$apiHandle(this.$api.moduleCoreSchedules,this.id);
-                        if(api.status){
-                            this.$put(api.url, params).then(res=>{
-                                if(res.code === 200){
-                                    this.$message.success(res.msg)
-                                    return this.$router.back();
-                                }else{
-                                    return this.$message.error(res.msg)
-                                }
-                            })
-                        }else{
-                            this.$post(api.url, params).then(res=>{
-                                if(res.code === 200 || res.code === 201){
-                                    this.$message.success(res.msg)
-                                    return this.$router.back();
-                                }else{
-                                    return this.$message.error(res.msg);
-                                }
-                            })
-                        }
-
-                    } else {
-                        this.$message.error('请正确填写表单！');
-                        return false;
-                    }
-                });
-            },
-
-            onChangeMoreOptions(checked){
-                this.moreOption = checked;
-            },
-
-            onChangeOverlappingOptions(checked){
-                this.form.overlapping = checked ? 1 : 0;
-            },
-
-            onChangeOneServerOptions(checked){
-                this.form.one_server = checked ? 1 : 0;
-            },
-            onChangeBackgroundOptions(checked){
-                this.form.background = checked ? 1 : 0;
-            },
-            onChangeMaintenanceOptions(checked){
-                this.form.maintenance = checked ? 1 : 0;
-            },
-            onChangeOnceOptions(checked){
-                this.form.once = checked ? 1 : 0;
-            },
-            onChangeStartOptions(checked){
-                this.form.start = checked ? 1 : 0;
-            },
-
-            onChangeOrder(value){
-                this.form.order = value;
-            },
-            onChangePort(value){
-                this.form.port = value;
-            },
-            onChangeStatus(checked){
-                this.form.status = checked ? 1 : 0;
-            },
-            get_form(){
-                this.$get(this.$api.moduleCoreSchedules+'/'+this.id).then(res=>{
-                    if(res.code === 200){
-                        res.data.payload = res.data.payload ? JSON.stringify(res.data.payload, null, 2) : '';
-                        this.form = res.data;
-                        if(res.data.schedule_type && res.data.input){
-                            this.form['input' + res.data.schedule_type] = res.data.input;
-                        }
-                    }
-                });
-            },
-            handleScheduleTypeChange(value){
-                this.form.schedule_type = value;
-            },
-            handleInput3Change(kv) {
-                this.form.input3 = kv.key;
-                this.form.input3Text = kv.label;
-            },
-            showPaylaodHelper1Modal(){
-                this.payloadHelper1 = true;
-            },
-            showPaylaodHelper2Modal(){
-                this.payloadHelper2 = true;
-            },
-            handlePayloadHelperOk1(){
-                this.payloadHelper1 = false;
-            },
-            handlePayloadHelperOk2(){
-                this.payloadHelper2 = false;
-            },
-            setCorn(cron){
-                this.form.cron = cron;
-            },
-
-            // 获取列表
-            onload(){
-                // 判断你是否是编辑
-                if(!this.$isEmpty(this.$route.params.id)){
-                    this.id = this.$route.params.id;
-                    this.get_form();
-                }
-            },
 
 
-        },
-        created() {
-            this.onload();
-        },
-        mounted() {}
-    };
+    },
+    created() {
+        this.onload();
+    },
+    mounted() {}
+};
 </script>
 <style lang="scss" scoped>
 
