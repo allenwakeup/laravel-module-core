@@ -5,8 +5,7 @@ namespace Goodcatch\Modules\Core\Observers;
 
 use Goodcatch\Modules\Base\Traits\PermissionSeedsTrait;
 use Goodcatch\Modules\Core\Model\Admin\DataMap;
-
-use Illuminate\Support\Arr;
+use Goodcatch\Modules\Core\Repositories\Admin\DataMapRepository;
 
 
 /**
@@ -24,6 +23,7 @@ class DataMapObserver
 
     const MODULE_NAME = '核心模块';
     const MODULE_ALIAS = 'core';
+    const MENU_NAME = '数据映射';
 
 
     // creating, created, updating, updated, saving
@@ -32,27 +32,42 @@ class DataMapObserver
     {
 
         module_tap (self::PERMISSION_SERVICE_ALIAS, function ($permission_service) use ($item) {
-
+            $menu_type = config('core.menu.type');
             $permission_service->setSeedsMenus([
                 [
                     'name' => self::MODULE_NAME,
+                    'icon' => 'icon-gc-' . self::MODULE_ALIAS,
+                    'is_type' => $menu_type,
+                    'link' => $this->getSeedsModuleApiUri(self::MODULE_ALIAS, 'index'),
                     'children' => [
                         [
-                            'name' => $item->dataRoute->menu,
+                            'name' => self::MENU_NAME,
+                            'icon' => 'icon-gc-data-maps',
+                            'is_type' => $menu_type,
                             'children' => [
                                 [
-                                    'name' => $item->title,
-                                    'link' => $this->getSeedsModuleApiUri(self::MODULE_ALIAS, "data_maps_{$item->id}/{$item->id}/assignment"),
-                                ]
-                            ]
+                                    'name' => $item->dataRoute->menu,
+                                    'icon' => 'icon-gc-data-maps',
+                                    'is_type' => $menu_type,
+                                    'children' => [
+                                        [
+                                            'name' => $item->title,
+                                            'icon' => 'icon-gc-data-maps',
+                                            'is_type' => $menu_type,
+                                            'link' => $this->getSeedsModuleApiUri(self::MODULE_ALIAS, "data_maps_{$item->id}/{$item->id}/assignment"),
+                                        ]
+                                    ]
 
+                                ]
+                            ],
                         ]
+
                     ]
                 ]
             ])->setSeedsPermissionGroups([
                 // 数据映射
                 $this->getSeedsModuleMenuGroupName(self::MODULE_ALIAS, '数据映射') => [
-                    self::MODULE_ALIAS . ".data_maps.{$item->id}" => [
+                    self::MODULE_ALIAS . "::admin.data_maps.{$item->id}" => [
                         'index' => [
                             'name' => '列表',
                             'content' => "数据映射{$item->left}列表展示"
@@ -76,7 +91,11 @@ class DataMapObserver
                     ]
                 ]
             ])->run();
-        })->flush();
+
+            $permission_service->flush();
+
+            DataMapRepository::flushCache();
+        });
 
     }
 
@@ -87,15 +106,18 @@ class DataMapObserver
             $permission_service->remove([
                 $this->getSeedsModuleApiUri(self::MODULE_ALIAS, "data_maps_{$item->id}/{$item->id}/assignment")
             ], [
-                self::MODULE_ALIAS . ".data_maps.{$item->id}.assignment.index",
-                self::MODULE_ALIAS . ".data_maps.{$item->id}.assignment.source",
-                self::MODULE_ALIAS . ".data_maps.{$item->id}.assignment.target",
-                self::MODULE_ALIAS . ".data_maps.{$item->id}.assignment.store",
-                self::MODULE_ALIAS . ".data_maps.{$item->id}.assignment.show",
-                self::MODULE_ALIAS . ".data_maps.{$item->id}.assignment.destroy",
+                self::MODULE_ALIAS . "::admin.data_maps.{$item->id}.assignment.index",
+                self::MODULE_ALIAS . "::admin.data_maps.{$item->id}.assignment.source",
+                self::MODULE_ALIAS . "::admin.data_maps.{$item->id}.assignment.target",
+                self::MODULE_ALIAS . "::admin.data_maps.{$item->id}.assignment.store",
+                self::MODULE_ALIAS . "::admin.data_maps.{$item->id}.assignment.show",
+                self::MODULE_ALIAS . "::admin.data_maps.{$item->id}.assignment.destroy",
             ]);
 
-        })->flush ();
+            $permission_service->flush();
+
+            DataMapRepository::flushCache();
+        });
 
     }
 

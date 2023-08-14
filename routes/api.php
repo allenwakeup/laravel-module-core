@@ -32,9 +32,6 @@ Route::group(
                         Route::group(['middleware'=>'jwt.admin'], function(){
                             Route::apiResources([
                                 'attachments'=>'AttachmentController', // 附件
-                                'areas'=>'AreaController', // 区域
-                                'departments'=>'DepartmentController', // 部门
-                                'staff'=>'StaffController', // 员工
                                 'datasources'=>'DatasourceController', // 数据源
                                 'connections'=>'ConnectionController', // 连接
                                 'schedules'=>'ScheduleController', // 计划与任务
@@ -46,8 +43,6 @@ Route::group(
                                     'datasource' => 'id',
                                     'connection' => 'id',
                                     'data_route' => 'id',
-                                    'department' => 'id',
-                                    'staff' => 'id'
                                 ]
                             ]);
                             Route::get('/attachments/download', 'AttachmentController@download')->name('attachments.download'); // 下载附件

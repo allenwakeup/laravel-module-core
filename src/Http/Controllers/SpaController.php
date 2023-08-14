@@ -17,7 +17,10 @@ class SpaController extends Controller
 
     protected function moduleIndex(array $view_content){
 
-        $view_content = array_merge($view_content, ['menu_type' => config('core.menu.type')]);
+        $view_content = array_merge($view_content, [
+            'menu_type' => config('core.menu.type'),
+            'app_name' => dynamic_config('app_name_core', _trans('core::base.app_name'))
+        ]);
 
         return view('core::index', $view_content);
     }

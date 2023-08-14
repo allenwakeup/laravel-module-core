@@ -1,53 +1,44 @@
+import { moduleUrl } from '@this/plugins/function'
+
 export default [
     // 核心模块
     {
-        path:"/Admin/goodcatch/m/core/index",name:"goodcatch_m_core_index",component:()=>import("@/views/Admin/index"),children:[
-            {path:"/Admin/goodcatch/m/core/index",name:"goodcatch_m_core_default",component:()=>import("@/views/Admin/default")}, // 打开默认页面
+        path: moduleUrl('index'), name:"admin_index", meta:{title: '模块首页', key:'home'}, component: () => import("@this/views/Admin/index"),children:[
+            {path: moduleUrl('index'), name:"admin_default", meta:{title: '模块首页', key:'admin_default'}, component: () => import("@this/views/Admin/default")}, // 打开默认页面
 
             // 附件
-            {path:"/Admin/goodcatch/m/core/attachments",name:"goodcatch_m_core_admin_attachments",component:()=>import("@/views/Admin/attachments/index")},
-            {path:"/Admin/goodcatch/m/core/attachments/form/:id?",name:"goodcatch_m_core_admin_attachments_form",component:()=>import("@/views/Admin/attachments/form")},
-
-            // 地区
-            {path:"/Admin/goodcatch/m/core/areas",name:"goodcatch_m_core_admin_areas",component:()=>import("@/views/Admin/areas/index")},
-            {path:"/Admin/goodcatch/m/core/areas/form/:id?",name:"goodcatch_m_core_admin_areas_form",component:()=>import("@/views/Admin/areas/form")},
-
-            // 部门
-            {path:"/Admin/goodcatch/m/core/departments",name:"goodcatch_m_core_admin_departments",component:()=>import("@/views/Admin/departments/index")},
-            {path:"/Admin/goodcatch/m/core/departments/form/:id?",name:"goodcatch_m_core_admin_departments_form",component:()=>import("@/views/Admin/departments/form")},
-
-            // 员工
-            {path:"/Admin/goodcatch/m/core/staff",name:"goodcatch_m_core_admin_staff",component:()=>import("@/views/Admin/staff/index")},
-            {path:"/Admin/goodcatch/m/core/staff/form/:id?",name:"goodcatch_m_core_admin_staff_form",component:()=>import("@/views/Admin/staff/form")},
+            {path: moduleUrl('attachments'), name:"admin_attachments", meta:{title: '附件', key:'admin_attachments', form: 'admin_attachments_form'}, component:() => import("@this/views/Admin/attachments/index")},
+            {path: moduleUrl('attachments/form/:id?'), name:"admin_attachments_form", meta:{title: '附件编辑', key:'admin_attachments_form'}, component:() => import("@this/views/Admin/attachments/form")},
 
             // 数据源
-            {path:"/Admin/goodcatch/m/core/datasources",name:"goodcatch_m_core_admin_datasources",component:()=>import("@/views/Admin/datasources/index")},
-            {path:"/Admin/goodcatch/m/core/datasources/form/:id?",name:"goodcatch_m_core_admin_datasources_form",component:()=>import("@/views/Admin/datasources/form")},
+            {path: moduleUrl('datasources'), name:"admin_datasources", meta:{title: '数据源', key:'admin_datasources', form: 'admin_datasources_form'}, component: () => import("@this/views/Admin/datasources/index")},
+            {path: moduleUrl('datasources/form/:id?'), name:"admin_datasources_form", meta:{title: '数据源编辑', key:'admin_datasources_form'}, component: () => import("@this/views/Admin/datasources/form")},
 
             // 数据库信息
-            {path:"/Admin/goodcatch/m/core/databases",name:"goodcatch_m_core_admin_databases",component:()=>import("@/views/Admin/databases/index")},
+            {path: moduleUrl('databases'), name:"admin_databases", meta:{title: '数据库', key:'admin_databases'}, component: () => import("@this/views/Admin/databases/index")},
 
             // 数据路径
-            {path:"/Admin/goodcatch/m/core/data_routes",name:"goodcatch_m_core_admin_data_routes",component:()=>import("@/views/Admin/data_routes/index")},
-            {path:"/Admin/goodcatch/m/core/data_routes/form/:id?",name:"goodcatch_m_core_admin_data_routes_form",component:()=>import("@/views/Admin/data_routes/form")},
+            {path: moduleUrl('data_routes'), name:"admin_data_routes", meta:{title: '数据路径', key:'admin_data_routes', form: 'admin_data_routes_form'}, component: () => import("@this/views/Admin/data_routes/index")},
+            {path: moduleUrl('data_routes/form/:id?'), name:"admin_data_routes_form", meta:{title: '数据路径编辑', key:'admin_data_routes_form'}, component: () => import("@this/views/Admin/data_routes/form")},
 
             // 数据映射
-            {path:"/Admin/goodcatch/m/core/data_maps",name:"goodcatch_m_core_admin_data_maps",component:()=>import("@/views/Admin/data_maps/index")},
-            {path:"/Admin/goodcatch/m/core/data_maps/form/:id?",name:"goodcatch_m_core_admin_data_maps_form",component:()=>import("@/views/Admin/data_maps/form")},
+            {path: moduleUrl('data_maps'), name:"admin_data_maps", meta:{title: '数据映射', key:'admin_data_maps', form: 'admin_data_maps_form'}, component: () => import("@this/views/Admin/data_maps/index")},
+            {path: moduleUrl('data_maps/form/:id?'), name:"admin_data_maps_form", meta:{title: '数据映射编辑', key:'admin_data_maps_form'}, component: () => import("@this/views/Admin/data_maps/form")},
             {
-                path:"/Admin/goodcatch/m/core/data_maps_:data_maps_id/:id/assignment",
-                name:"goodcatch_m_core_admin_data_maps_assignment",
-                component:() => import ("@/views/Admin/data_maps/assignment"),
+                path: moduleUrl('data_maps_:data_maps_id/:id/assignment'),
+                name:"admin_data_maps_assignment",
+                meta:{title: '映射数据', key:'admin_data_maps_assignment'},
+                component:() => import ("@this/views/Admin/data_maps/assignment"),
                 props: true
             },
 
             // 连接
-            {path:"/Admin/goodcatch/m/core/connections",name:"goodcatch_m_core_admin_connections",component:()=>import("@/views/Admin/connections/index")},
-            {path:"/Admin/goodcatch/m/core/connections/form/:id?",name:"goodcatch_m_core_admin_connections_form",component:()=>import("@/views/Admin/connections/form")},
+            {path: moduleUrl('connections'), name:"admin_connections", meta:{title: '连接', key:'admin_connections', form: 'admin_connections_form'}, component: () => import("@this/views/Admin/connections/index")},
+            {path: moduleUrl('connections/form/:id?'), name:"admin_connections_form", meta:{title: '连接编辑', key:'admin_connections_form'}, component: () => import("@this/views/Admin/connections/form")},
 
             // 计划与任务
-            {path:"/Admin/goodcatch/m/core/schedules",name:"goodcatch_m_core_admin_schedules",component:()=>import("@/views/Admin/schedules/index")},
-            {path:"/Admin/goodcatch/m/core/schedules/form/:id?",name:"goodcatch_m_core_admin_schedules_form",component:()=>import("@/views/Admin/schedules/form")},
+            {path: moduleUrl('schedules'), name:"admin_schedules", meta:{title: '计划与任务', key:'admin_schedules', form: 'admin_schedules_form'}, component: () => import("@this/views/Admin/schedules/index")},
+            {path: moduleUrl('schedules/form/:id?'), name:"admin_schedules_form", meta:{title: '计划与任务编辑', key:'admin_schedules_form'}, component: () => import("@this/views/Admin/schedules/form")},
         ]
     }
 ];

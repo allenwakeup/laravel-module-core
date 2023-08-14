@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="admin_table_page_title">
-            <a-button @click="$router.back()" class="float_right" icon="arrow-left">返回</a-button>
+            <a-button type="link" @click="$router.back()" class="float_right" icon="arrow-left">返回</a-button>
             附件编辑
         </div>
         <div class="unline underm"></div>
@@ -15,7 +15,7 @@
                             list-type="picture-card"
                             class="avatar-uploader"
                             :show-upload-list="false"
-                            :action="$api.moduleCoreAttachments + '/upload'"
+                            :action="$api.adminAttachments + '/upload'"
                             :data="{token:getToken()}"
                             @change="onChangeUpload"
                     >
@@ -41,7 +41,9 @@
 import {moduleStorageHelpers} from '@/plugins/function'
 import { STORE_ADMIN, TOKEN } from '@/plugins/constant'
 const {readStorageStr} = moduleStorageHelpers(STORE_ADMIN)
+import { MixinForm, MixinStore } from '@/plugins/mixins/admin'
 export default {
+	mixins: [ MixinForm, MixinStore ],
     components: {},
     props: {},
     data() {
@@ -74,12 +76,14 @@ export default {
 
             this.$refs.form.validate(valid => {
                 if(valid){
-                    let api = this.$apiHandle(this.$api.moduleCoreAttachments,this.id);
+                    let api = this.$apiHandle(this.$api.adminAttachments,this.id);
                     if(api.status){
                         this.$put(api.url, this.form).then(res=>{
                             if(res.code === 200){
-                                this.$message.success(res.msg)
-                                return this.$router.back();
+	                            this.$message.success(res.msg);
+	                            this.sendMessageFormUpdated();
+	                            this.$router.back();
+	                            return this.$tabs.close();
                             }else{
                                 return this.$message.error(res.msg)
                             }
@@ -87,8 +91,10 @@ export default {
                     }else{
                         this.$post(api.url, this.form).then(res=>{
                             if(res.code === 200 || res.code === 201){
-                                this.$message.success(res.msg)
-                                return this.$router.back();
+	                            this.$message.success(res.msg);
+	                            this.sendMessageFormUpdated();
+	                            this.$router.back();
+	                            return this.$tabs.close();
                             }else{
                                 return this.$message.error(res.msg)
                             }
@@ -109,7 +115,7 @@ export default {
             return readStorageStr(TOKEN)
         },
         getForm(){
-            this.$get(this.$api.moduleCoreAttachments+'/'+this.id).then(res=>{
+            this.$get(this.$api.adminAttachments+'/'+this.id).then(res=>{
                 if(res.code === 200){
 
                     this.form = res.data;

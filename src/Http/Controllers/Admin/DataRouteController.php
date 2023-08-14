@@ -83,7 +83,7 @@ class DataRouteController extends Controller
         try{
             return $this->success(DataRouteRepository::add($request->only($this->formNames)),__('base.success'));
         } catch (QueryException $e) {
-            return $this->error(__('base.error') . (Str::contains ($e->getMessage (), 'Duplicate entry') ? '当前数据映射已存在' : '其它错误'));
+            return $this->error(__('base.error') . (Str::contains ($e->getMessage (), 'Duplicate entry') ? '当前数据映射已存在' : '其它错误') . $e->getMessage ());
         }
     }
 

@@ -5,26 +5,26 @@
 
 
         <div class="admin_table_list">
-            <a-table
-                    size="small"
-                    :columns="table.columns"
-                    :data-source="table.data"
-                    :scroll="{ y: sysWindowHeight - 280 }"
-                    :loading="table.loading"
-                    :pagination="false"
-                    :row-selection="{ selectedRowKeys: table.selectedRowKeys, onChange: handleTableRowKeysChange }"
-                    row-key="id">
+	        <a-table
+		        :size="sysSize"
+		        :components="resizeableTitleComponents"
+		        :columns="getCachedTableColumns(table.columns)"
+		        :data-source="table.data"
+		        :scroll="{ y: sysWindowHeight - 280 }"
+		        :loading="table.loading"
+		        :pagination="false"
+		        :row-selection="{ columnWidth: 25, selectedRowKeys: table.selectedRowKeys, onChange: handleTableRowKeysChange }"
+		        :row-key="table.rowId">
 
-                <template slot="title" slot-scope="currentPageData">
-                    <search
-                            :search-config="search.fields"
-                            :auto-params="search.params"
-                            @searchParams="handleTableSearchParams"
-                            :export-config="exporting"
-                            @handleExport="handleTableExport"/>
+		        <template slot="title" slot-scope="currentPageData">
+
+			        <search
+				        :search-config="search.fields"
+				        :auto-params="search.params"
+				        @searchParams="handleTableSearchParams"/>
                     <div class="admin_table_handle_btn">
-                        <a-button @click="$router.push('/Admin/goodcatch/m/core/data_routes/form')" type="primary" icon="plus">添加</a-button>
-                        <a-button class="admin_delete_btn" type="danger" icon="delete" @click="handleRemoveTableRows">批量删除</a-button>
+                        <a-button @click="$router.push($moduleUrl('data_routes/form'))" type="primary" :size="sysSize" icon="plus">添加</a-button>
+                        <a-button class="admin_delete_btn" type="danger" :size="sysSize" icon="delete" @click="handleRemoveTableRows">批量删除</a-button>
                     </div>
                 </template>
 
@@ -32,32 +32,33 @@
                     {{ record.connection ? (record.connection.datasource ? (record.connection.name + '(' + record.connection.datasource.name + ')') : record.connection.name) : '--' }}
                 </span>
                 <span slot="action" slot-scope="rows">
-                    <a-button icon="edit" @click="$router.push('/Admin/goodcatch/m/core/data_routes/form/'+rows.id)">编辑</a-button>
+                    <a-button type="link" icon="edit" :size="sysSize" @click="$router.push($moduleUrl('data_routes/form/'+rows.id))">编辑</a-button>
                 </span>
             </a-table>
-            <div class="admin_pagination" v-if="table.total > 0">
-                <a-pagination v-model="table.params.page" :page-size.sync="table.params.per_page" :total="table.total" @change="handleTablePageChange" show-less-items />
-            </div>
+	        <div class="admin_pagination" v-if="table.total > 0">
+		        <a-pagination v-model="table.params.page" :size="sysSize" :page-size-options="table.pageSizeOptions" :total="table.total" @change="handleTablePageChange" show-less-items show-size-changer show-quick-jumper :page-size="table.params.per_page" @showSizeChange="handleTablePageSizeChange"/>
+	        </div>
         </div>
     </div>
 </template>
 
 <script>
 import Search from '@/components/admin/search'
-import { MixinList } from '@/plugins/mixins/admin'
+import {MixinList, MixinStore} from '@/plugins/mixins/admin'
+
 export default {
-    mixins: [ MixinList ],
+	mixins: [MixinList, MixinStore],
     components: { Search },
     props: {},
     data() {
       return {
           table: {
               actions: {
-                  list: this.$api.moduleCoreDataRoutes,
-                  remove: this.$api.moduleCoreDataRoutes
+                  list: this.$api.adminDataRoutes,
+                  remove: this.$api.adminDataRoutes
               },
               columns: [
-                  {title:'#',dataIndex:'id',fixed:'left', width: 80},
+                  {title:'#',dataIndex:'id',width: 80},
                   {title:'名称',dataIndex:'name', width: 200},
                   {title:'简称',dataIndex:'short', width: 180},
                   {title:'别名',dataIndex:'alias', width: 180},
@@ -65,7 +66,7 @@ export default {
                   {title:'首表表名',dataIndex:'table_from', width: 120},
                   {title:'尾表名称',dataIndex:'to', width: 120},
                   {title:'尾表表名',dataIndex:'table_to', width: 120},
-                  {title:'目标表',dataIndex:'output', width: 150},
+                  {title:'目标表',dataIndex:'output', width: 220},
                   {title:'连接', scopedSlots:{ customRender: 'connection_id' }, width: 220},
                   {title:'描述',dataIndex:'description', width: 280},
                   {title:'创建时间',dataIndex:'created_at', width: 200},

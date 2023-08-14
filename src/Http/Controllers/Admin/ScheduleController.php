@@ -31,13 +31,21 @@ class ScheduleController extends Controller
      */
     public function index(Request $request)
     {
+        $data_type = $request->get ('data_type');
 
-        return $this->success(
-            new ScheduleCollection(ScheduleRepository::list(
-                $request->per_page??30,
-                $request->only($this->formNames),
-                $request->keyword
-            )), __('base.success'));
+        $conditions = $request->only($this->formNames);
+
+        if ($data_type === 'quick') {
+            return $this->success(ScheduleRepository::quick($conditions, $request->keyword), __('base.success'));
+        } else {
+            return $this->success(
+                new ScheduleCollection(ScheduleRepository::getList(
+                    $request->per_page??30,
+                        $conditions,
+                    $request->keyword
+                )), __('base.success'));
+        }
+
     }
 
     /**

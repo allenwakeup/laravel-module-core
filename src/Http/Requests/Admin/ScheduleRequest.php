@@ -20,7 +20,7 @@ class ScheduleRequest extends FormRequest
         return [
             'name' => ['required', 'max:200', $this->uniqueOrExists (Schedule::class, 'name') . ':core_schedules'],
             'input' => 'required|max:500',
-            'cron' => ['required', new Cron ()],
+            'cron' => ['required'], // , new Cron ()],
             'ping_before' => 'nullable|max:500',
             'ping_success' => 'nullable|max:500',
             'ping_failure' => 'nullable|max:500',

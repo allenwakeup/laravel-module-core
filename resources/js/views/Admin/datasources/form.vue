@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="admin_table_page_title">
-            <a-button @click="$router.back()" class="float_right" icon="arrow-left">返回</a-button>
+            <a-button type="link" @click="$router.back()" class="float_right" icon="arrow-left">返回</a-button>
             数据源编辑
         </div>
         <div class="unline underm"></div>
@@ -30,7 +30,7 @@
                     <a-switch checked-children="启用" un-checked-children="禁用" :checked="form.status === 1" @change="onChangeStatus"/>
                 </a-form-model-item>
                 <a-form-model-item :wrapper-col="{ span: 12, offset: 5 }">
-                    <a-button type="primary" @click="handleSubmit">提交</a-button>
+                    <a-button type="primary" :size="sysSize" @click="handleSubmit">提交</a-button>
                 </a-form-model-item>
             </a-form-model>
 
@@ -39,7 +39,9 @@
 </template>
 
 <script>
+import { MixinForm, MixinStore } from '@/plugins/mixins/admin'
 export default {
+	mixins: [ MixinForm, MixinStore ],
     components: {},
     props: {},
     data() {
@@ -76,12 +78,14 @@ export default {
 
             this.$refs.form.validate(valid => {
                 if (valid) {
-                    let api = this.$apiHandle(this.$api.moduleCoreDatasources,this.id);
+                    let api = this.$apiHandle(this.$api.adminDatasources,this.id);
                     if(api.status){
                         this.$put(api.url,this.form).then(res=>{
                             if(res.code === 200){
-                                this.$message.success(res.msg)
-                                return this.$router.back();
+	                            this.$message.success(res.msg);
+	                            this.sendMessageFormUpdated();
+	                            this.$router.back();
+	                            return this.$tabs.close();
                             }else{
                                 return this.$message.error(res.msg)
                             }
@@ -89,8 +93,10 @@ export default {
                     }else{
                         this.$post(api.url,this.form).then(res=>{
                             if(res.code === 200 || res.code === 201){
-                                this.$message.success(res.msg)
-                                return this.$router.back();
+	                            this.$message.success(res.msg);
+	                            this.sendMessageFormUpdated();
+	                            this.$router.back();
+	                            return this.$tabs.close();
                             }else{
                                 return this.$message.error(res.msg)
                             }
@@ -113,7 +119,7 @@ export default {
             this.form.status = checked ? 1 : 0;
         },
         get_info(){
-            this.$get(this.$api.moduleCoreDatasources+'/'+this.id).then(res=>{
+            this.$get(this.$api.adminDatasources+'/'+this.id).then(res=>{
                 this.form = res.data;
             })
         },
