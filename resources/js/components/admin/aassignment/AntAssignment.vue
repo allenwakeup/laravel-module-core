@@ -5,7 +5,7 @@
         <div class="unline underm"></div>
         <div class="page_body">
             <a-spin v-show="loading"/>
-            <a-row type="flex" :gutter="16" v-show="!loading" :style="{height: (sysWindowHeight - 130) + 'px'}">
+            <a-row type="flex" :gutter="16" v-show="!loading" :style="{height: height + 'px'}">
                 <a-col flex="350px">
                     <div>
                         <a-input-search
@@ -14,16 +14,16 @@
                                 @search="onSearchLeft"
                         />
                     </div>
-                    <div class="list_container" :style="{height: (sysWindowHeight - 170) + 'px'}" :class="{'inactive' : loading_right}">
+                    <div class="list_container" :style="{height: (height - 40) + 'px'}" :class="{'inactive' : loading_right}">
                         <a-list
                                 size="small"
                                 class="list"
                                 :loading="loading_left"
                                 item-layout="horizontal"
                                 :data-source="data_left">
-                            <a-list-item slot="renderItem" slot-scope="item, index" @click="showAssignment(item.value)" class="list-item" :class="{'active' : (select_list_item === item.value), 'inactive' : loading_right}">
+                            <a-list-item slot="renderItem" slot-scope="item, index" @click="showAssignment(item.value)" class="list-item" :class="{'active primary-color-bg' : (select_list_item === item.value), 'inactive' : loading_right}">
                                 <a-list-item-meta>
-                                    <span slot="title">{{ item.title }}</span>
+                                    <span slot="title" :class="{'primary-color-reverse' : (select_list_item === item.value)}">{{ item.title }}</span>
                                 </a-list-item-meta>
                                 <a-icon type="check" class="list-item-icon" v-show="select_list_item === item.value"/>
                             </a-list-item>
@@ -38,8 +38,8 @@
                             show-search
                             showSelectAll
                             :list-style="{
-                            width: '47%',
-                            height: (sysWindowHeight - 130) + 'px',
+                            width: '45%',
+                            height: height + 'px',
 
                         }"
                             :data-source="data_right_source"
@@ -58,10 +58,8 @@
     </div>
 </template>
 <script>
-import { MixinStore} from '@/plugins/mixins/admin'
 
 export default {
-	mixins: [ MixinStore],
     name: "AAssignment",
     components: {},
     props: {
@@ -88,7 +86,11 @@ export default {
         rightParameter: {
             type: String,
             default: 'id'
-        }
+        },
+	    height: {
+			type: Number,
+		    default: 400
+	    }
     },
     data() {
         return {
@@ -165,7 +167,7 @@ export default {
                     case 'right':
                         this.data_right_target = data_right_target_cp.concat(moveKeys);
                         this.$post(url, params).then(res=> {
-                            if (res.code == 200 || res.code == 201) {
+                            if (res.code === 200 || res.code === 201) {
                                 this.data_right_selected = moveKeys;
                                 this.$message.success(res.msg);
                             } else {
@@ -189,7 +191,7 @@ export default {
                             return target_idx;
                         }, []);
                         this.$delete(url, params).then(res=> {
-                            if (res.code == 200 || res.code == 204) {
+                            if (res.code === 200 || res.code === 204) {
                                 this.data_right_selected = moveKeys;
                                 this.$message.success(res.msg);
                             } else {
@@ -255,11 +257,11 @@ export default {
 }
 
 .list-item.active {
-    background-color: #547dc0;
+    //background-color: #547dc0;
     border-radius: 5px;
     box-shadow: 0 2px 12px 0 #cfcfcf;
     .ant-list-item-meta-title {
-        color: #d9ecff!important;
+        //color: #d9ecff!important;
     }
 }
 

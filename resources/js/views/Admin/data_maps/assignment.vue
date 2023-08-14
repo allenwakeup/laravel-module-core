@@ -5,6 +5,7 @@
 		:title="info.title"
 		:api="info.api"
 		:actions="info.actions"
+		:height="height > 0 ? height : sysWindowHeight - 130"
 		parameter-replacement=":left_id"></a-assignment>
 
 </template>
@@ -13,13 +14,20 @@
 
 import { AAssignment } from "@this/components/admin/aassignment";
 
+import { MixinStore} from '@/plugins/mixins/admin'
+
 export default {
+	mixins: [ MixinStore],
     components: { AAssignment },
     props: {
         assignmentId: {
             type: Number,
             default: -1
-        }
+        },
+	    height: {
+			type: Number,
+		    default: 0
+	    }
     },
     data() {
         return {

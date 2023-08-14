@@ -44,30 +44,34 @@
 		        <a-pagination v-model="table.params.page" :size="sysSize" :page-size-options="table.pageSizeOptions" :total="table.total" @change="handleTablePageChange" show-less-items show-size-changer show-quick-jumper :page-size="table.params.per_page" @showSizeChange="handleTablePageSizeChange"/>
 	        </div>
         </div>
-        <a-modal
-                v-model="openAssignmentModal"
-                title="数据映射"
-                :body-style="{ overflow: 'scroll', height: '500px' }"
-                :dialog-style="{ top: '20px' }"
-                width="80%"
-                height="600px">
-            <template slot="footer">
-                <span></span>
-            </template>
-            <a-assignment :assignment-id="selectedAssignment.id" :key="selectedAssignment.id"></a-assignment>
-        </a-modal>
+
+	    <a-draggable-modal
+		    :draggable="true"
+		    title="数据映射"
+		    :body-style="{ overflow: 'scroll', height: (sysWindowHeight - 200) + 'px' }"
+		    :dialog-style="{ top: '20px' }"
+		    :visible="openAssignmentModal"
+		    :maskClosable="false"
+		    @cancel="closeAssignment"
+		    cancelText="关闭"
+		    :footer="null"
+		    width="90%"
+	    >
+		    <a-assignment :assignment-id="selectedAssignment.id" :key="selectedAssignment.id" :height="sysWindowHeight - 280"></a-assignment>
+	    </a-draggable-modal>
     </div>
 </template>
 
 <script>
 import Search from '@/components/admin/search'
+import ADraggableModal from '@/components/admin/amodal'
 import AAssignment from './assignment'
 
 import {MixinList, MixinStore} from '@/plugins/mixins/admin'
 
 export default {
     mixins: [MixinList, MixinStore],
-    components: { AAssignment, Search },
+    components: { AAssignment, Search, ADraggableModal },
     props: {},
     data() {
         return {
@@ -128,7 +132,10 @@ export default {
         handleAssignment(record) {
             this.selectedAssignment = record;
             this.openAssignmentModal = true;
-        }
+        },
+	    closeAssignment(){
+			this.openAssignmentModal = false;
+	    }
     },
     created() {
         this.onload();

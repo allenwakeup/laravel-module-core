@@ -102,6 +102,17 @@
                         </a-form-model-item>
                     </a-col>
                 </a-row>
+	            <a-row>
+		            <a-col>
+			            <a-form-model-item label="右表别名" :labelCol="{span:2}" :wrapperCol="{span:16}" prop="right_table_as">
+				            <a-input v-model="form.right_table_as" placeholder="请输入写入的右表别名" :size="sysSize">
+					            <a-tooltip slot="suffix" title="写入时修改表名称为">
+						            <a-icon type="info-circle" />
+					            </a-tooltip>
+				            </a-input>
+			            </a-form-model-item>
+		            </a-col>
+	            </a-row>
                 <a-row>
                     <a-col>
                         <a-form-model-item label="右表模板" :labelCol="{span:2}" :wrapperCol="{span:16}" prop="right_tpl">
@@ -205,6 +216,7 @@ export default {
                 left_tpl: '',
                 right: '',
                 right_table: '',
+	            right_table_as: '',
                 right_tpl: '',
                 relationship: 'morphToMany',
                 name: 'left',

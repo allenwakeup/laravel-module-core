@@ -27,6 +27,7 @@ class SyncDataMappingData extends ExchangeData
 
     protected $left_table;
     protected $right_table;
+    protected $right_table_as;
 
     protected $source_table;
     protected $table;
@@ -67,6 +68,7 @@ class SyncDataMappingData extends ExchangeData
 
         $this->left_table = Str::lower (Arr::get ($this->sync, 'left_table', ''));
         $this->right_table = Str::lower (Arr::get ($this->sync, 'right_table', ''));
+        $this->right_table_as = Str::lower (Arr::get ($this->sync, 'right_table_as', ''));
 
         $this->parent_key = Str::lower (Arr::get ($this->sync, 'parent_key', ''));
         $this->related_key = Str::lower (Arr::get ($this->sync, 'related_key', ''));
@@ -260,7 +262,7 @@ class SyncDataMappingData extends ExchangeData
                         {
                             $query->where ('pivot_id', $this->left_table . '.' . $this->left_id);
                         } else {
-                            $query->where ('pivot_id', 'like', $this->right_table . '.%');
+                            $query->where ('pivot_id', 'like', empty($this->right_table_as) ? $this->right_table : $this->right_table_as . '.%');
                         }
                     })->delete();
 
@@ -318,7 +320,7 @@ class SyncDataMappingData extends ExchangeData
                 'fields_mapping' => [
                     [
                         $config_right_id,
-                        $this->right_table,
+                        empty($this->right_table_as) ? $this->right_table : $this->right_table_as,
                     ],
                     [
                         'pivot',
@@ -344,8 +346,8 @@ class SyncDataMappingData extends ExchangeData
                         'pivot'
                     ],
                     [
-                        $this->right_table,
-                        $this->right_table
+                        empty($this->right_table_as) ? $this->right_table : $this->right_table_as,
+                        empty($this->right_table_as) ? $this->right_table : $this->right_table_as,
                     ]
                 ]
             ]

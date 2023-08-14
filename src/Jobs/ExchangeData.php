@@ -41,6 +41,7 @@ class ExchangeData extends ConfigurableJob
     const CONDITION_VALUE                   = 'value';
     const CONDITION_WHERE_NOT_NULL          = 'whereNotNull';
     const CONDITION_WHERE_NULL              = 'whereNull';
+    const CONDITION_WHERE_IN                = 'whereIn';
     const CONDITION_WHERE_METHOD            = 'method';
     const CONDITION_WHERE_DATE_FORMATTER    = 'format';
     const FIELDS_MAPPING                    = 'fields_mapping';
@@ -466,6 +467,7 @@ class ExchangeData extends ConfigurableJob
             $this->buildQuery ($query, self::CONDITION_WHERE, Arr::get ($conditions, self::CONDITION_WHERE, []));
             $this->buildQuery ($query, self::CONDITION_WHERE_NULL, Arr::get ($conditions, self::CONDITION_WHERE_NULL, []));
             $this->buildQuery ($query, self::CONDITION_WHERE_NOT_NULL, Arr::get ($conditions, self::CONDITION_WHERE_NOT_NULL, []));
+            $this->buildQuery ($query, self::CONDITION_WHERE_IN, Arr::get ($conditions, self::CONDITION_WHERE_IN, []));
             $group = Arr::get ($conditions, self::CONDITION_GROUP, []);
             $select = Arr::get ($conditions, self::CONDITION_SELECT, []);
             if (empty ($select))
@@ -713,7 +715,27 @@ class ExchangeData extends ConfigurableJob
                         );
                     }
                 }
+                $this->forwardCallTo ($query, $method, $condition);
+            }
+        }
+        return $this;
 
+    }
+
+    /**
+     * generate criteria based on configuration
+     *
+     * @param $query
+     * @param $method
+     * @param $options
+     * @return mixed
+     */
+    protected function buildQuery2 ($query, $method, $options)
+    {
+        foreach ($options as $condition)
+        {
+            if (is_array ($condition))
+            {
                 $this->forwardCallTo ($query, $method, $condition);
             }
         }

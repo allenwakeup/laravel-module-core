@@ -19,7 +19,7 @@ use Illuminate\Support\Str;
 class DataMapController extends Controller
 {
     protected $formNames = ['data_route_id', 'left', 'left_table', 'left_tpl', 'right',
-        'right_table', 'right_tpl', 'relationship', 'description', 'name', 'table',
+        'right_table', 'right_table_as', 'right_tpl', 'relationship', 'description', 'name', 'table',
         'through', 'first_key', 'second_key', 'foreign_key', 'owner_key',
         'local_key', 'second_local_key', 'foreign_pivot_key', 'related_pivot_key',
         'parent_key', 'related_key', 'relation', 'status'
