@@ -35,6 +35,23 @@
             "database/seeds"
         ]
     },
+    "extra": {
+        "push": {
+            "url": "http://mvn.dev.huangyebl.com/repository/composer-hosted",
+            "type": "nexus",
+            "ignore-by-git-attributes": true,
+            "ignore": [
+                "test.php",
+                "/.env$/",
+                ".idea/",
+                "composer-push.json",
+                "foo/",
+                "node_modules/",
+                "vendor/",
+                "bootstrap/cache/*.php"
+            ]
+        }
+    },
     "minimum-stability": "dev",
     "prefer-stable": true,
     "config": {
@@ -43,5 +60,11 @@
             "elendev/composer-push": true
         }
     },
-    "version": "dev-master"
+    "repositories": {
+        "packagist": {
+            "type": "composer",
+            "url": "http://mvn.dev.huangyebl.com/repository/composer-public"
+        }
+    },
+    "version": "1.0.0"
 }
