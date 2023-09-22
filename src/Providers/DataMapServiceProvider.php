@@ -3,6 +3,7 @@
 namespace Goodcatch\Modules\Core\Providers;
 
 use Goodcatch\Modules\Core\Repositories\Admin\DataMapRepository;
+use Goodcatch\Modules\Core\Support\Mapping\MappingManager;
 use Illuminate\Support\Arr;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\App;
@@ -32,7 +33,9 @@ class DataMapServiceProvider extends ServiceProvider
      */
     public function register ()
     {
-
+        $this->app->singleton('mapping', function ($app) {
+            return new MappingManager($app);
+        });
     }
 
     protected function loadDataMaps ()

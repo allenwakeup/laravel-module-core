@@ -11,6 +11,7 @@
     ],
     "aliases": {
 
+        "Mapping": ""
     },
     "files": [
         "src/helpers.php"

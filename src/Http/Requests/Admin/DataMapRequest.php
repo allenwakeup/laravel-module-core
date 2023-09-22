@@ -27,7 +27,7 @@ class DataMapRequest extends FormRequest
             'left_tpl' => ['required', 'max:500'],
             'right' => ['required', 'max:50'],
             'right_table' => ['required', 'max:100'],
-            'right_table_as' => ['required', 'max:100'],
+            'right_table_as' => ['max:100'],
             'right_tpl' => ['required', 'max:500'],
             'relationship' => 'required|max:50',
             'description' => 'max:500',

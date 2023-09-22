@@ -243,7 +243,16 @@ export default {
         },
         get_form(){
             this.$get(this.$api.adminDataRoutes+'/'+this.id).then(res=>{
-                this.form = res.data;
+				if(res.code === 200 && !! res.data) {
+					this.form = res.data;
+					if(!this.$isEmpty(this.form.output)) {
+						this.form.output = this.form.output.replace('sync_', '');
+					}
+				} else {
+					return this.$message.error(res.msg);
+				}
+            }).catch(()=>{
+	            return this.$message.error('获取数据失败');
             });
         },
         getConnectionSelector(params){
