@@ -2,7 +2,10 @@
 
 namespace Goodcatch\Modules\Core\Support\Mapping;
 
+use Goodcatch\Modules\Core\Model\Admin\Eloquent;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class MappingManager
 {
@@ -32,6 +35,75 @@ class MappingManager
         $this->app = $app;
     }
 
+    /**
+     * 判断是否存在数据映射
+     *
+     * @param $left
+     * @param $right
+     * @param array $config
+     * @return mixed
+     */
+    public function isMapping($left, $right, array $config) {
+        $from = Arr::get($config, 'from');
+        $to = Arr::get($config, 'to');
+        $syncTableName = 'sync_' . $config['name'];
+        return ! empty(DB::select("select * from {$syncTableName} t1, {$syncTableName}_pivot t2 where t1.pivot_id = t2.pivot and t1.{$from} = :{$from} and t2.{$to} = :{$to}", [
+            $from => $left,
+            $to => $right
+        ]));
+    }
+
+    /**
+     * 查找已映射的数据
+     *
+     * @param mixed $id Eloquent or primary key
+     * @param string $from 映射的起点
+     * @return mixed|null
+     */
+    public function findMapping($id, string $from) {
+        $definedDataMappings = $this->app['config']->get('core.data_mapping.defined');
+        $leftDefinitions = collect(Arr::get($definedDataMappings, $from, []));
+        if($leftDefinitions->isNotEmpty()) {
+            $leftTable = Arr::get($leftDefinitions->first(), 'payload.leftTable');
+            $parentKey = Arr::get($leftDefinitions->first(), 'payload.parentKey');
+            $leftModel = $id instanceof Eloquent ? $id : (new Eloquent)->setDataMapTable ($leftTable)->firstWhere ($parentKey, $id);
+
+            if(!is_null($leftModel)) {
+                // 当前左边已映射的右边模型
+                return $leftDefinitions->reduce(function ($model, $mapDefinition) use ($leftModel, $leftTable, $definedDataMappings) {
+                    $rightTable = Arr::get($mapDefinition, 'payload.rightTable');
+                    // 设置当前关联数据
+                    $records = $leftModel->setDataMapTable($leftTable)
+                        ->getDataMapping($rightTable)
+                        ->get()
+                        ->map(function ($record) {
+                            return new Eloquent($record->toArray());
+                        });
+
+                    $records = tap($records, function ($items) use ($rightTable, $definedDataMappings) {
+
+                        // 递归右边模型
+                        if(Arr::has($definedDataMappings, $rightTable) ) {
+                            $recursiveRightTable = Arr::get($definedDataMappings, $rightTable . '.payload.rightTable');
+                            $items->transform(function (Eloquent $eloquent) use ($rightTable, $recursiveRightTable) {
+                                $recursiveData = $this->findMapping($eloquent, $rightTable);
+                                if(!is_null($recursiveData)) {
+                                    $eloquent->setRelation($recursiveRightTable, $recursiveData);
+                                }
+                                return $eloquent;
+                            });
+                        }
+
+                    });
+
+                    return $model->setRelation ($rightTable, $records);
+                }, $leftModel);
+            }
+
+        }
+        return null;
+    }
+
     public function getDefaultChannel()
     {
         return $this->app['config']['core_mapping.default'];
@@ -46,7 +118,7 @@ class MappingManager
     public function channel($channel = null)
     {
         return $this->channels[$channel] ?? with($this->configurationFor($channel), function ($route) use ($channel) {
-            return $this->channels[$channel] = $this->tap($channel, array_key_exists('driver', $route) ? new $route['driver'] ($route, $this->app) : new DataRouteMapping($route, $this->app));
+            return $this->channels[$channel] = $this->tap($channel, array_key_exists('driver', $route) ? new $route['driver'] ($route, $this->app, $this) : new DataRouteMapping($route, $this->app, $this));
         });
     }
 

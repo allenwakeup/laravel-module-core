@@ -2,8 +2,6 @@
 
 namespace Goodcatch\Modules\Core\Providers;
 
-use Goodcatch\Modules\Laravel\Contracts\Database\ModuleDBConnectionService;
-use Goodcatch\Modules\Laravel\Database\DBConnectionManager;
 use Goodcatch\Modules\Core\Repositories\Admin\ConnectionRepository;
 use Illuminate\Support\Arr;
 use Illuminate\Support\ServiceProvider;

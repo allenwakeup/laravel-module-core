@@ -18,7 +18,7 @@ class Mapping extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'mapping';
+        return 'core.mapping';
     }
 
 }

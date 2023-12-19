@@ -6,4 +6,6 @@ interface MappingInterface
 {
 
     public function has(int $left, int $right);
+
+    public function find(int $leftId);
 }

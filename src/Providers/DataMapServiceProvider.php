@@ -33,7 +33,7 @@ class DataMapServiceProvider extends ServiceProvider
      */
     public function register ()
     {
-        $this->app->singleton('mapping', function ($app) {
+        $this->app->singleton('core.mapping', function ($app) {
             return new MappingManager($app);
         });
     }
