@@ -4,6 +4,7 @@ namespace Goodcatch\Modules\Core\Http\Requests\Admin;
 
 use Goodcatch\Modules\Core\Http\Requests\BaseRequest as FormRequest;
 use Goodcatch\Modules\Core\Model\Admin\Connection;
+use Goodcatch\Modules\Core\Model\Admin\Datasource;
 use Goodcatch\Modules\Core\Rules\Database;
 use Illuminate\Validation\Rule;
 
@@ -17,20 +18,20 @@ class ConnectionRequest extends FormRequest
      */
     public function rules ()
     {
-        return [
-            'datasource_id' => 'required|exists:core_datasources,id',
+        $rules = [
+            'datasource_id' => ['required', Rule::exists(Datasource::class, 'id')],
             'name' => [
                 'required',
                 'max:50',
-                request ()->method() === 'GET' ? '' : ($this->uniqueOrExists (Connection::class, 'name') . ':core_connections'),
-                new Database ($this->uniqueOrExists (Connection::class, 'name'))
+                Rule::unique(Connection::class, 'name')->ignore($this->id),
+                new Database ()
             ],
             'description' => 'max:255',
             'conn_type' => 'max:50',
             'tns' => 'max:255',
             'driver' => 'required|max:50',
             'host' => 'max:255',
-            'port' => [function ($port) {return $port >= 1000 && $port <= 65535;}],
+            'port' => ['numeric', function ($port) {return intval($port) >= 1000 && intval($port) <= 65535;}],
             'database' => 'required|max:50',
             'username' => 'max:50',
             'password' => 'max:50',
@@ -71,5 +72,18 @@ class ConnectionRequest extends FormRequest
                 ]),
             ],
         ];
+        switch ($this->method()) {
+
+            case 'GET':
+                $rules = [
+                    'name'=>'max:50',
+                    'conn_type' => 'max:50',
+                    'group' => 'required|max:50',
+                    'host' => 'max:255',
+                    'description' => 'max:255'
+                ];
+                break;
+        }
+        return $rules;
     }
 }

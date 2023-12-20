@@ -69,7 +69,7 @@ class DataRouteObserver
                     $blueprint->unique([$data_route->table_from, self::TABLE_COLUMN_PIVOT_ID]);
                 });
             }
-            if (!$schema->hasTable($data_route->output . self::TABLE_COLUMN_PIVOT_ID)) {
+            if (!$schema->hasTable($data_route->output . self::TABLE_SUFFIX_PIVOT)) {
                 $schema->create($data_route->output . self::TABLE_SUFFIX_PIVOT, function (Blueprint $blueprint) use ($data_route) {
                     $blueprint->string(self::TABLE_COLUMN_PIVOT, '50')->nullable(false)->comment('中间名称');
                     $blueprint->string($data_route->table_to, '50')->nullable(false)->comment($data_route->to . ' ID');

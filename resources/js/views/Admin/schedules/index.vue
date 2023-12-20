@@ -10,7 +10,7 @@
 		        :components="resizeableTitleComponents"
 		        :columns="getCachedTableColumns(table.columns)"
 		        :data-source="table.data"
-		        :scroll="{ y: sysWindowHeight - 280 }"
+		        :scroll="{ x: 2400, y: sysWindowHeight - 280 }"
 		        :loading="table.loading"
 		        :pagination="false"
 		        :row-selection="{ columnWidth: 25, selectedRowKeys: table.selectedRowKeys, onChange: handleTableRowKeysChange }"
@@ -35,9 +35,11 @@
                 </template>
                 <div slot="id" slot-scope="record" @click="handleIdClick(record)">{{ record.id }}</div>
 
-                <div slot="name" slot-scope="record">
+                <div slot="engine" slot-scope="record">
                     <a-icon type="play-circle" theme="twoTone" two-tone-color="#eb2f96" :spin="loading_start['_' + record.id]" @click="handleNameClick(record)" style="font-size: 24px;"/>
-                    {{ record.name }}
+                </div>
+                <div slot="name" slot-scope="record" @click="handleIdClick(record)">
+	                {{ record.name }}
                 </div>
 
                 <div slot="schedule_type" slot-scope="record">
@@ -110,22 +112,23 @@ export default {
                   remove: this.$api.adminSchedules
               },
               columns: [
-                  {title:'#',scopedSlots: { customRender: 'id' }, width: 80},
-                  {title:'名称',scopedSlots: { customRender: 'name' }, width: 180},
-                  {title:'描述',dataIndex:'description', width: 150},
-                  {title:'状态',scopedSlots: { customRender: 'status' }, width: 90},
-                  {title:'指令',dataIndex:'input', width: 280},
-                  {title:'执行周期',dataIndex:'cron', width: 120},
-                  {title:'任务类型',scopedSlots: { customRender: 'schedule_type' }, width: 120},
-                  {title:'分组',dataIndex:'group', width: 120},
-                  {title:'排序',dataIndex:'order', width: 100},
-                  {title:'单次任务',scopedSlots: { customRender: 'once' }, width: 180},
-                  {title:'重复',scopedSlots: { customRender: 'overlapping' }, width: 120},
-                  {title:'集群',dataIndex:'one_server', width: 180},
-                  {title:'后台执行',dataIndex:'background', width: 120},
-                  {title:'维护模式',dataIndex:'maintenance', width: 120},
-                  {title:'创建时间',dataIndex:'created_at', width: 200},
-                  {title:'更新时间',dataIndex:'updated_at', width: 200},
+                  {title:'#',scopedSlots: { customRender: 'id' }, key: 'id', width: 60},
+                  {title:'启动',scopedSlots: { customRender: 'engine' }, key: 'engine', width: 60},
+                  {title:'名称',scopedSlots: { customRender: 'name' }, key: 'name', width: 220},
+                  {title:'描述',dataIndex:'description', key: 'description', width: 240},
+                  {title:'状态',scopedSlots: { customRender: 'status' }, key: 'status', width: 90},
+                  {title:'指令',dataIndex:'input', key: 'input', width: 180},
+                  {title:'执行周期',dataIndex:'cron', key: 'cron', width: 180},
+                  {title:'任务类型',scopedSlots: { customRender: 'schedule_type' }, key: 'schedule_type', width: 120},
+                  {title:'分组',dataIndex:'group', key: 'group', width: 90},
+                  {title:'排序',dataIndex:'order', key: 'order', width: 70},
+                  {title:'单次任务',scopedSlots: { customRender: 'once' }, key: 'once', width: 80},
+                  {title:'重复',scopedSlots: { customRender: 'overlapping' }, key: 'overlapping', width: 80},
+                  {title:'集群',dataIndex:'one_server', key: 'one_server', width: 60},
+                  {title:'后台执行',dataIndex:'background', key: 'background', width: 80},
+                  {title:'维护模式',dataIndex:'maintenance', key: 'maintenance', width: 80},
+                  {title:'创建时间',dataIndex:'created_at', key: 'created_at', width: 180},
+                  {title:'更新时间',dataIndex:'updated_at', key: 'updated_at', width: 180},
                   {title:'操作',fixed:'right',scopedSlots: { customRender: 'action' }},
               ],
           },

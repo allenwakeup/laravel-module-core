@@ -4,6 +4,7 @@ namespace Goodcatch\Modules\Core\Http\Requests\Admin;
 
 use Goodcatch\Modules\Core\Http\Requests\BaseRequest as FormRequest;
 use Goodcatch\Modules\Core\Model\Admin\DataRoute;
+use Illuminate\Validation\Rule;
 
 class DataRouteRequest extends FormRequest
 {
@@ -15,8 +16,8 @@ class DataRouteRequest extends FormRequest
      */
     public function rules ()
     {
-        return [
-            'name' => ['required', 'max:50', $this->uniqueOrExists (DataRoute::class, 'name') . ':core_data_routes'],
+
+        $rules = [
             'alias' => 'max:50',
             'short' => 'max:20',
             'description' => 'max:255',
@@ -27,5 +28,21 @@ class DataRouteRequest extends FormRequest
             'output' => 'max:100',
             'connection_id' => 'exists:core_connections,id'
         ];
+        switch ($this->method()) {
+
+            case 'POST':
+                $rules['name'] = ['required', 'max:50', Rule::unique(DataRoute::class, 'name')];
+                break;
+            case 'PUT':
+                $rules['name'] = ['required', 'max:50', Rule::unique(DataRoute::class, 'name')->ignore($this->id)];
+                break;
+            case 'GET':
+                $rules = [
+                    'name'=>'max:50',
+                    'short' => 'max:20',
+                ];
+                break;
+        }
+        return $rules;
     }
 }

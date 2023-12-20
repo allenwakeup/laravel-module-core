@@ -13,7 +13,7 @@
                         <a-menu-item v-if="$isEmpty(vo.children) || vo.children.length===0" :key="vo.id + ''"  @click="to_nav(vo.link, vo.id)" :title="vo.name"><a-font class="afont menu_icon" v-if="!!vo.icon" :type="vo.icon" />{{vo.name}}</a-menu-item>
                         <a-sub-menu v-else :key="vo.id + ''">
                             <span slot="title"><a-font class="afont menu_icon" v-if="!!vo.icon" :type="vo.icon" /><span :title="vo.name">{{vo.name}}</span></span>
-                            <a-menu-item  @click="to_nav(vo2.link, vo2.id)" v-for="vo2 in (vo.children||[])" :key="vo2.id + ''" :title="vo2.name"><a-font class="afont menu_icon" v-if="!!vo2.icon" :type="vo2.icon" ></a-font>{{vo2.name}}</a-menu-item>
+                            <a-menu-item  @click="to_nav(vo2.link, vo2.id)" v-for="vo2 in (vo.children||[])" :key="vo2.id + ''" :title="vo2.name"><a-font class="afont menu_icon" v-if="!!vo2.icon" :type="vo2.icon" ></a-font><a-tooltip placement="right" :title="vo2.name">{{vo2.name}}</a-tooltip></a-menu-item>
                         </a-sub-menu>
                     </template>
                 </a-sub-menu>

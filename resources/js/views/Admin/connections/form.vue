@@ -162,29 +162,29 @@ export default {
             form:{
                 datasource_id: '',
                 name: '',
-                description: '',
-                conn_type: '',
-                tns: '',
+                description: undefined,
+                conn_type: undefined,
+                tns: undefined,
                 driver: '',
-                host: '',
+                host: undefined,
                 port: 1433,
                 database: '',
-                username: '',
-                password: '',
-                url: '',
-                service_name: '',
-                unix_socket: '',
-                charset: '',
-                collation: '',
-                prefix: '',
-                prefix_schema: '',
+                username: undefined,
+                password: undefined,
+                url: undefined,
+                service_name: undefined,
+                unix_socket: undefined,
+                charset: undefined,
+                collation: undefined,
+                prefix: undefined,
+                prefix_schema: undefined,
                 strict: 0,
-                engine: '',
-                schema: '',
-                edition: '',
-                server_version: '',
-                sslmode: '',
-                options: '',
+                engine: undefined,
+                schema: undefined,
+                edition: undefined,
+                server_version: undefined,
+                sslmode: undefined,
+                options: undefined,
                 type: 'SRC',
                 group: '',
                 order: 1,
@@ -383,7 +383,7 @@ export default {
         },
         handleDatasourceChange(value) {
             this.form.datasource_id = value;
-            const datasource = this.datasources.filter(item=>item.id === value) [0];
+            const datasource = this.datasources.find(item=>item.id === value);
             this.setDynamicFormItems(datasource);
         },
         handleDatasourceSearch(value) {
@@ -396,8 +396,9 @@ export default {
                 let rules = {};
                 datasource.requires.split(',').forEach (field => {
                     const [key, value] = field.split (':');
+
                     this.datasource_requires [key] = true;
-                    if(this.$isEmpty(this.form [key])){
+                    if(this.form.hasOwnProperty(key) && !this.$isEmpty(value)){
                         this.form [key] = value;
                     }
                     rules[key] = {
@@ -408,7 +409,7 @@ export default {
                 datasource.options.split(',').forEach (field => {
                     const [key, value] = field.split (':');
                     this.datasource_requires [key] = false;
-                    if(this.$isEmpty(this.form [key])){
+	                if(this.form.hasOwnProperty(key) && !this.$isEmpty(value)){
                         this.form [key] = value;
                     }
 

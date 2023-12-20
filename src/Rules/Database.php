@@ -6,20 +6,7 @@ use Illuminate\Contracts\Validation\Rule;
 
 class Database implements Rule
 {
-    /**
-     * @var string $uniqueOrExists indicates that update only or create new one
-     */
-    protected $uniqueOrExists;
 
-
-    /**
-     * Create a new rule instance.
-     */
-    public function __construct ($uniqueOrExists)
-    {
-
-        $this->uniqueOrExists = $uniqueOrExists;
-    }
 
     /**
      * Determine if the validation rule passes.
@@ -30,14 +17,7 @@ class Database implements Rule
      */
     public function passes ($attribute, $value)
     {
-        $exists = array_key_exists ($value, config ('database.connections'));
-
-        if ($this->uniqueOrExists === 'exists')
-        {
-            $exists = false;
-        }
-
-        return ! $exists;
+        return ! array_key_exists ($value, config ('database.connections'));
     }
 
     /**
@@ -47,6 +27,6 @@ class Database implements Rule
      */
     public function message ()
     {
-        return '数据库已存在';
+        return '数据库连接信息已存在于配置文件中';
     }
 }

@@ -81,7 +81,7 @@
                             width="80%"
                             height="600px">
                         <template slot="footer">
-                            <a-button key="submit" type="primary" :size="sysSize" @click="handlePayloadHelperOk2">
+                            <a-button key="submit" type="primary" :size="sysSize" @click="handlePayloadHelperOk1">
                                 知道了
                             </a-button>
                         </template>
