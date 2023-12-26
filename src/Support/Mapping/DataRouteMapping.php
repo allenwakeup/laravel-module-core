@@ -85,6 +85,8 @@ class DataRouteMapping implements MappingInterface
      */
     public function find(int $leftId)
     {
-        return $this->manager->findMapping($leftId, Arr::get($this->dataRoute, 'from'));
+        $from = Arr::get($this->dataRoute, 'from');
+        $to = Arr::get($this->dataRoute, 'to');
+        return $this->manager->findMapping($leftId, $from, $to);
     }
 }

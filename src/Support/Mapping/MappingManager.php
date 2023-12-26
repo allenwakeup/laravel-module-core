@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\DB;
 class MappingManager
 {
 
+    const KEY_NAME_PATH = '_p';
+
     /**
      * The application instance.
      *
@@ -58,20 +60,33 @@ class MappingManager
      *
      * @param mixed $id Eloquent or primary key
      * @param string $from 映射的起点
+     * @param string $to 映射的终点
      * @return mixed|null
      */
-    public function findMapping($id, string $from) {
+    public function findMapping($id, string $from, string $to) {
         $definedDataMappings = $this->app['config']->get('core.data_mapping.defined');
         $leftDefinitions = collect(Arr::get($definedDataMappings, $from, []));
         if($leftDefinitions->isNotEmpty()) {
             $leftTable = Arr::get($leftDefinitions->first(), 'payload.leftTable');
             $parentKey = Arr::get($leftDefinitions->first(), 'payload.parentKey');
-            $leftModel = $id instanceof Eloquent ? $id : (new Eloquent)->setDataMapTable ($leftTable)->firstWhere ($parentKey, $id);
+            if($id instanceof Eloquent) {
+                $leftModel = $id;
+            } else {
+                $leftModel = (new Eloquent)->setDataMapTable ($leftTable)->firstWhere ($parentKey, $id);
+            }
+            if(empty($leftModel->getAttribute(self::KEY_NAME_PATH))) {
+                $leftModel->setAttribute(self::KEY_NAME_PATH, [ $from ]);
+            }
 
             if(!is_null($leftModel)) {
                 // 当前左边已映射的右边模型
-                return $leftDefinitions->reduce(function ($model, $mapDefinition) use ($leftModel, $leftTable, $definedDataMappings) {
+                return $leftDefinitions->reduce(function ($model, $mapDefinition) use ($from, $to, $leftModel, $leftTable, $definedDataMappings) {
                     $rightTable = Arr::get($mapDefinition, 'payload.rightTable');
+
+                    if(in_array($rightTable, $leftModel->getAttribute(self::KEY_NAME_PATH)) || $from === $to) {
+                        return $model;
+                    }
+
                     // 设置当前关联数据
                     $records = $leftModel->setDataMapTable($leftTable)
                         ->getDataMapping($rightTable)
@@ -80,13 +95,18 @@ class MappingManager
                             return new Eloquent($record->toArray());
                         });
 
-                    $records = tap($records, function ($items) use ($rightTable, $definedDataMappings) {
+                    $records = tap($records, function ($items) use ($from, $to, $leftModel, $rightTable, $definedDataMappings) {
 
                         // 递归右边模型
-                        if(Arr::has($definedDataMappings, $rightTable) ) {
+                        if(Arr::has($definedDataMappings, $rightTable)) {
                             $recursiveRightTable = Arr::get($definedDataMappings, $rightTable . '.payload.rightTable');
-                            $items->transform(function (Eloquent $eloquent) use ($rightTable, $recursiveRightTable) {
-                                $recursiveData = $this->findMapping($eloquent, $rightTable);
+                            $items->transform(function (Eloquent $eloquent) use ($to, $leftModel, $rightTable, $recursiveRightTable) {
+
+                                $path = $leftModel->getAttribute(self::KEY_NAME_PATH);
+                                $path [] = $rightTable;
+                                $eloquent->setAttribute(self::KEY_NAME_PATH, $path);
+
+                                $recursiveData = $this->findMapping($eloquent, $rightTable, $to);
                                 if(!is_null($recursiveData)) {
                                     $eloquent->setRelation($recursiveRightTable, $recursiveData);
                                 }
@@ -118,7 +138,9 @@ class MappingManager
     public function channel($channel = null)
     {
         return $this->channels[$channel] ?? with($this->configurationFor($channel), function ($route) use ($channel) {
-            return $this->channels[$channel] = $this->tap($channel, array_key_exists('driver', $route) ? new $route['driver'] ($route, $this->app, $this) : new DataRouteMapping($route, $this->app, $this));
+            return $this->channels[$channel] = $this->tap($channel, array_key_exists('driver', $route)
+                ? new $route['driver'] ($route, $this->app, $this)
+                : new DataRouteMapping($route, $this->app, $this));
         });
     }
 
