@@ -3,6 +3,7 @@
 	<a-assignment
 		v-if="!$isEmpty(info.api)"
 		:title="info.title"
+		:size="sysSize"
 		:api="info.api"
 		:actions="info.actions"
 		:height="height > 0 ? height : sysWindowHeight - 130"

@@ -71,7 +71,7 @@ class CoreServiceProvider extends ServiceProvider
         $this->publishes([
             module_path($this->moduleName, 'config/config.php') => config_path($this->moduleNameLower . '.php'),
             module_path($this->moduleName, 'config/mapping.php') => config_path($this->moduleNameLower . '_mapping.php'),
-        ], 'config');
+        ], 'core');
         $this->mergeConfigFrom(
             module_path($this->moduleName, 'config/config.php'), $this->moduleNameLower
         );

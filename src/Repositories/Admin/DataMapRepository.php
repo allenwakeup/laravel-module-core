@@ -167,9 +167,12 @@ class DataMapRepository extends BaseRepository
                 ->newModelQuery ()
                 ->where (function ($query) use ($dataMap, $keyword) {
 
-                    foreach (explode ('+', $dataMap->left_tpl) as $tpl)
-                    {
-                        $query->orWhere (Arr::first (explode ('::', $tpl, 2)), 'like', '%' . $keyword . '%');
+                    if(!empty($keyword)) {
+                        foreach (explode ('+', $dataMap->left_tpl) as $tpl)
+                        {
+                            [$name] = explode ('::', $tpl, 1);
+                            $query->orWhere ($name, 'like', '%' . $keyword . '%');
+                        }
                     }
                 })
                 ->orderBy ('id', 'asc')
@@ -203,6 +206,7 @@ class DataMapRepository extends BaseRepository
 
     public static function assignmentSource (DataMap $dataMap, $left_id)
     {
+
         // 根据数据映射定义，获取映射左边模型
         $data = [];
         $pivot_Eloquent = (new Eloquent)

@@ -9,14 +9,14 @@
                 <a-col flex="350px">
                     <div>
                         <a-input-search
-                                size="large"
+                                :size="size"
                                 placeholder="搜索"
                                 @search="onSearchLeft"
                         />
                     </div>
                     <div class="list_container" :style="{height: (height - 40) + 'px'}" :class="{'inactive' : loading_right}">
                         <a-list
-                                size="small"
+	                        :size="size"
                                 class="list"
                                 :loading="loading_left"
                                 item-layout="horizontal"
@@ -90,14 +90,18 @@ export default {
 	    height: {
 			type: Number,
 		    default: 400
+	    },
+	    size: {
+			type: String,
+		    default: 'default'
 	    }
     },
     data() {
         return {
             select_list_item: undefined,
             search_left: '',
-            loading: true,
-            loading_left: true,
+            loading: false,
+            loading_left: false,
             loading_right: false,
             data_left: [],
             data_right_source: [],
@@ -109,22 +113,21 @@ export default {
     watch: {},
     methods: {
         onload(){
-            console.log(this.api);
             if(!this.isEmpty(this.api)){
-
-                this.$get(this.api,{}).then(res=>{
+	            // this.loading = true;
+	            this.loading_left = true;
+                this.$get(this.api,{keyword: this.search_left}).then(res=>{
                     if(res.code === 200){
-                        this.loading = false;
+                        // this.loading = false;
                         this.loading_left = false;
                         this.data_left = res.data.data
                     }
                 });
             }
-            this.loading = true;
-            this.loading_left = true;
         },
         onSearchLeft(value){
             this.search_left = value;
+			this.onload();
         },
         showAssignment(value){
             if(this.select_list_item !== value){
