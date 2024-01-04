@@ -56,6 +56,25 @@ class MappingManager
     }
 
     /**
+     * 判断是否存在至少一个数据映射
+     *
+     * @param array $left
+     * @param array $right
+     * @param array $config
+     * @return mixed
+     */
+    public function anyMapping(array $left, array $right, array $config) {
+        $from = Arr::get($config, 'from');
+        $to = Arr::get($config, 'to');
+        $syncTableName = 'sync_' . $config['name'];
+        return DB::table($syncTableName)
+            ->join("{$syncTableName}_pivot", "{$syncTableName}.pivot_id", '=', "{$syncTableName}_pivot.pivot")
+            ->whereIn("{$syncTableName}.{$from}", $left)
+            ->whereIn("{$syncTableName}_pivot.{$to}", $right)
+            ->exists();
+    }
+
+    /**
      * 查找已映射的数据
      *
      * @param mixed $id Eloquent or primary key

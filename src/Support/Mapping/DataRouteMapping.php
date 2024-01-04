@@ -66,6 +66,31 @@ class DataRouteMapping implements MappingInterface
     }
 
     /**
+     * This is an example implementation for [ hasAny ].
+     * Please add configuration for mapping and make sure driver class existed.
+     * The driver class should implement Goodcatch\Modules\Core\Support\Mapping\MappingInterface
+     *
+     * -----------------------
+     * E.g.
+     *   config/core_mapping.php ->channels->[ mapping name ]->driver => Example::class
+     *
+     *   if there's no config/core_mapping.php please use [ laravel vendor publish ] to publish with [ config ].
+     *
+     * -----------------------
+     * Note:
+     *   Mapping name is the name of Model Goodcatch\Modules\Core\Model\Admin\DataRoute in database.
+     *   Thanks!
+     * @param $left
+     * @param $right
+     * @return mixed
+     */
+    public function hasAny($left, $right)
+    {
+        return $this->manager->anyMapping(Arr::wrap($left), Arr::wrap($right), $this->dataRoute);
+    }
+
+
+    /**
      * This is an example implementation for [ find ].
      * Please add configuration for mapping and make sure driver class existed.
      * The driver class should implement Goodcatch\Modules\Core\Support\Mapping\MappingInterface

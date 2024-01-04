@@ -369,6 +369,7 @@ export default {
         },
         handleRightTableChange(value){
             this.form.right_table = value;
+            this.form.right_table_as = value;
         },
 
         onChangeStatus(checked){
