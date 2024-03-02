@@ -10,4 +10,3 @@ yarn-error.log
 /.phpintel
 /public/upload/
 /public/dist/module-core-dev
-composer.lock
