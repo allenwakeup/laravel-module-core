@@ -370,8 +370,8 @@
                 <a-form-model-item label="分组" placeholder="对计划或任务进行分组设置，请输入分组名称" prop="group">
                     <a-input v-model="form.group" :size="sysSize"></a-input>
                 </a-form-model-item>
-                <a-form-model-item label="排序" prop="order">
-                    <a-input-number v-model="form.order" :min="0" @change="onChangeOrder" :size="sysSize" />
+                <a-form-model-item label="排序" prop="order_">
+                    <a-input-number v-model="form.order_" :min="0" @change="onChangeOrder" :size="sysSize" />
                 </a-form-model-item>
                 <a-form-model-item label="状态">
                     <a-switch checked-children="启用" un-checked-children="禁用" :checked="form.status === 1" @change="onChangeStatus" :size="sysSize"/>
@@ -431,7 +431,7 @@ export default {
                 maintenance: 0,
                 once: 1,
                 group: '',
-                order: 1,
+                order_: 1,
                 status: 1,
                 start: 0
             },

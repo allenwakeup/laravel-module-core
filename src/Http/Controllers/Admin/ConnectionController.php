@@ -9,10 +9,12 @@ use App\Http\Controllers\Controller;
 use Goodcatch\Modules\Core\Events\ConnectionUpdated;
 use Goodcatch\Modules\Core\Http\Requests\Admin\ConnectionRequest;
 use Goodcatch\Modules\Core\Http\Resources\Admin\ConnectionResource\ConnectionCollection;
+use Goodcatch\Modules\Core\Http\Resources\Admin\ConnectionResource\ConnectionResource;
 use Goodcatch\Modules\Core\Model\Admin\Datasource;
 use Goodcatch\Modules\Core\Repositories\Admin\ConnectionRepository;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
@@ -24,22 +26,22 @@ class ConnectionController extends Controller
         'database', 'username', 'password',  'url', 'service_name',
         'unix_socket', 'charset', 'collation',  'prefix', 'prefix_schema',
         'strict', 'engine', 'schema', 'edition', 'server_version', 'sslmode',
-        'group', 'order', 'options', 'type', 'status'
+        'group', 'order_', 'options', 'type', 'status'
     ];
 
     /**
      * Display a listing of the resource.
      *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @param ConnectionRequest $request
+     * @return Response
      */
-    public function index(Request $request)
+    public function index(ConnectionRequest $request)
     {
 
         return $this->success(
             new ConnectionCollection(ConnectionRepository::list(
                 $request->per_page??30,
-                $request->only($this->formNames)
+                $request->validated()
             )));
     }
 
@@ -54,7 +56,7 @@ class ConnectionController extends Controller
         try{
             $data = ConnectionRepository::add($request->only($this->formNames));
             event (new ConnectionUpdated ());
-            return $this->success($data,__('base.success'));
+            return $this->success(new ConnectionResource($data),__('base.success'));
         } catch (QueryException $e) {
             return $this->error(__('base.error') . (Str::contains ($e->getMessage (), 'Duplicate entry') ? '当前数据已存在' : '其它错误'));
         }
@@ -68,7 +70,7 @@ class ConnectionController extends Controller
      */
     public function show($id)
     {
-        return $this->success(ConnectionRepository::find($id));
+        return $this->success(new ConnectionResource(ConnectionRepository::find($id)));
     }
 
     /**

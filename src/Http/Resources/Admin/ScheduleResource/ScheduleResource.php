@@ -1,21 +1,21 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Database\Migrations\Migration;
+namespace Goodcatch\Modules\Core\Http\Resources\Admin\ScheduleResource;
 
-class CreateSchedulesTable extends Migration
+use Illuminate\Http\Resources\Json\JsonResource;
+
+class ScheduleResource extends JsonResource
 {
     /**
-     * Run the migrations.
+     * Transform the resource into an array.
      *
-     * @return void
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
      */
-    public function up()
+    public function toArray($request)
     {
-        Schema::create('core_schedules', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('name', 200)->nullable(false)->comment('名称 ');
+/*
+ * $table->string('name', 200)->nullable(false)->comment('名称 ');
             $table->string('input', 500)->nullable(false)->comment('任务执行命令或者任务类 ');
             $table->string('cron', 50)->nullable(false)->comment('任务周期设置 * * * * *');
             $table->string('ping_before', 500)->nullable()->comment('任务执行前ping指定的URL');
@@ -32,17 +32,32 @@ class CreateSchedulesTable extends Migration
             $table->string('group_', 20)->nullable()->default('')->comment('分组名称 ');
             $table->unsignedInteger('order_')->default(0)->comment ('排序 ');
             $table->tinyInteger('status')->nullable(false)->default(0)->comment('状态 0 未启用 1 启用 ');
-            $table->timestamps();
-        });
-    }
-
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
-    {
-        Schema::dropIfExists('core_schedules');
+ */
+        return [
+            'id'                        => $this->id,
+            'name'                      => $this->name,
+            'input'                     => $this->input,
+            'cron'                      => $this->cron,
+            'ping_before'               => $this->ping_before,
+            'ping_success'              => $this->ping_success,
+            'ping_failure'              => $this->ping_failure,
+            'payload'                   => $this->payload,
+            'description'               => $this->description,
+            'schedule_type'             => $this->schedule_type,
+            'overlapping'               => $this->overlapping,
+            'one_server'                => $this->one_server,
+            'background'                => $this->background,
+            'maintenance'               => $this->maintenance,
+            'once'                      => $this->once,
+            'group'                     => $this->group,
+            'order_'                    => $this->order_,
+            'status'                    => $this->status,
+            'created_at'                => $this->when(isset($this->created_at), function () {
+                return $this->created_at->toDateTimeString();
+            }),
+            'updated_at'                => $this->when(isset($this->updated_at), function () {
+                return $this->updated_at->toDateTimeString();
+            })
+        ];
     }
 }

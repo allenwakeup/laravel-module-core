@@ -36,7 +36,7 @@ class ScheduleRepository extends BaseRepository
                     $query->orWhere('name', 'like', "%$keyword%");
                 }
             })
-            ->orderBy ('order', 'desc')
+            ->orderBy ('order_', 'desc')
             ->paginate ($perPage);
 
         $data->transform (function ($item) {
@@ -53,7 +53,7 @@ class ScheduleRepository extends BaseRepository
 
     public static function quick ($condition, $keyword) {
         return Schedule::query ()
-            ->select('group')
+            ->select('group_')
             ->distinct()
             ->where (function ($query) use ($condition, $keyword) {
                 self::buildQuery ($query, $condition);
@@ -70,7 +70,7 @@ class ScheduleRepository extends BaseRepository
                 return [
                     'label' => isset($schedule->group) ? $schedule->group : '--',
                     'params' => [
-                        'group' => $schedule->group
+                        'group_' => $schedule->group
                     ]
                 ];
             })
@@ -101,7 +101,7 @@ class ScheduleRepository extends BaseRepository
 
     public static function groupNames()
     {
-        return Schedule::query()->select('group')->distinct()->pluck('group')->toArray();
+        return Schedule::query()->select('group_')->distinct()->pluck('group_')->toArray();
     }
 
 }

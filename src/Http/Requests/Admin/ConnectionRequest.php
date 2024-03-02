@@ -63,7 +63,7 @@ class ConnectionRequest extends FormRequest
                 ]),
             ],
             'group' => 'required|max:50',
-            'order' => 'required|numeric',
+            'order_' => 'numeric',
             'status' => [
                 'required',
                 Rule::in ([
@@ -78,7 +78,7 @@ class ConnectionRequest extends FormRequest
                 $rules = [
                     'name'=>'max:50',
                     'conn_type' => 'max:50',
-                    'group' => 'required|max:50',
+                    'group_' => 'max:50',
                     'host' => 'max:255',
                     'description' => 'max:255'
                 ];

@@ -121,7 +121,7 @@ export default {
                   {title:'执行周期',dataIndex:'cron', key: 'cron', width: 180},
                   {title:'任务类型',scopedSlots: { customRender: 'schedule_type' }, key: 'schedule_type', width: 120},
                   {title:'分组',dataIndex:'group', key: 'group', width: 90},
-                  {title:'排序',dataIndex:'order', key: 'order', width: 70},
+                  {title:'排序',dataIndex:'order_', key: 'order_', width: 70},
                   {title:'单次任务',scopedSlots: { customRender: 'once' }, key: 'once', width: 80},
                   {title:'重复',scopedSlots: { customRender: 'overlapping' }, key: 'overlapping', width: 80},
                   {title:'集群',dataIndex:'one_server', key: 'one_server', width: 60},
@@ -146,7 +146,7 @@ export default {
                   },
                   {
                       label: '分组',
-                      name: 'group',
+                      name: 'group_',
                       type: 'text'
                   }
 

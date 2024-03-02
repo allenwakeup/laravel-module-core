@@ -40,7 +40,7 @@ abstract class FlushConfigThenRestartQueue
             {
                 $schedule->once = Schedule::ONCE_ENABLE;
                 $schedule->status = Schedule::STATUS_ENABLE;
-                $schedule->order = $order;
+                $schedule->order_ = $order;
                 $schedule->save ();
             }
         }

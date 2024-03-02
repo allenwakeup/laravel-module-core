@@ -119,8 +119,8 @@
                 <a-form-model-item label="分组" prop="group" v-show="showFormItem['group']">
                     <a-input v-model="form.group" :size="sysSize"></a-input>
                 </a-form-model-item>
-                <a-form-model-item label="排序" prop="order" v-show="showFormItem['order']">
-                    <a-input-number v-model="form.order" :min="0" @change="onChangeOrder" :size="sysSize" />
+                <a-form-model-item label="排序" prop="order_" v-show="showFormItem['order_']">
+                    <a-input-number v-model="form.order_" :min="0" @change="onChangeOrder" :size="sysSize" />
                 </a-form-model-item>
                 <a-form-model-item label="状态" prop="status" v-show="showFormItem['status']">
                     <a-switch checked-children="启用" un-checked-children="禁用" :checked="form.status === 1" @change="onChangeStatus" :size="sysSize"/>

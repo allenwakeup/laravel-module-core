@@ -9,6 +9,7 @@ use Goodcatch\Modules\Core\Handlers\AttachmentUploadHandler;
 use App\Http\Controllers\Controller;
 use Goodcatch\Modules\Core\Http\Requests\Admin\AttachmentRequest;
 use Goodcatch\Modules\Core\Http\Resources\Admin\AttachmentResource\AttachmentCollection;
+use Goodcatch\Modules\Core\Http\Resources\Admin\AttachmentResource\AttachmentResource;
 use Goodcatch\Modules\Core\Repositories\Admin\AttachmentRepository;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Str;
@@ -23,7 +24,7 @@ class AttachmentController extends Controller
      */
     public function index(AttachmentRequest $request)
     {
-        $conditions = $request->validate();
+        $conditions = $request->validated();
 
         return $this->success(
             new AttachmentCollection(AttachmentRepository::list(
@@ -44,8 +45,8 @@ class AttachmentController extends Controller
     {
 
         try {
-            $data = AttachmentRepository::add(array_merge($request->validate(), $uploader->save($request->file, $request->attachable, 'app')));
-            return $this->success($data, __('base.success'));
+            $data = AttachmentRepository::add(array_merge($request->validated(), $uploader->save($request->file, $request->attachable, 'app')));
+            return $this->success(new AttachmentResource($data), __('base.success'));
         } catch (QueryException $e) {
             return $this->error(__('base.error') . (Str::contains ($e->getMessage (), 'Duplicate entry') ? '当前数据已存在' : '其它错误'));
         }
@@ -60,7 +61,7 @@ class AttachmentController extends Controller
      */
     public function show($id)
     {
-        return $this->success(AttachmentRepository::find($id));
+        return $this->success(new AttachmentResource(AttachmentRepository::find($id)));
     }
 
     /**
@@ -73,7 +74,7 @@ class AttachmentController extends Controller
     public function update(AttachmentRequest $request,$id)
     {
         try{
-            return $this->success(AttachmentRepository::update($id, $request->validate()), __('base.success'));
+            return $this->success(AttachmentRepository::update($id, $request->validated()), __('base.success'));
         } catch (QueryException $e) {
             return $this->error(__('base.error') . (Str::contains ($e->getMessage (), 'Duplicate entry') ? '当前数据更新失败' : '其它错误'));
         }

@@ -23,7 +23,7 @@ class Attachment extends Model
         'name' => [
             'searchType'    => 'like'
         ],
-        'size' => [
+        'size_' => [
             'searchType'    => '='
         ],
         'ext_name' => [

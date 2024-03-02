@@ -40,6 +40,10 @@ class DataRouteRequest extends FormRequest
                 $rules = [
                     'name'=>'max:50',
                     'short' => 'max:20',
+                    'from_' => 'max:20',
+                    'to_' => 'max:20',
+                    'table_from' => 'max:20',
+                    'table_to' => 'max:20',
                 ];
                 break;
         }

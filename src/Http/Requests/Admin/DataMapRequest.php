@@ -20,7 +20,7 @@ class DataMapRequest extends FormRequest
             DataMap::STATUS_DISABLE,
             DataMap::STATUS_ENABLE,
         ];
-        return [
+        $rules = [
             'data_route_id' => ['required', 'exists:core_data_routes,id'],
             'left' => ['required', 'max:50'],
             'left_table' => ['required', 'max:100'],
@@ -50,5 +50,16 @@ class DataMapRequest extends FormRequest
                 Rule::in ($status_in),
             ],
         ];
+
+        switch ($this->method()) {
+
+            case 'GET':
+                $rules = [
+                    'left_table'=>'max:50',
+                    'right_table' => 'max:50',
+                ];
+                break;
+        }
+        return $rules;
     }
 }

@@ -9,7 +9,7 @@
 		        :components="resizeableTitleComponents"
 		        :columns="getCachedTableColumns(table.columns)"
 		        :data-source="table.data"
-		        :scroll="{ y: sysWindowHeight - 280 }"
+		        :scroll="{ x:true, y: sysWindowHeight - 280 }"
 		        :loading="table.loading"
 		        :pagination="false"
 		        :row-selection="{ columnWidth: 25, selectedRowKeys: table.selectedRowKeys, onChange: handleTableRowKeysChange }"

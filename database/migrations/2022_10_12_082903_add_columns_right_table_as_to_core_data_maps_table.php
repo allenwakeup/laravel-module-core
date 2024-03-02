@@ -14,7 +14,7 @@ class AddColumnsRightTableAsToCoreDataMapsTable extends Migration
     public function up()
     {
         Schema::table('core_data_maps', function (Blueprint $table) {
-            $table->string('right_table_as', 100)->after('right_table')->nullable()->comment('右表别名');
+            $table->string('right_table_as', 100)->after('right_table')->nullable()->comment('右表别名 ');
 
         });
     }

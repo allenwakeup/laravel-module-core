@@ -36,7 +36,7 @@ class AttachmentUploadHandler
             'name' => $file->getClientOriginalName(),
             'ext' => $extension,
             'ext_name' => $extension,
-            'size' => $file->getClientSize()
+            'size_' => $file->getClientSize()
         ];
     }
 }

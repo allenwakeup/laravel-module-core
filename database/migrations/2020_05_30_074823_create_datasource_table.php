@@ -15,13 +15,13 @@ class CreateDatasourceTable extends Migration
     {
         Schema::create('core_datasources', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('code', 50)->nullable(false)->comment('代码');
-            $table->string('name', 50)->nullable(false)->comment('名称');
-            $table->string ('description', 255)->nullable ()->comment ('描述');
-            $table->text('requires')->nullable(false)->comment('必填字段');
-            $table->text('options')->nullable()->comment('选填字段');
-            $table->unsignedInteger('order')->default(0)->comment('排序');
-            $table->tinyInteger('status')->nullable(false)->default(1)->comment('状态 0 未启用 1 启用');
+            $table->string('code', 50)->nullable(false)->comment('代码 ');
+            $table->string('name', 50)->nullable(false)->comment('名称 ');
+            $table->string ('description', 255)->nullable ()->comment ('描述 ');
+            $table->text('requires')->nullable(false)->comment('必填字段 ');
+            $table->text('options')->nullable()->comment('选填字段 ');
+            $table->unsignedInteger('order_')->default(0)->comment('排序 ');
+            $table->tinyInteger('status')->nullable(false)->default(1)->comment('状态 0 未启用 1 启用 ');
             $table->timestamps();
         });
     }

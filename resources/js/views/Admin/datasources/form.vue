@@ -24,7 +24,7 @@
                     <a-textarea v-model="form.options" :auto-size="{ minRows: 3, maxRows: 5 }" />
                 </a-form-model-item>
                 <a-form-model-item label="排序">
-                    <a-input-number v-model="form.order" :min="0" @change="onChangeOrder" />
+                    <a-input-number v-model="form.order_" :min="0" @change="onChangeOrder" />
                 </a-form-model-item>
                 <a-form-model-item label="状态">
                     <a-switch checked-children="启用" un-checked-children="禁用" :checked="form.status === 1" @change="onChangeStatus"/>
@@ -53,7 +53,7 @@ export default {
               description: '',
               requires: '',
               options: '',
-              order: 1,
+              order_: 1,
               status: 1
           },
           rules: {
@@ -113,7 +113,7 @@ export default {
 
         },
         onChangeOrder(value){
-            this.form.order = value;
+            this.form.order_ = value;
         },
         onChangeStatus(checked){
             this.form.status = checked ? 1 : 0;

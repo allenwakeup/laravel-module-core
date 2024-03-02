@@ -14,12 +14,12 @@ class CreateModelMappingsTable extends Migration
     public function up()
     {
         Schema::create('core_model_mappings', function (Blueprint $table) {
-            $table->string('left_type', 50)->nullable(false)->comment('多态类型名称');
+            $table->string('left_type', 50)->nullable(false)->comment('多态类型名称 ');
             $table->unsignedInteger('left_id')->nullable(false)->comment('多态ID');
-            $table->string('right_type', 50)->nullable(false)->comment('多态类型名称');
+            $table->string('right_type', 50)->nullable(false)->comment('多态类型名称 ');
             $table->unsignedInteger('right_id')->nullable(false)->comment('多态ID');
 
-            $table->unique(['left_type', 'left_id', 'right_type', 'right_id']);
+            // $table->unique(['left_type', 'left_id', 'right_type', 'right_id']);
         });
     }
 

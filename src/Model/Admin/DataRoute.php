@@ -17,87 +17,33 @@ class DataRoute extends Model
      * @var array
      */
     public static $searchField = [
-        'name' => '路径名称',
-        'alias' => '路径别名',
-        'short' => '路径简称',
-        'description' => '描述',
-        'from' => '头表名称',
-        'table_from' => [
-            'showType' => 'xm-select',
-            'searchType' => '=',
-            'title' => '头表',
-            'route' => 'admin::{{-$module_route_prefix-}}core.database.list',
-            'params' => [
-                'limit' => 99999
-            ]
-        ],
-        'to' => '尾表名称',
-        'table_to' => [
-            'showType' => 'xm-select',
-            'searchType' => '=',
-            'title' => '尾表',
-            'route' => 'admin::{{-$module_route_prefix-}}core.database.list',
-            'params' => [
-                'limit' => 99999
-            ]
-        ],
-        'output' => [
-            'showType' => 'xm-select',
-            'searchType' => '=',
-            'title' => '输出表',
-            'route' => 'admin::{{-$module_route_prefix-}}core.database.list',
-            'params' => [
-                'limit' => 99999
-            ]
-        ],
-        'connection_id' => [
-            'showType' => 'xm-select',
-            'searchType' => '=',
-            'title' => '数据连接',
-            'route' => 'admin::{{-$module_route_prefix-}}core.connection.list',
-            'params' => [
-                'limit' => 99999
-            ]
-        ]
-    ];
-
-    /**
-     * 列表字段
-     *
-     * @var array
-     */
-    public static $listField = [
         'name' => [
-            'title' => '路径名称',
-            'width' => 150,
-            'sort' => true
+            'searchType'    => 'like'
         ],
-        'output' => [
-            'title' => '输出表',
-            'width' => 150,
-            'sort' => true
-        ],
-        'table_from' => [
-            'title' => '头表',
-            'width' => 150,
-            'sort' => true
-        ],
-        'table_to' => [
-            'title' => '尾表',
-            'width' => 150,
-            'sort' => true
-        ],
-        'from' => '头表名称',
-        'to' => '尾表名称',
-        'alias' => '路径别名',
-        'short' => '路径简称',
-        'description' => '描述',
-        'connection' => [
-            'title' => '数据连接',
-            'width' => 120,
-            'sort' => true,
-            'templet' => '#connectionText'
-        ],
+        'short' =>
+            [
+                'searchType'    => 'like'
+            ],
+
+        'from_' =>
+            [
+                'searchType'    => 'like'
+            ],
+        'table_from' =>
+            [
+                'searchType'    => 'like'
+            ],
+
+        'table_to' =>
+            [
+                'searchType'    => 'like'
+            ],
+
+        'to_' =>
+            [
+                'searchType'    => 'like'
+            ],
+
     ];
 
     public function getTitleAttribute ()
@@ -128,5 +74,20 @@ class DataRoute extends Model
     public function connection ()
     {
         return $this->belongsTo ('Goodcatch\Modules\Core\Model\Admin\Connection');
+    }
+
+    public function getFromAttribute() {
+        return $this->attributes['from_'];
+    }
+
+    public function setFromAttribute($val) {
+        $this->attributes['from_'] = $val;
+    }
+    public function getToAttribute() {
+        return $this->attributes['to_'];
+    }
+
+    public function setToAttribute($val) {
+        $this->attributes['to_'] = $val;
     }
 }

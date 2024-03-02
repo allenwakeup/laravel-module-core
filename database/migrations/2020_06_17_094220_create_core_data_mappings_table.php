@@ -14,11 +14,11 @@ class CreateCoreDataMappingsTable extends Migration
     public function up()
     {
         Schema::create('core_data_mappings', function (Blueprint $table) {
-            $table->string('left_type', 100)->nullable(false)->comment('多态类型名称');
+            $table->string('left_type', 100)->nullable(false)->comment('多态类型名称 ');
             $table->string('left_id', 50)->nullable(false)->comment('多态ID');
-            $table->string('right_type', 100)->nullable(false)->comment('多态类型名称');
+            $table->string('right_type', 100)->nullable(false)->comment('多态类型名称 ');
             $table->string('right_id', 50)->nullable(false)->comment('多态ID');
-            $table->unique(['left_type', 'left_id', 'right_type', 'right_id']);
+            // $table->unique(['left_type', 'left_id', 'right_type', 'right_id']);
         });
     }
 

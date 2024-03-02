@@ -17,7 +17,7 @@ class ScheduleRequest extends FormRequest
      */
     public function rules ()
     {
-        return [
+        $rules = [
             'name' => ['required', 'max:200', $this->uniqueOrExists (Schedule::class, 'name') . ':core_schedules'],
             'input' => 'required|max:500',
             'cron' => ['required'], // , new Cron ()],
@@ -47,11 +47,23 @@ class ScheduleRequest extends FormRequest
                 Rule::in ([Schedule::ONCE_DISABLE, Schedule::ONCE_ENABLE])
             ],
             'group' => 'max:20',
-            'order' => 'integer',
+            'order_' => 'integer',
             'status' => [
                 'required',
                 Rule::in ([Schedule::STATUS_DISABLE, Schedule::STATUS_ENABLE])
             ]
         ];
+
+        switch ($this->method()) {
+
+            case 'GET':
+                $rules = [
+                    'name'=>'max:50',
+                    'group_' => 'max:50',
+                    'description' => 'max:255'
+                ];
+                break;
+        }
+        return $rules;
     }
 }

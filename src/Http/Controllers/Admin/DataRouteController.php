@@ -12,25 +12,28 @@ use Goodcatch\Modules\Core\Repositories\Admin\DataRouteRepository;
 use Goodcatch\Modules\Core\Model\Admin\DataRoute;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 
 class DataRouteController extends Controller
 {
-    protected $formNames = ['name', 'alias', 'short', 'from', 'table_from', 'to', 'table_to', 'output', 'connection_id', 'description'];
+    protected $formNames = ['name', 'alias', 'short', 'from',
+        'table_from', 'to', 'table_to', 'output',
+        'connection_id', 'description'];
 
     /**
      * Display a listing of the resource.
      *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @param DataRouteRequest $request
+     * @return Response
      */
-    public function index(Request $request)
+    public function index(DataRouteRequest $request)
     {
 
         return $this->success(
             new DataRouteCollection(DataRouteRepository::list(
                 $request->per_page??30,
-                $request->only($this->formNames),
+                $request->validated(),
                 $request->keyword
             )));
     }
@@ -81,7 +84,7 @@ class DataRouteController extends Controller
     public function store(DataRouteRequest $request)
     {
         try{
-            return $this->success(DataRouteRepository::add($request->only($this->formNames)),__('base.success'));
+            return $this->success(DataRouteRepository::add($request->validated()),__('base.success'));
         } catch (QueryException $e) {
             return $this->error(__('base.error') . (Str::contains ($e->getMessage (), 'Duplicate entry') ? '当前数据映射已存在' : '其它错误') . $e->getMessage ());
         }
@@ -96,10 +99,8 @@ class DataRouteController extends Controller
      */
     public function update(DataRouteRequest $request, $id)
     {
-        $data = $request->only($this->formNames);
-
         try{
-            return $this->success(DataRouteRepository::update($id, $data),__('base.success'));
+            return $this->success(DataRouteRepository::update($id, $request->validated()),__('base.success'));
         } catch (QueryException $e) {
             return $this->error(__('base.error') . (Str::contains ($e->getMessage (), 'Duplicate entry') ? '当前数据映射已存在' : '其它错误'));
         }

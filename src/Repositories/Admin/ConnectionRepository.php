@@ -5,6 +5,7 @@
 
 namespace Goodcatch\Modules\Core\Repositories\Admin;
 
+use Goodcatch\Modules\Core\Http\Resources\Admin\ConnectionResource\ConnectionResource;
 use Goodcatch\Modules\Core\Model\Admin\Connection;
 
 use Illuminate\Support\Arr;
@@ -56,9 +57,8 @@ class ConnectionRepository extends BaseRepository
     public static function find ($id)
     {
         $data = Connection::query ()->find ($id);
-        if(!empty($data)){
-            $data = $data->toArray();
-            unset($data['password']);
+        if(!is_null($data)){
+            $data->password = '';
         }
         return $data;
     }
@@ -82,7 +82,7 @@ class ConnectionRepository extends BaseRepository
 
         return $value->mapWithKeys (function ($item) {
 
-            $item_data = $item->toArray ();
+            $item_data = new ConnectionResource($item);
             $connection = [];
             foreach (explode (',', $item->datasource->requires . ',' . $item->datasource->options) as $key)
             {

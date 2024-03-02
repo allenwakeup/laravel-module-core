@@ -8,32 +8,34 @@ namespace Goodcatch\Modules\Core\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Goodcatch\Modules\Core\Http\Resources\Admin\ScheduleResource\ScheduleCollection;
 use Goodcatch\Modules\Core\Http\Requests\Admin\ScheduleRequest;
+use Goodcatch\Modules\Core\Http\Resources\Admin\ScheduleResource\ScheduleResource;
 use Goodcatch\Modules\Core\Model\Admin\Schedule;
 use Goodcatch\Modules\Core\Repositories\Admin\ScheduleLogRepository;
 use Goodcatch\Modules\Core\Repositories\Admin\ScheduleRepository;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 
 class ScheduleController extends Controller
 {
     protected $formNames = ['name', 'description', 'input', 'cron',
         'ping_before', 'ping_success', 'ping_failure', 'schedule_type',
-        'order', 'once', 'status', 'payload', 'overlapping', 'one_server',
+        'order_', 'once', 'status', 'payload', 'overlapping', 'one_server',
         'background', 'maintenance', 'group'];
 
 
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
-     * @return \Illuminate\Http\Response
+     * @param ScheduleRequest $request
+     * @return Response
      */
-    public function index(Request $request)
+    public function index(ScheduleRequest $request)
     {
         $data_type = $request->get ('data_type');
 
-        $conditions = $request->only($this->formNames);
+        $conditions = $request->validated();
 
         if ($data_type === 'quick') {
             return $this->success(ScheduleRepository::quick($conditions, $request->keyword), __('base.success'));
@@ -74,7 +76,7 @@ class ScheduleController extends Controller
      */
     public function show($id)
     {
-        return $this->success(ScheduleRepository::find($id), __('base.success'));
+        return $this->success(new ScheduleResource(ScheduleRepository::find($id)), __('base.success'));
     }
 
     /**
@@ -86,7 +88,7 @@ class ScheduleController extends Controller
     public function store(ScheduleRequest $request)
     {
         try{
-            return $this->success(ScheduleRepository::add($request->only($this->formNames)), __('base.success'));
+            return $this->success(new ScheduleResource(ScheduleRepository::add($request->validated())), __('base.success'));
         } catch (QueryException $e) {
             return $this->error(__('base.error') . (Str::contains ($e->getMessage (), 'Duplicate entry') ? '当前数据已存在' : '其它错误'));
         }

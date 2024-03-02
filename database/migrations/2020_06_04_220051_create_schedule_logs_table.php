@@ -15,9 +15,9 @@ class CreateScheduleLogsTable extends Migration
     {
         Schema::create('core_schedule_logs', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedInteger('schedule_id')->nullable(false)->comment('计划任务ID');
-            $table->string('content', 500)->nullable(false)->comment('日志内容');
-            $table->tinyInteger('status')->nullable(false)->default(1)->comment('任务执行状态 1 成功');
+            $table->unsignedInteger('schedule_id')->nullable(false)->comment('计划任务ID ');
+            $table->string('content', 500)->nullable(false)->comment('日志内容 ');
+            $table->tinyInteger('status')->nullable(false)->default(1)->comment('任务执行状态 1 成功 ');
             $table->timestamps();
         });
     }

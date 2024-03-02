@@ -10,34 +10,28 @@ use Goodcatch\Modules\Core\Events\DataMapUpdated;
 use Goodcatch\Modules\Core\Http\Requests\Admin\DataMapRequest;
 use Goodcatch\Modules\Core\Http\Resources\Admin\DataMapResource\DataMapCollection;
 use Goodcatch\Modules\Core\Jobs\SyncDataMappingData;
-use Goodcatch\Modules\Core\Model\Admin\Eloquent;
 use Goodcatch\Modules\Core\Repositories\Admin\DataMapRepository;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 
 class DataMapController extends Controller
 {
-    protected $formNames = ['data_route_id', 'left', 'left_table', 'left_tpl', 'right',
-        'right_table', 'right_table_as', 'right_tpl', 'relationship', 'description', 'name', 'table',
-        'through', 'first_key', 'second_key', 'foreign_key', 'owner_key',
-        'local_key', 'second_local_key', 'foreign_pivot_key', 'related_pivot_key',
-        'parent_key', 'related_key', 'relation', 'status'
-    ];
 
     /**
      * Display a listing of the resource.
      *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @param DataMapRequest $request
+     * @return Response
      */
-    public function index(Request $request)
+    public function index(DataMapRequest $request)
     {
 
         return $this->success(
             new DataMapCollection(DataMapRepository::list(
                 $request->per_page??30,
-                $request->only($this->formNames),
+                $request->validated(),
                 $request->keyword
             )));
     }
@@ -51,7 +45,7 @@ class DataMapController extends Controller
     public function store(DataMapRequest $request)
     {
         try{
-            $added = DataMapRepository::add($request->only($this->formNames));
+            $added = DataMapRepository::add($request->validated());
             event (new DataMapUpdated ());
             return $this->success($added,__('base.success'));
         } catch (QueryException $e) {
@@ -79,10 +73,8 @@ class DataMapController extends Controller
      */
     public function update(DataMapRequest $request, $id)
     {
-        $data = $request->only($this->formNames);
-
         try{
-            $updated = DataMapRepository::update($id, $data);
+            $updated = DataMapRepository::update($id, $request->validated());
             event (new DataMapUpdated ());
             return $this->success($updated,__('base.success'));
         } catch (QueryException $e) {

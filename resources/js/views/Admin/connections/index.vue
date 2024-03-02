@@ -10,7 +10,7 @@
 		        :components="resizeableTitleComponents"
 		        :columns="getCachedTableColumns(table.columns)"
 		        :data-source="table.data"
-		        :scroll="{ y: sysWindowHeight - 280 }"
+		        :scroll="{ x:true, y: sysWindowHeight - 280 }"
 		        :loading="table.loading"
 		        :pagination="false"
 		        :row-selection="{ columnWidth: 25, selectedRowKeys: table.selectedRowKeys, onChange: handleTableRowKeysChange }"
@@ -86,7 +86,7 @@ export default {
                   {title:'附加设置',dataIndex:'options', width: 180},
                   {title:'数据方向',dataIndex:'type', width: 120},
                   {title:'分组',dataIndex:'group', width: 120},
-                  {title:'排序',dataIndex:'order', width: 100},
+                  {title:'排序',dataIndex:'order_', width: 100},
                   {title:'状态',dataIndex:'status', width: 90},
                   {title:'创建时间',dataIndex:'created_at', width: 200},
                   {title:'更新时间',dataIndex:'updated_at', width: 200},
@@ -113,7 +113,7 @@ export default {
                   },
                   {
                       label: '分组',
-                      name: 'group',
+                      name: 'group_',
                       type: 'text'
                   },
 

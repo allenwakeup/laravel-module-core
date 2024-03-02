@@ -7,6 +7,7 @@ namespace Goodcatch\Modules\Core\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Goodcatch\Modules\Core\Http\Requests\Admin\DatasourceRequest;
+use Goodcatch\Modules\Core\Http\Resources\Admin\DatasourceResource\DatasourceResource;
 use Goodcatch\Modules\Core\Repositories\Admin\DatasourceRepository;
 use Goodcatch\Modules\Core\Http\Resources\Admin\DatasourceResource\DatasourceCollection;
 use Illuminate\Database\QueryException;
@@ -16,7 +17,7 @@ use Illuminate\Support\Str;
 class DatasourceController extends Controller
 {
 
-    protected $formNames = ['code', 'name', 'order', 'status', 'description', 'requires', 'options'];
+    protected $formNames = ['code', 'name', 'order_', 'status', 'description', 'requires', 'options'];
 
     /**
      * Display a listing of the resource.
@@ -44,7 +45,7 @@ class DatasourceController extends Controller
     public function store(DatasourceRequest $request)
     {
         try{
-            return $this->success(DatasourceRepository::add($request->only($this->formNames)),__('base.success'));
+            return $this->success(new DatasourceResource(DatasourceRepository::add($request->only($this->formNames))),__('base.success'));
         } catch (QueryException $e) {
             return $this->error(__('base.error') . (Str::contains ($e->getMessage (), 'Duplicate entry') ? '当前数据已存在' : '其它错误'));
         }
@@ -58,7 +59,7 @@ class DatasourceController extends Controller
      */
     public function show($id)
     {
-        return $this->success(DatasourceRepository::find($id));
+        return $this->success(new DatasourceResource(DatasourceRepository::find($id)));
     }
 
     /**

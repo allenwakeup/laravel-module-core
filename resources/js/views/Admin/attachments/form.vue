@@ -55,7 +55,6 @@ export default {
               alias: '',
               display: '',
               description: '',
-              order: 1,
               status: 1
           },
           rules: {

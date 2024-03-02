@@ -26,7 +26,7 @@ class DatasourceRequest extends FormRequest
             'description' => 'max:255',
             'requires' => 'required|max:2000',
             'options' => 'max:2000',
-            'order' => 'required|numeric',
+            'order_' => 'required|numeric',
             'status' => [
                 'required',
                 Rule::in ($status_in),

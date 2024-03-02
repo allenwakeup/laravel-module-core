@@ -31,112 +31,15 @@ class DataMap extends Model
      * @var array
      */
     public static $searchField = [
-        'data_route_id' => [
-            'showType' => 'xm-select',
-            'searchType' => '=',
-            'title' => '数据路径',
-            'route' => 'admin::{{-$module_route_prefix-}}core.dataRoute.list',
-            'params' => [
-                'limit' => 99999
-            ]
-        ],
-        'left' => '左表名称',
-        'left_table' => [
-            'showType' => 'xm-select',
-            'searchType' => '=',
-            'title' => '左表',
-            'route' => 'admin::{{-$module_route_prefix-}}core.database.list',
-            'params' => [
-                'limit' => 99999
-            ]
-        ],
-        'description' => '描述',
-        'left_tpl' => '左表模板',
-        'right' => '右表名称',
-        'right_table' => [
-            'showType' => 'xm-select',
-            'searchType' => '=',
-            'title' => '右表',
-            'route' => 'admin::{{-$module_route_prefix-}}core.database.list',
-            'params' => [
-                'limit' => 99999
-            ]
-        ],
-        'right_tpl' => '右表模板',
-        'relationship' => [
-            'showType' => 'light_dictionary',
-            'searchType' => '=',
-            'title' => '关联关系',
-            'dictionary' => 'CORE_DICT_MODEL_RELATIONS'
-        ],
-        'table' => '中间表',
-        'status' => [
-            'showType' => 'select',
-            'searchType' => '=',
-            'title' => '状态',
-            'enums' => [
-                self::STATUS_DISABLE => '禁用',
-                self::STATUS_ENABLE => '启用',
-            ],
-        ],
-    ];
 
-    /**
-     * 列表字段
-     *
-     * @var array
-     */
-    public static $listField = [
-        'left' => [
-            'title' => '左表名称',
-            'width' => 150,
-            'sort' => true
-        ],
         'left_table' => [
-            'title' => '左表',
-            'width' => 180,
-            'sort' => true
+            'searchType'    => 'like'
         ],
-        'description' => [
-            'title' => '描述',
-            'width' => 220
-        ],
-        'status' => [
-            'title' => '状态',
-            'width' => 100,
-            'sort' => true,
-            'templet' => '#statusSwitch',
-            'event' => 'statusEvent'
-        ],
-        'left_tpl' => [
-            'title' => '左表模板',
-            'width' => 120,
-            'sort' => true
-        ],
-        'right' => [
-            'title' => '右表名称',
-            'width' => 150,
-            'sort' => true
-        ],
-        'right_table' => [
-            'title' => '右表',
-            'width' => 180,
-            'sort' => true
-        ],
-        'right_tpl' => [
-            'title' => '右表模板',
-            'width' => 120,
-            'sort' => true
-        ],
-        'relationshipText' => [
-            'title' => '关联关系',
-            'width' => 150
-        ],
-        'table' => [
-            'title' => '中间表',
-            'width' => 120,
-            'sort' => true
-        ],
+        'right_table' =>
+            [
+                'searchType'    => 'like'
+            ],
+
     ];
 
     public function scopeOfEnabled ($query)
@@ -152,6 +55,14 @@ class DataMap extends Model
     public function dataRoute ()
     {
         return $this->belongsTo('Goodcatch\Modules\Core\Model\Admin\DataRoute');
+    }
+
+    public function getTableAttribute() {
+        return $this->attributes['table_'];
+    }
+
+    public function setTableAttribute($val) {
+        $this->attributes['table_'] = $val;
     }
 
 }
