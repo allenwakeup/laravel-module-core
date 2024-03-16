@@ -13,7 +13,7 @@
     ],
     "require": {
         "php": ">=7.3",
-        "goodcatch/laravel-module-base": "^1.0"
+        "goodcatch/laravel-module-base": "^2.0"
     },
     "require-dev": {
         "ext-json": "*",

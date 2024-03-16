@@ -4,16 +4,16 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fd85a24f2e72a76a94acbe01aec8b638",
+    "content-hash": "9c7d613910f8697af04f18c916f6a6b0",
     "packages": [
         {
             "name": "goodcatch/laravel-module-base",
-            "version": "1.0.0.1",
+            "version": "2.0.0.1",
             "dist": {
                 "type": "zip",
-                "url": "http://mvn.dev.huangyebl.com/repository/composer-public/goodcatch/laravel-module-base/1.0.0.1/goodcatch-laravel-module-base-1.0.0.1.zip",
-                "reference": "684cbaf23fb1b1be17b3ae0625346fb797a6124a",
-                "shasum": "684cbaf23fb1b1be17b3ae0625346fb797a6124a"
+                "url": "http://mvn.dev.huangyebl.com/repository/composer-public/goodcatch/laravel-module-base/2.0.0.1/goodcatch-laravel-module-base-2.0.0.1.zip",
+                "reference": "b304f11ed968ab8316ec75403a25071cbbabc5a8",
+                "shasum": "b304f11ed968ab8316ec75403a25071cbbabc5a8"
             },
             "require": {
                 "ext-json": "*",
@@ -70,7 +70,7 @@
                 }
             ],
             "description": "publish base resources",
-            "time": "2024-03-02T04:41:07+00:00"
+            "time": "2024-03-16T06:23:28+00:00"
         },
         {
             "name": "goodcatch/laravel-modules",
