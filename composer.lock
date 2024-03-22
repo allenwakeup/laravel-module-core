@@ -8,12 +8,12 @@
     "packages": [
         {
             "name": "goodcatch/laravel-module-base",
-            "version": "2.0.0.1",
+            "version": "2.0.0.2",
             "dist": {
                 "type": "zip",
-                "url": "http://mvn.dev.huangyebl.com/repository/composer-public/goodcatch/laravel-module-base/2.0.0.1/goodcatch-laravel-module-base-2.0.0.1.zip",
-                "reference": "b304f11ed968ab8316ec75403a25071cbbabc5a8",
-                "shasum": "b304f11ed968ab8316ec75403a25071cbbabc5a8"
+                "url": "http://mvn.dev.huangyebl.com/repository/composer-public/goodcatch/laravel-module-base/2.0.0.2/goodcatch-laravel-module-base-2.0.0.2.zip",
+                "reference": "a383dfa0863ce852e5a191fe9c62ada9cdea2a8e",
+                "shasum": "a383dfa0863ce852e5a191fe9c62ada9cdea2a8e"
             },
             "require": {
                 "ext-json": "*",
@@ -70,7 +70,7 @@
                 }
             ],
             "description": "publish base resources",
-            "time": "2024-03-16T06:23:28+00:00"
+            "time": "2024-03-22T03:40:46+00:00"
         },
         {
             "name": "goodcatch/laravel-modules",
