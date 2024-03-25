@@ -3,8 +3,6 @@
 namespace Goodcatch\Modules\Core\Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
 
 class ConnectionTableSeeder extends Seeder
 {
@@ -15,13 +13,114 @@ class ConnectionTableSeeder extends Seeder
      */
     public function run()
     {
-        Model::unguard();
-$sql = <<<EOL
-INSERT INTO `core_connections` VALUES
-(1,3,'sqlserver_db_in','','','','sqlsrv','',1433,'','','','','','','utf8','','','',0,'','','','','','','SRC','mssql',0,1,'2020-06-16 16:03:26','2020-06-16 16:03:26'),
-(2,1,'mysql_in','','','','mysql','mysql',3306,'','','','','','','utf8mb4','utf8mb4_unicode_ci','','',0,'','','','','','','SRC','docker',0,1,'2020-06-16 16:43:13','2020-06-16 16:43:13'),
-(3,1,'mysql_out','','','','mysql','mysql',3306,'','','','','','','utf8mb4','utf8mb4_unicode_ci','','',0,'','','','','','','DST','docker',0,1,'2020-06-16 16:43:13','2020-06-16 16:43:13');
-EOL;
-        DB::unprepared($sql);
+        \DB::table('core_connections')->delete();
+
+        \DB::table('core_connections')->insert(array (
+            0 =>
+                array (
+                    'id' => 1,
+                    'datasource_id' => 3,
+                    'name' => 'sqlserver_db_in',
+                    'description' => '',
+                    'conn_type' => '',
+                    'tns' => '',
+                    'driver' => 'sqlsrv',
+                    'host' => '',
+                    'port' => 1433,
+                    'database_' => '',
+                    'username' => '',
+                    'password_' => '',
+                    'url' => '',
+                    'service_name' => '',
+                    'unix_socket' => '',
+                    'charset' => 'utf8',
+                    'collation' => '',
+                    'prefix' => '',
+                    'prefix_schema' => '',
+                    'strict' => 0,
+                    'engine' => '',
+                    'schema_' => '',
+                    'edition' => '',
+                    'server_version' => '',
+                    'sslmode' => '',
+                    'options' => '',
+                    'type' => 'SRC',
+                    'group_' => 'mssql',
+                    'order_' => 0,
+                    'status' => 1,
+                    'created_at' => '2020-06-16 16:03:26',
+                    'updated_at' => '2020-06-16 16:03:26',
+                ),
+            1 =>
+                array (
+                    'id' => 2,
+                    'datasource_id' => 1,
+                    'name' => 'mysql_in',
+                    'description' => '',
+                    'conn_type' => '',
+                    'tns' => '',
+                    'driver' => 'mysql',
+                    'host' => 'mysql',
+                    'port' => 3306,
+                    'database_' => '',
+                    'username' => '',
+                    'password_' => '',
+                    'url' => '',
+                    'service_name' => '',
+                    'unix_socket' => '',
+                    'charset' => 'utf8mb4',
+                    'collation' => 'utf8mb4_unicode_ci',
+                    'prefix' => '',
+                    'prefix_schema' => '',
+                    'strict' => 0,
+                    'engine' => '',
+                    'schema_' => '',
+                    'edition' => '',
+                    'server_version' => '',
+                    'sslmode' => '',
+                    'options' => '',
+                    'type' => 'SRC',
+                    'group_' => 'docker',
+                    'order_' => 0,
+                    'status' => 1,
+                    'created_at' => '2020-06-16 16:43:13',
+                    'updated_at' => '2020-06-16 16:43:13',
+                ),
+            2 =>
+                array (
+                    'id' => 3,
+                    'datasource_id' => 1,
+                    'name' => 'mysql_out',
+                    'description' => '',
+                    'conn_type' => '',
+                    'tns' => '',
+                    'driver' => 'mysql',
+                    'host' => 'mysql',
+                    'port' => 3306,
+                    'database_' => '',
+                    'username' => '',
+                    'password_' => '',
+                    'url' => '',
+                    'service_name' => '',
+                    'unix_socket' => '',
+                    'charset' => 'utf8mb4',
+                    'collation' => 'utf8mb4_unicode_ci',
+                    'prefix' => '',
+                    'prefix_schema' => '',
+                    'strict' => 0,
+                    'engine' => '',
+                    'schema_' => '',
+                    'edition' => '',
+                    'server_version' => '',
+                    'sslmode' => '',
+                    'options' => '',
+                    'type' => 'DST',
+                    'group_' => 'docker',
+                    'order_' => 0,
+                    'status' => 1,
+                    'created_at' => '2020-06-16 16:43:13',
+                    'updated_at' => '2020-06-16 16:43:13',
+                ),
+        ));
     }
 }

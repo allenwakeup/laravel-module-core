@@ -3,7 +3,6 @@
 namespace Goodcatch\Modules\Core\Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class DatasourcesTableSeeder extends Seeder
 {
@@ -14,13 +13,61 @@ class DatasourcesTableSeeder extends Seeder
      */
     public function run()
     {
-        $sql = <<<EOL
-INSERT INTO `core_datasources` VALUES
-(1, 'mysql', 'Mysql 5.7.23', 'Mysql 5.7.23', 'driver:mysql,host:127.0.0.1,port:3306,database,username,password', 'charset:utf8mb4,collation:utf8mb4_unicode_ci,prefix', 1, 1, '2020-06-01 10:44:33', '2020-06-01 10:44:33'),
-(2, 'pgsql', 'PostgreSQL', 'PostgreSQL', 'driver:pgsql,host:127.0.0.1,port:5432,database,username,password', 'charset:utf8,prefix,schema:public,sslmode:prefer', 1, 1, '2020-06-01 10:44:33', '2020-06-01 10:44:33'),
-(3, 'sqlsrv', 'Microsoft SQLServer', 'Microsoft SQLServer', 'driver:sqlsrv,host:localhost,port:1433,database,username,password', 'charset:utf8,prefix', 1, 1, '2020-06-01 10:44:33', '2020-06-01 10:44:33'),
-(4, 'sqlite', 'Sqlite', 'Sqlite', 'driver:sqlite,database:~/sqlite.db', 'prefix', 1, 1, '2020-06-01 10:44:33', '2020-06-01 10:44:33');
-EOL;
-        DB::unprepared($sql);
+        \DB::table('core_datasources')->delete();
+
+        \DB::table('core_datasources')->insert(array (
+            0 =>
+                array (
+                    'id' => 1,
+                    'code' => 'mysql',
+                    'name' => 'Mysql 5.7.23',
+                    'description' => 'Mysql 5.7.23',
+                    'requires' => 'driver:mysql,host:127.0.0.1,port:3306,database,username,password',
+                    'options' => 'charset:utf8mb4,collation:utf8mb4_unicode_ci,prefix',
+                    'order_' => 1,
+                    'status' => 1,
+                    'created_at' => '2020-06-01 10:44:33',
+                    'updated_at' => '2020-06-01 10:44:33',
+                ),
+            1 =>
+                array (
+                    'id' => 2,
+                    'code' => 'pgsql',
+                    'name' => 'PostgreSQL',
+                    'description' => 'PostgreSQL',
+                    'requires' => 'driver:pgsql,host:127.0.0.1,port:5432,database,username,password',
+                    'options' => 'charset:utf8,prefix,schema:public,sslmode:prefer',
+                    'order_' => 1,
+                    'status' => 1,
+                    'created_at' => '2020-06-01 10:44:33',
+                    'updated_at' => '2020-06-01 10:44:33',
+                ),
+            2 =>
+                array (
+                    'id' => 3,
+                    'code' => 'sqlsrv',
+                    'name' => 'Microsoft SQLServer',
+                    'description' => 'Microsoft SQLServer',
+                    'requires' => 'driver:sqlsrv,host:localhost,port:1433,database,username,password',
+                    'options' => 'charset:utf8,prefix',
+                    'order_' => 1,
+                    'status' => 1,
+                    'created_at' => '2020-06-01 10:44:33',
+                    'updated_at' => '2020-06-01 10:44:33',
+                ),
+            3 =>
+                array (
+                    'id' => 4,
+                    'code' => 'sqlite',
+                    'name' => 'Sqlite',
+                    'description' => 'Sqlite',
+                    'requires' => 'driver:sqlite,database:~/sqlite.db',
+                    'options' => 'prefix',
+                    'order_' => 1,
+                    'status' => 1,
+                    'created_at' => '2020-06-01 10:44:33',
+                    'updated_at' => '2020-06-01 10:44:33',
+                ),
+        ));
     }
 }
